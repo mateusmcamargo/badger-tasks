@@ -1,18 +1,23 @@
+debug: true
+
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/badger_tasks
+    url: jdbc:postgresql://localhost:5433/badger_tasks
     username: ${DB_USER:postgres}
     password: ${DB_PASS:postgres}
     driver-class-name: org.postgresql.Driver
-
+  docker:
+    compose:
+      lifecycle-management: none
   jpa:
+    open-in-view: false
+    defer-datasource-initialization: true
     hibernate:
       ddl-auto: validate # validate so there's no creation under production
     show-sql: false
     properties:
       hibernate:
         format_sql: true
-        dialect: org.hibernate.dialect.PostgreSQLDialect
 
   flyway:
     enabled: true

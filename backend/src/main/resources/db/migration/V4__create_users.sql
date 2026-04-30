@@ -9,7 +9,3 @@ CREATE TABLE users (
     created_at    TIMESTAMP NOT NULL,
     updated_at    TIMESTAMP NOT NULL
 );
-
-CREATE UNIQUE INDEX uq_one_captain
-    ON users (role_id)
-    WHERE role_id = (SELECT id FROM roles WHERE name = 'CAPTAIN');

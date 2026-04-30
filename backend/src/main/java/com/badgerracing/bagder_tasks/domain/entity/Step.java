@@ -3,13 +3,13 @@ package com.badgerracing.bagder_tasks.domain.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-// unique constraints here allows for multiple tasks to have the same order values (eg: 1, 2, 3, ...)
-// but makes so one task can't have multiple orders with the same value
+// unique constraints here allows for multiple tasks to have the same priority values (eg: 1, 2, 3, ...)
+// but makes so one task can't have multiple priority with the same value
 @Entity @Table(
         name = "steps",
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = {
-                        "task_id", "order"
+                        "task_id", "priority"
                 })
         }
 )
@@ -29,5 +29,5 @@ public class Step extends BaseEntity {
     private boolean done;
 
     @Column(nullable = false)
-    private int order;
+    private int priority;
 }
