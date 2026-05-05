@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/tasks")
@@ -23,7 +24,7 @@ public class TaskController {
     }
 
     @PostMapping("/{taskId}/members/{userId}")
-    public ResponseEntity<Void> assignMember(@PathVariable Long taskId, @PathVariable Long userId) {
+    public ResponseEntity<Void> assignMember(@PathVariable UUID taskId, @PathVariable UUID userId) {
         taskService.assignMemberToTask(taskId, userId);
         return ResponseEntity.ok().build();
     }

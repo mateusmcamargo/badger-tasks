@@ -8,8 +8,13 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import lombok.Getter;
+import lombok.Setter;
+
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
+@Getter
+@Setter
 public abstract class BaseEntity {
 
     // @Id already implies 'unique' and 'not null', so

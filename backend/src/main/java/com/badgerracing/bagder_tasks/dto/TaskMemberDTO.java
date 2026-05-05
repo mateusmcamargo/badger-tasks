@@ -4,13 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import java.util.UUID;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class TaskMemberDTO {
-    private Long id;
-    private Long taskId;
-    private Long userId;
+    private UUID id;
+    private UUID taskId;
+    private UUID userId;
 }

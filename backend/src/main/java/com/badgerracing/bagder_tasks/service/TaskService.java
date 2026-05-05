@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -34,7 +35,7 @@ public class TaskService {
 
     @Transactional
     // @PreAuthorize("hasAnyRole('CAPTAIN', 'MANAGER', 'LEADER')")
-    public void assignMemberToTask(Long taskId, Long userId) {
+    public void assignMemberToTask(UUID taskId, UUID userId) {
         // Here we'd typically also verify if the Leader is assigning to their own Area (RF-09).
         // For now, focusing on the Member-Task association logic (RF-04)
 
