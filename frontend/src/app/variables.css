@@ -1,0 +1,17 @@
+:root {
+    /*--color-pallete-blue-dark: #0f0f24;*/
+    --color-pallete-blue-dark: #070238;
+    --color-pallete-blue: #27215a;
+    --color-pallete-blue-light: #f1f1ff;
+    --color-pallete-orange: #FAB321;
+    --color-pallete-orange-light: #ffc34c;
+    --color-pallete-orange-dark: #d0941c;
+    --color-pallete-yellow: #ffe419;
+
+    --color-label: #1d1a3c;
+
+    --color-input-border: #cbcad7;
+    --color-input-placeholder: #6c6b78;
+    --color-input-border-hover: #7b72cb;
+    --color-input-border-focus: #4f4795;
+}
