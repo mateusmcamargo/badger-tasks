@@ -32,8 +32,8 @@ export default function LoginPage() {
     return (
         <main className={styles.login}>
             <section className={styles.hero}>
-                <img className={styles.logo} src="/badger-tasks-logo.png" alt="Badger Tasks"/>
-                <img className={styles.screenshot} src="/tasks-screenshot.png" alt="Screenshot"/>
+                <img className={styles.logo}       src="/badger-tasks-logo-dark.png" alt="Badger Tasks"/>
+                <img className={styles.screenshot} src="/badger-tasks-screenshot.png" alt="Screenshot"/>
 
                 <h2>Produtividade digna de um Fórmula SAE</h2>
             </section>
