@@ -27,5 +27,6 @@ server:
   port: 8080
 
 jwt:
-  secret: ${JWT_SECRET:dev-secret-change-in-prod}
+  secret: ${JWT_SECRET:dev-badger-tasks-secret-key-2026}
+  # secret: ${JWT_SECRET:dev-secret-change-in-prod}
   expiration-ms: 86400000 # = 24h
