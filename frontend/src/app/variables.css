@@ -2,7 +2,7 @@
     /*--color-pallete-blue-dark: #0f0f24;*/
     --color-pallete-blue-dark: #070238;
     --color-pallete-blue: #27215a;
-    --color-pallete-blue-light: #f1f1ff;
+    --color-pallete-blue-light: #f6f7f8;
     --color-pallete-orange: #FAB321;
     --color-pallete-orange-light: #ffc34c;
     --color-pallete-orange-dark: #d0941c;
@@ -14,4 +14,14 @@
     --color-input-placeholder: #6c6b78;
     --color-input-border-hover: #7b72cb;
     --color-input-border-focus: #4f4795;
+
+    --color-task-not-started: #f14242;
+    --color-task-in-progress: #f4a023;
+    --color-task-in-revision: #eb46ac;
+    --color-task-done: #33b842;
+    --color-task-not-started-light: #ffdede;
+    --color-task-in-progress-light: #ffefd8;
+    --color-task-in-revision-light: #ffddf2;
+    --color-task-done-light: #dbffdf;
+
 }

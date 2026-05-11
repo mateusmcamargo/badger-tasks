@@ -1,20 +1,37 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Search, CheckCircle, Clock, UserPlus, AlertCircle, Briefcase, Activity, Plus } from 'lucide-react';
+import { Search, CheckCircle, Clock, UserPlus, AlertCircle, Briefcase, Activity, Plus, ScanEye, Flag, BookmarkCheck } from 'lucide-react';
 
 import styles from './tasks.module.scss';
 
 // Mocking backend DTO structure
+interface TaskMemberDTO {
+    id: string;
+
+    user: {
+        id: string;
+        name: string;
+        email: string;
+    };
+}
+
 interface TaskDTO {
     id: number;
     name: string;
     description: string;
-    status: 'PENDING' | 'IN_PROGRESS' | 'DONE';
+    categoryId?: string;
+    areaId?: number;
+    leaderId?: string;
+    managerId?: string;
+    status:
+        'NOT_STARTED' |
+        'IN_PROGRESS' |
+        'IN_REVISION' |
+        'DONE';
     active: boolean;
     dateLimit: string;
-    areaId?: number;
-    categoryId?: number;
+    members: TaskMemberDTO[];
 }
 
 export default function TasksPage() {
@@ -24,9 +41,41 @@ export default function TasksPage() {
 
     useEffect(() => {
         const mockTasks: TaskDTO[] = [
-            { id: 1, name: 'Revisar Aerodinâmica Dianteira', description: 'Verificar os dados do túnel de vento para a asa dianteira do veículo.', status: 'IN_PROGRESS', active: true,  dateLimit: '2026-05-15T00:00:00Z', areaId: 1 },
-            { id: 2, name: 'Calibração de Sensores',         description: 'Ajustar os sensores de telemetria no chassi conforme protocolo.', status: 'PENDING',     active: true,  dateLimit: '2026-05-20T00:00:00Z', areaId: 3 },
-            { id: 3, name: 'Design de Chassi',               description: 'Estruturas de aço tubulares precisam de revisão estrutural completa.', status: 'DONE',        active: false, dateLimit: '2026-05-01T00:00:00Z', areaId: 5 },
+            {
+                id: 1,
+                name:'Revisar Aerodinâmica Dianteira',
+                description: 'Verificar os dados do túnel de vento para a asa dianteira do veículo.',
+                categoryId: '1',
+                leaderId: '1',
+                managerId: '1',
+                status: 'IN_PROGRESS',
+                active: true, 
+                dateLimit: '2026-05-15T00:00:00Z',
+                members: []
+            },
+            {
+                id: 2,
+                name: 'Calibração de Sensores',
+                description: 'Ajustar os sensores de telemetria no chassi conforme protocolo.',
+                categoryId: '2',
+                leaderId: '2',
+                managerId: '2',
+                status: 'NOT_STARTED',
+                active: true,
+                dateLimit: '2026-05-20T00:00:00Z',
+                members: []
+            },
+            {
+                id: 3,
+                name: 'Design de Chassi',
+                description: 'Estruturas de aço tubulares precisam de revisão estrutural completa.',
+                categoryId: '2',
+                leaderId: '2',
+                managerId: '2',
+                status: 'DONE',
+                active: false, dateLimit: '2026-05-01T00:00:00Z',
+                members: []
+            },
         ];
 
         setTimeout(() => {
@@ -49,28 +98,26 @@ export default function TasksPage() {
 
     function statusClass(status: TaskDTO['status']) {
         if (status === 'DONE')        return styles.done;
-        if (status === 'IN_PROGRESS') return styles.progress;
-        return styles.pending;
+        if (status === 'IN_PROGRESS') return styles.inProgress;
+        return styles.notStarted;
     }
 
     return (
         <div className={styles.tasks}>
 
-            {/* ── Header ─────────────────────────────────────── */}
             <header className={styles.header}>
                 <div className={styles.headerTop}>
                     <div className={styles.headerInfo}>
-                        <h1>Tarefas</h1>
-                        <p>Gestão de Sprints · Badger Racing</p>
+                        <img src="/badger-tasks-logo-light.png" alt="Badger Tasks"/>
+                        <p>Gestão de Tarefas - Badger Racing</p>
                     </div>
                     <div className={styles.headerIcon}>
-                        <Briefcase />
+                        <Briefcase/>
                     </div>
                 </div>
 
-                {/* Search */}
                 <div className={styles.searchWrapper}>
-                    <Search />
+                    <Search/>
                     <input
                         type="text"
                         placeholder="Buscar tarefas..."
@@ -78,36 +125,45 @@ export default function TasksPage() {
                     />
                 </div>
 
-                {/* Filter chips */}
                 <div className={styles.filters}>
                     <button
                         onClick={() => setStatusFilter('ALL')}
                         className={`${styles.chip} ${styles.all} ${statusFilter === 'ALL' ? styles.active : ''}`}
                     >
-                        Todas
+                        <ScanEye/>
+                        Todas (3)
                     </button>
                     <button
-                        onClick={() => setStatusFilter('PENDING')}
-                        className={`${styles.chip} ${styles.pending} ${statusFilter === 'PENDING' ? styles.active : ''}`}
+                        onClick={() => setStatusFilter('NOT_STARTED')}
+                        className={`${styles.chip} ${styles.notStarted} ${statusFilter === 'NOT_STARTED' ? styles.active : ''}`}
                     >
-                        <AlertCircle /> Pendentes
+                        <AlertCircle/>
+                        Pendentes (1)
                     </button>
                     <button
                         onClick={() => setStatusFilter('IN_PROGRESS')}
-                        className={`${styles.chip} ${styles.progress} ${statusFilter === 'IN_PROGRESS' ? styles.active : ''}`}
+                        className={`${styles.chip} ${styles.inProgress} ${statusFilter === 'IN_PROGRESS' ? styles.active : ''}`}
                     >
-                        <Activity /> Em Progresso
+                        <Activity/>
+                        Em Progresso (1)
+                    </button>
+                    <button
+                        onClick={() => setStatusFilter('IN_REVISION')}
+                        className={`${styles.chip} ${styles.inRevision} ${statusFilter === 'IN_REVISION' ? styles.active : ''}`}
+                    >
+                        <Flag/>
+                        Em revisão (0)
                     </button>
                     <button
                         onClick={() => setStatusFilter('DONE')}
                         className={`${styles.chip} ${styles.done} ${statusFilter === 'DONE' ? styles.active : ''}`}
                     >
-                        <CheckCircle /> Concluídas
+                        <CheckCircle/>
+                        Concluídas (1)
                     </button>
                 </div>
             </header>
 
-            {/* ── Task list ──────────────────────────────────── */}
             <main className={styles.main}>
                 {loading ? (
                     <div className={styles.loading}>
@@ -126,8 +182,9 @@ export default function TasksPage() {
                                     {statusLabel(task.status)}
                                 </span>
                                 {task.active && (
-                                    <span className={styles.urgentBadge}>
-                                        <Clock /> Urgente
+                                    <span className={styles.activeBadge}>
+                                        <BookmarkCheck/>
+                                        Ativa
                                     </span>
                                 )}
                             </div>
@@ -144,7 +201,8 @@ export default function TasksPage() {
                                         onClick={() => handleAssignTask(task.id)}
                                         className={styles.assignBtn}
                                     >
-                                        <UserPlus /> Assumir
+                                        <UserPlus/>
+                                        Assumir
                                     </button>
                                 )}
                             </div>
@@ -153,10 +211,11 @@ export default function TasksPage() {
                 )}
             </main>
 
-            {/* ── FAB ────────────────────────────────────────── */}
             <div className={styles.fab}>
                 <button aria-label="Nova tarefa">
-                    <Plus />
+                    <Plus
+                        strokeWidth={3}
+                    />
                 </button>
             </div>
         </div>
