@@ -8,5 +8,9 @@ export type LoginRequest = {
 
 export type AuthResponse = {
     token:  string;
-    user:   User;
+    id:     string;
+    email:  string;
+    ra:     string;
+    name:   string;
+    role:   string;
 };
