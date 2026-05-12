@@ -1,7 +1,7 @@
 import { RoleName } from './Enums';
 
 export type LoginRequest = {
-    login?:     string;
+    login:      string;
     password:   string;
 };
 
