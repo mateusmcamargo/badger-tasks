@@ -1,19 +1,15 @@
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
+import { Nunito } from 'next/font/google';
 import './globals.css';
+import './variables.css';
 
-const geistSans = Geist({
-    variable: '--font-geist-sans',
-    subsets: ['latin'],
-});
-
-const geistMono = Geist_Mono({
-    variable: '--font-geist-mono',
+const nunito = Nunito({
+    variable: '--font-nunito',
     subsets: ['latin'],
 });
 
 export const metadata: Metadata = {
-    title: 'Badger Racing | Tarefas da Equipe',
+    title: 'Badger Racing | Badger Tasks',
     description: 'Software interno de gestão das tarefas da equipe.',
 };
 
@@ -21,7 +17,7 @@ export default function RootLayout({children}: Readonly<{children: React.ReactNo
     return (
         <html
             lang='pt-br'
-            className={`${geistSans.variable}${geistMono.variable}`}
+            className={`${nunito.variable}`}
         >
             <body>
                 {children}

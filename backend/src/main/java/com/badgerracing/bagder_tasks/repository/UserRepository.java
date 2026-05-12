@@ -1,6 +1,7 @@
 package com.badgerracing.bagder_tasks.repository;
 
 import com.badgerracing.bagder_tasks.domain.entity.User;
+import com.badgerracing.bagder_tasks.domain.enums.RoleName;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
@@ -15,4 +16,6 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     boolean existsByEmail(String email);
     boolean existsByRa(String ra);
 
+    boolean existsByRoleName(RoleName name);
+    boolean existsByRoleNameAndAreaId(RoleName name, UUID areaId);
 }

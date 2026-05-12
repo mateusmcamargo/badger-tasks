@@ -1,12 +1,15 @@
-import { User } from './user';
+import { RoleName } from './Enums';
 
 export type LoginRequest = {
-    ra?:        string;
-    email?:     string;
+    login:      string;
     password:   string;
 };
 
 export type AuthResponse = {
     token:  string;
-    user:   User;
+    id:     string;
+    email:  string;
+    ra:     string;
+    name:   string;
+    role:   RoleName;
 };
