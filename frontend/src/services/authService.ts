@@ -1,4 +1,4 @@
-import { LoginRequest, AuthResponse } from '@/types/auth';
+import { LoginRequest, AuthResponse } from '@/types/Auth';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8080';
 
