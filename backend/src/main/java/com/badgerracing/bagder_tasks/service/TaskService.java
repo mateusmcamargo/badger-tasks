@@ -5,10 +5,12 @@ import com.badgerracing.bagder_tasks.dto.request.TaskFilterRequest;
 import com.badgerracing.bagder_tasks.dto.request.TaskMemberRequest;
 import com.badgerracing.bagder_tasks.dto.request.TaskRequest;
 import com.badgerracing.bagder_tasks.dto.response.*;
+import com.badgerracing.bagder_tasks.exception.BusinessException;
 import com.badgerracing.bagder_tasks.repository.*;
 import com.badgerracing.bagder_tasks.specification.TaskSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,7 +41,7 @@ public class TaskService {
     @PreAuthorize("hasAnyRole('CAPTAIN', 'MANAGER', 'LEADER', 'MEMBER')")
     public TaskResponse getById(UUID id) {
         Task task = taskRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("Tarefa não encontrada"));
+            .orElseThrow(() -> new BusinessException("Tarefa não encontrada", HttpStatus.NOT_FOUND));
         return toResponse(task);
     }
 
@@ -47,13 +49,13 @@ public class TaskService {
     @PreAuthorize("hasAnyRole('CAPTAIN', 'MANAGER', 'LEADER')")
     public TaskResponse create(TaskRequest request) {
         Category category = categoryRepository.findById(request.categoryId())
-            .orElseThrow(() -> new IllegalArgumentException("Categoria não encontrada"));
+            .orElseThrow(() -> new BusinessException("Categoria não encontrada", HttpStatus.NOT_FOUND));
         Area area = areaRepository.findById(request.areaId())
-            .orElseThrow(() -> new IllegalArgumentException("Área não encontrada"));
+            .orElseThrow(() -> new BusinessException("Área não encontrada", HttpStatus.NOT_FOUND));
         User leader = userRepository.findById(request.leaderId())
-            .orElseThrow(() -> new IllegalArgumentException("Líder não encontrado"));
+            .orElseThrow(() -> new BusinessException("Líder não encontrado", HttpStatus.NOT_FOUND));
         User manager = userRepository.findById(request.managerId())
-            .orElseThrow(() -> new IllegalArgumentException("Gestor não encontrado"));
+            .orElseThrow(() -> new BusinessException("Gestor não encontrado", HttpStatus.NOT_FOUND));
 
         Task task = Task.builder()
                 .name(request.name())
@@ -74,7 +76,7 @@ public class TaskService {
     @PreAuthorize("hasAnyRole('CAPTAIN', 'MANAGER', 'LEADER')")
     public TaskResponse update(UUID id, TaskRequest request) {
         Task task = taskRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("Tarefa não encontrada"));
+            .orElseThrow(() -> new BusinessException("Tarefa não encontrada", HttpStatus.NOT_FOUND));
 
         task.setName(request.name());
         task.setDescription(request.description());
@@ -82,13 +84,13 @@ public class TaskService {
         task.setActive(request.active());
         task.setDateLimit(request.dateLimit());
         task.setCategory(categoryRepository.findById(request.categoryId())
-            .orElseThrow(() -> new IllegalArgumentException("Categoria não encontrada")));
+            .orElseThrow(() -> new BusinessException("Categoria não encontrada", HttpStatus.NOT_FOUND)));
         task.setArea(areaRepository.findById(request.areaId())
-            .orElseThrow(() -> new IllegalArgumentException("Área não encontrada")));
+            .orElseThrow(() -> new BusinessException("Área não encontrada", HttpStatus.NOT_FOUND)));
         task.setLeader(userRepository.findById(request.leaderId())
-            .orElseThrow(() -> new IllegalArgumentException("Líder não encontrado")));
+            .orElseThrow(() -> new BusinessException("Líder não encontrado", HttpStatus.NOT_FOUND)));
         task.setManager(userRepository.findById(request.managerId())
-            .orElseThrow(() -> new IllegalArgumentException("Gestor não encontrado")));
+            .orElseThrow(() -> new BusinessException("Gestor não encontrado", HttpStatus.NOT_FOUND)));
 
         return toResponse(taskRepository.save(task));
     }
@@ -97,7 +99,7 @@ public class TaskService {
     @PreAuthorize("hasAnyRole('CAPTAIN', 'MANAGER', 'LEADER')")
     public void delete(UUID id) {
         if (!taskRepository.existsById(id))
-            throw new IllegalArgumentException("Tarefa não encontrada");
+            throw new BusinessException("Tarefa não encontrada", HttpStatus.NOT_FOUND);
         taskRepository.deleteById(id);
     }
 
@@ -105,12 +107,12 @@ public class TaskService {
     @PreAuthorize("hasAnyRole('CAPTAIN', 'MANAGER', 'LEADER')")
     public TaskMemberResponse assignMember(TaskMemberRequest request) {
         Task task = taskRepository.findById(request.taskId())
-            .orElseThrow(() -> new IllegalArgumentException("Tarefa não encontrada"));
+            .orElseThrow(() -> new BusinessException("Tarefa não encontrada", HttpStatus.NOT_FOUND));
         User user = userRepository.findById(request.userId())
-            .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
+            .orElseThrow(() -> new BusinessException("Usuário não encontrado", HttpStatus.NOT_FOUND));
 
         if (taskMemberRepository.existsByTaskIdAndUserId(request.taskId(), request.userId()))
-        throw new IllegalArgumentException("Usuário já está associado a esta tarefa");
+            throw new BusinessException("Usuário já está associado a esta tarefa", HttpStatus.CONFLICT);
 
         TaskMember member = taskMemberRepository.save(
             TaskMember.builder().task(task).user(user).build()
@@ -123,7 +125,7 @@ public class TaskService {
     @PreAuthorize("hasAnyRole('CAPTAIN', 'MANAGER', 'LEADER')")
     public void removeMember(UUID taskId, UUID userId) {
         TaskMember member = taskMemberRepository.findByTaskIdAndUserId(taskId, userId)
-            .orElseThrow(() -> new IllegalArgumentException("Membro não encontrado na tarefa"));
+            .orElseThrow(() ->  new BusinessException("Membro não encontrado na tarefa", HttpStatus.NOT_FOUND));
         taskMemberRepository.delete(member);
     }
 

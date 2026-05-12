@@ -4,10 +4,12 @@ import com.badgerracing.bagder_tasks.domain.entity.User;
 import com.badgerracing.bagder_tasks.domain.enums.RoleName;
 import com.badgerracing.bagder_tasks.dto.request.UserRequest;
 import com.badgerracing.bagder_tasks.dto.response.*;
+import com.badgerracing.bagder_tasks.exception.BusinessException;
 import com.badgerracing.bagder_tasks.repository.AreaRepository;
 import com.badgerracing.bagder_tasks.repository.RoleRepository;
 import com.badgerracing.bagder_tasks.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -36,7 +38,7 @@ public class UserService {
     public UserResponse getById(UUID id) {
         return userRepository.findById(id)
             .map(this::toResponse)
-            .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
+            .orElseThrow(() -> new BusinessException("Usuário não encontrado", HttpStatus.NOT_FOUND));
     }
 
     @Transactional
@@ -44,23 +46,23 @@ public class UserService {
 
         // RF-14: unique email and RA
         if (userRepository.existsByEmail(request.email()))
-            throw new IllegalArgumentException("Email já cadastrado");
+            throw new BusinessException("Email já cadastrado", HttpStatus.CONFLICT);
         if (userRepository.existsByRa(request.ra()))
-            throw new IllegalArgumentException("RA já cadastrado");
+            throw new BusinessException("RA já cadastrado", HttpStatus.CONFLICT);
 
         var role = roleRepository.findById(request.roleId())
-                .orElseThrow(() -> new IllegalArgumentException("Role não encontrada"));
+                .orElseThrow(() -> new BusinessException("Cargo não encontrado", HttpStatus.NOT_FOUND));
 
         var area = areaRepository.findById(request.areaId())
-                .orElseThrow(() -> new IllegalArgumentException("Área não encontrada"));
+                .orElseThrow(() -> new BusinessException("Área não encontrada", HttpStatus.NOT_FOUND));
 
         // RF-12: only one Captain allowed
         if (role.getName() == RoleName.CAPTAIN && userRepository.existsByRoleName(RoleName.CAPTAIN))
-            throw new IllegalArgumentException("Já existe um Capitão cadastrado");
+            throw new BusinessException("Já existe um Capitão cadastrado", HttpStatus.CONFLICT);
 
         // RF-13: only one Leader per area
         if (role.getName() == RoleName.LEADER && userRepository.existsByRoleNameAndAreaId(RoleName.LEADER, area.getId()))
-            throw new IllegalArgumentException("Já existe um Líder nessa área");
+            throw new BusinessException("Já existe um Líder nessa área", HttpStatus.CONFLICT);
 
         User user = User.builder()
                 .name(request.name())
@@ -77,31 +79,31 @@ public class UserService {
     @PreAuthorize("hasRole('CAPTAIN')")
     public UserResponse update(UUID id, UserRequest request) {
         User user = userRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
+            .orElseThrow(() -> new BusinessException("Usuário não encontrado", HttpStatus.NOT_FOUND));
 
         // RF-14: unique email and RA, excluding current user
         if (!user.getEmail().equals(request.email()) && userRepository.existsByEmail(request.email()))
-            throw new IllegalArgumentException("Email já cadastrado");
+            throw new BusinessException("Email já cadastrado", HttpStatus.CONFLICT);
         if (!user.getRa().equals(request.ra()) && userRepository.existsByRa(request.ra()))
-            throw new IllegalArgumentException("RA já cadastrado");
+            throw new BusinessException("RA já cadastrado", HttpStatus.CONFLICT);
 
         var role = roleRepository.findById(request.roleId())
-            .orElseThrow(() -> new IllegalArgumentException("Role não encontrada"));
+            .orElseThrow(() -> new BusinessException("Cargo não encontrado", HttpStatus.NOT_FOUND));
 
         var area = areaRepository.findById(request.areaId())
-            .orElseThrow(() -> new IllegalArgumentException("Área não encontrada"));
+            .orElseThrow(() -> new BusinessException("Área não encontrada", HttpStatus.NOT_FOUND));
 
         // RF-12: only one Captain — block if assigning Captain to a different user
         if (role.getName() == RoleName.CAPTAIN
             && user.getRole().getName() != RoleName.CAPTAIN
             && userRepository.existsByRoleName(RoleName.CAPTAIN))
-            throw new IllegalArgumentException("Já existe um Capitão cadastrado");
+            throw new BusinessException("Já existe um Capitão cadastrado", HttpStatus.CONFLICT);
 
         // RF-13: only one Leader per area — block if assigning Leader to an area that already has one
         if (role.getName() == RoleName.LEADER
             && (user.getRole().getName() != RoleName.LEADER || !user.getArea().getId().equals(area.getId()))
             && userRepository.existsByRoleNameAndAreaId(RoleName.LEADER, area.getId()))
-            throw new IllegalArgumentException("Já existe um Líder nessa área");
+            throw new BusinessException("Já existe um Líder nessa área", HttpStatus.CONFLICT);
 
         user.setName(request.name());
         user.setRa(request.ra());
@@ -117,7 +119,7 @@ public class UserService {
     @PreAuthorize("hasRole('CAPTAIN')")
     public void delete(UUID id) {
         if (!userRepository.existsById(id))
-            throw new IllegalArgumentException("Usuário não encontrado");
+            throw new BusinessException("Usuário não encontrado", HttpStatus.NOT_FOUND);
         userRepository.deleteById(id);
     }
 

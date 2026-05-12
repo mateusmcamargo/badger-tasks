@@ -2,8 +2,10 @@ package com.badgerracing.bagder_tasks.service;
 
 import com.badgerracing.bagder_tasks.domain.entity.Area;
 import com.badgerracing.bagder_tasks.dto.response.AreaResponse;
+import com.badgerracing.bagder_tasks.exception.BusinessException;
 import com.badgerracing.bagder_tasks.repository.AreaRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,7 +27,7 @@ public class AreaService {
     public AreaResponse getById(UUID id) {
         return areaRepository.findById(id)
             .map(this::toResponse)
-            .orElseThrow(() -> new IllegalArgumentException("Área não encontrada"));
+            .orElseThrow(() -> new BusinessException("Área não encontrada", HttpStatus.NOT_FOUND));
     }
 
     private AreaResponse toResponse(Area area) {

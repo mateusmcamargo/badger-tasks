@@ -2,8 +2,10 @@ package com.badgerracing.bagder_tasks.service;
 
 import com.badgerracing.bagder_tasks.domain.entity.Role;
 import com.badgerracing.bagder_tasks.dto.response.RoleResponse;
+import com.badgerracing.bagder_tasks.exception.BusinessException;
 import com.badgerracing.bagder_tasks.repository.RoleRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,7 +27,7 @@ public class RoleService {
     public RoleResponse getById(UUID id) {
         return roleRepository.findById(id)
             .map(this::toResponse)
-            .orElseThrow(() -> new IllegalArgumentException("Role não encontrada"));
+            .orElseThrow(() -> new BusinessException("Cargo não encontrado", HttpStatus.NOT_FOUND));
     }
 
     private RoleResponse toResponse(Role role) {
