@@ -3,8 +3,10 @@ package com.badgerracing.bagder_tasks.service;
 import com.badgerracing.bagder_tasks.domain.entity.Category;
 import com.badgerracing.bagder_tasks.dto.request.CategoryRequest;
 import com.badgerracing.bagder_tasks.dto.response.CategoryResponse;
+import com.badgerracing.bagder_tasks.exception.BusinessException;
 import com.badgerracing.bagder_tasks.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,7 +29,7 @@ public class CategoryService {
     public CategoryResponse getById(UUID id) {
         return categoryRepository.findById(id)
             .map(this::toResponse)
-            .orElseThrow(() -> new IllegalArgumentException("Categoria não encontrada"));
+            .orElseThrow(() -> new BusinessException("Categoria não encontrada", HttpStatus.NOT_FOUND));
     }
 
     @Transactional
@@ -44,7 +46,7 @@ public class CategoryService {
     @PreAuthorize("hasAnyRole('CAPTAIN', 'MANAGER')")
     public CategoryResponse update(UUID id, CategoryRequest request) {
         Category category = categoryRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("Categoria não encontrada"));
+            .orElseThrow(() -> new BusinessException("Categoria não encontrada", HttpStatus.NOT_FOUND));
         category.setName(request.name());
         category.setDescription(request.description());
         return toResponse(categoryRepository.save(category));
@@ -54,7 +56,7 @@ public class CategoryService {
     @PreAuthorize("hasAnyRole('CAPTAIN', 'MANAGER')")
     public void delete(UUID id) {
         if (!categoryRepository.existsById(id))
-            throw new IllegalArgumentException("Categoria não encontrada");
+            throw new BusinessException("Categoria não encontrada", HttpStatus.NOT_FOUND);
         categoryRepository.deleteById(id);
     }
 
