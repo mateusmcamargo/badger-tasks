@@ -1,13 +1,11 @@
-import { Area } from './area';
-import { Role } from './role';
+import { Area } from './Area';
+import { BaseEntity } from './BaseEntity';
+import { Role } from './Role';
 
-export type User = {
-    id:         string;
-    name:       string;
-    ra:         string;
-    email?:     string;
-    role:       Role;
-    area:       Area;
-    createdAt:  string;
-    updatedAt:  string;
+export interface User extends BaseEntity {
+    name:   string;
+    ra:     string;
+    email:  string;
+    role:   Role;
+    area:   Area;
 }

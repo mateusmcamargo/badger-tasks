@@ -1,11 +1,7 @@
-export type Area =
-    'PROJECTS'      | // manager
-    'MANUFACTURE'   | // manager
-    'FINANCE'       | // manager
-    'STATISTICS'    | // manager
-    'AERODYNAMICS'  | // leader
-    'DYNAMICS'      | // leader
-    'TELEMETRY'     | // leader
-    'MARKETING'     | // leader
-    'STRUCTURES'      // leader
-;
+import { BaseEntity } from './BaseEntity';
+import { AreaName } from './Enums';
+
+export interface Area extends BaseEntity {
+    name: AreaName;
+    description?: string;
+}

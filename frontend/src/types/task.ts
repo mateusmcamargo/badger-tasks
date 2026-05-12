@@ -1,44 +1,22 @@
-import { Area } from './area';
-import { User } from './user';
+import { Area } from './Area';
+import { BaseEntity } from './BaseEntity';
+import { TaskStatus } from './Enums';
+import { Step } from './Step';
+import { Category } from './Category';
+import { User } from './User';
 
-export type TaskStatus =
-    | 'PENDING'
-    | 'IN_PROGRESS'
-    | 'DONE';
-
-export type TaskPriority =
-    | 'LOW'
-    | 'MEDIUM'
-    | 'HIGH'
-    | 'URGENT';
-
-export type TaskStep = {
-    id:         string;
-    done:       boolean;
-    createdAt:  string;
-    updatedAt:  string;
-}
-
-export type TaskCategory = {
-    id:         string;
-    name:       string;
-    createdAt:  string;
-    updatedAt:  string;
-}
-
-export type Task = {
-    id:             string;
+export interface Task extends BaseEntity {
     name:           string;
     description?:   string;
-    conclusion:     number;
+    category:       Category;
     area:           Area;
+    leader:         User;
+    manager:        User;
     status:         TaskStatus;
-    priority:       TaskPriority;
-    steps:          TaskStep[];
-    category:       TaskCategory;
+    active:         boolean;
+    steps:          Step[];
+    dateLimit?:     string;
     assignedTo:     User[];
-    createdBy:      string;
-    dueDate?:       string;
-    createdAt:      string;
-    updatedAt:      string;
+    //priority:     TaskPriority;
+    //createdBy:    string;
 };
