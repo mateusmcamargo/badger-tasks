@@ -41,6 +41,7 @@ public class SecurityConfig {
                 .requestMatchers("/auth/login").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/areas/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/roles/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
                 .anyRequest().authenticated()
             )
             .authenticationProvider(authenticationProvider())
