@@ -9,6 +9,7 @@ import com.badgerracing.bagder_tasks.repository.*;
 import com.badgerracing.bagder_tasks.specification.TaskSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +27,7 @@ public class TaskService {
     private final AreaRepository       areaRepository;
 
     @Transactional(readOnly = true)
+    @PreAuthorize("hasAnyRole('CAPTAIN', 'MANAGER', 'LEADER', 'MEMBER')")
     public TaskFilterResponse getTasksWithFilters(TaskFilterRequest filter) {
         Specification<Task> spec = TaskSpecification.getFilterSpecification(filter);
         List<TaskResponse> tasks = taskRepository.findAll(spec)
@@ -34,6 +36,7 @@ public class TaskService {
     }
 
     @Transactional(readOnly = true)
+    @PreAuthorize("hasAnyRole('CAPTAIN', 'MANAGER', 'LEADER', 'MEMBER')")
     public TaskResponse getById(UUID id) {
         Task task = taskRepository.findById(id)
             .orElseThrow(() -> new IllegalArgumentException("Tarefa não encontrada"));
@@ -41,6 +44,7 @@ public class TaskService {
     }
 
     @Transactional
+    @PreAuthorize("hasAnyRole('CAPTAIN', 'MANAGER', 'LEADER', 'MEMBER')")
     public TaskResponse create(TaskRequest request) {
         Category category = categoryRepository.findById(request.categoryId())
             .orElseThrow(() -> new IllegalArgumentException("Categoria não encontrada"));
@@ -67,6 +71,7 @@ public class TaskService {
     }
 
     @Transactional
+    @PreAuthorize("hasAnyRole('CAPTAIN', 'MANAGER', 'LEADER', 'MEMBER')")
     public TaskResponse update(UUID id, TaskRequest request) {
         Task task = taskRepository.findById(id)
             .orElseThrow(() -> new IllegalArgumentException("Tarefa não encontrada"));
@@ -89,6 +94,7 @@ public class TaskService {
     }
 
     @Transactional
+    @PreAuthorize("hasAnyRole('CAPTAIN', 'MANAGER', 'LEADER', 'MEMBER')")
     public void delete(UUID id) {
         if (!taskRepository.existsById(id))
             throw new IllegalArgumentException("Tarefa não encontrada");
@@ -96,6 +102,7 @@ public class TaskService {
     }
 
     @Transactional
+    @PreAuthorize("hasAnyRole('CAPTAIN', 'MANAGER', 'LEADER', 'MEMBER')")
     public TaskMemberResponse assignMember(TaskMemberRequest request) {
         Task task = taskRepository.findById(request.taskId())
             .orElseThrow(() -> new IllegalArgumentException("Tarefa não encontrada"));
@@ -113,6 +120,7 @@ public class TaskService {
     }
 
     @Transactional
+    @PreAuthorize("hasAnyRole('CAPTAIN', 'MANAGER', 'LEADER', 'MEMBER')")
     public void removeMember(UUID taskId, UUID userId) {
         TaskMember member = taskMemberRepository.findByTaskIdAndUserId(taskId, userId)
             .orElseThrow(() -> new IllegalArgumentException("Membro não encontrado na tarefa"));

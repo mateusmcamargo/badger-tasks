@@ -5,6 +5,7 @@ import com.badgerracing.bagder_tasks.dto.request.CategoryRequest;
 import com.badgerracing.bagder_tasks.dto.response.CategoryResponse;
 import com.badgerracing.bagder_tasks.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +31,7 @@ public class CategoryService {
     }
 
     @Transactional
+    @PreAuthorize("hasAnyRole('CAPTAIN', 'MANAGER', 'LEADER', 'MEMBER')")
     public CategoryResponse create(CategoryRequest request) {
         Category category = Category.builder()
             .name(request.name())
@@ -39,6 +41,7 @@ public class CategoryService {
     }
 
     @Transactional
+    @PreAuthorize("hasAnyRole('CAPTAIN', 'MANAGER', 'LEADER', 'MEMBER')")
     public CategoryResponse update(UUID id, CategoryRequest request) {
         Category category = categoryRepository.findById(id)
             .orElseThrow(() -> new IllegalArgumentException("Categoria não encontrada"));
@@ -48,6 +51,7 @@ public class CategoryService {
     }
 
     @Transactional
+    @PreAuthorize("hasAnyRole('CAPTAIN', 'MANAGER', 'LEADER', 'MEMBER')")
     public void delete(UUID id) {
         if (!categoryRepository.existsById(id))
             throw new IllegalArgumentException("Categoria não encontrada");
