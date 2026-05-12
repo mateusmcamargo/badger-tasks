@@ -1,4 +1,12 @@
 package com.badgerracing.bagder_tasks.dto.request;
 
-public class TaskFilterRequest {
-}
+import com.badgerracing.bagder_tasks.domain.enums.TaskStatus;
+import java.util.UUID;
+
+public record TaskFilterRequest(
+    UUID areaId,
+    UUID categoryId,
+    TaskStatus status,
+    Boolean active,
+    UUID memberId
+) {}
