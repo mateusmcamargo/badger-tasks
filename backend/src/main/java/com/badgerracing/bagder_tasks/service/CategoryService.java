@@ -31,7 +31,7 @@ public class CategoryService {
     }
 
     @Transactional
-    @PreAuthorize("hasAnyRole('CAPTAIN', 'MANAGER', 'LEADER', 'MEMBER')")
+    @PreAuthorize("hasAnyRole('CAPTAIN', 'MANAGER')")
     public CategoryResponse create(CategoryRequest request) {
         Category category = Category.builder()
             .name(request.name())
@@ -41,7 +41,7 @@ public class CategoryService {
     }
 
     @Transactional
-    @PreAuthorize("hasAnyRole('CAPTAIN', 'MANAGER', 'LEADER', 'MEMBER')")
+    @PreAuthorize("hasAnyRole('CAPTAIN', 'MANAGER')")
     public CategoryResponse update(UUID id, CategoryRequest request) {
         Category category = categoryRepository.findById(id)
             .orElseThrow(() -> new IllegalArgumentException("Categoria não encontrada"));
@@ -51,7 +51,7 @@ public class CategoryService {
     }
 
     @Transactional
-    @PreAuthorize("hasAnyRole('CAPTAIN', 'MANAGER', 'LEADER', 'MEMBER')")
+    @PreAuthorize("hasAnyRole('CAPTAIN', 'MANAGER')")
     public void delete(UUID id) {
         if (!categoryRepository.existsById(id))
             throw new IllegalArgumentException("Categoria não encontrada");

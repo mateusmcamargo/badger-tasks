@@ -44,7 +44,7 @@ public class TaskService {
     }
 
     @Transactional
-    @PreAuthorize("hasAnyRole('CAPTAIN', 'MANAGER', 'LEADER', 'MEMBER')")
+    @PreAuthorize("hasAnyRole('CAPTAIN', 'MANAGER', 'LEADER')")
     public TaskResponse create(TaskRequest request) {
         Category category = categoryRepository.findById(request.categoryId())
             .orElseThrow(() -> new IllegalArgumentException("Categoria não encontrada"));
@@ -71,7 +71,7 @@ public class TaskService {
     }
 
     @Transactional
-    @PreAuthorize("hasAnyRole('CAPTAIN', 'MANAGER', 'LEADER', 'MEMBER')")
+    @PreAuthorize("hasAnyRole('CAPTAIN', 'MANAGER', 'LEADER')")
     public TaskResponse update(UUID id, TaskRequest request) {
         Task task = taskRepository.findById(id)
             .orElseThrow(() -> new IllegalArgumentException("Tarefa não encontrada"));
@@ -94,7 +94,7 @@ public class TaskService {
     }
 
     @Transactional
-    @PreAuthorize("hasAnyRole('CAPTAIN', 'MANAGER', 'LEADER', 'MEMBER')")
+    @PreAuthorize("hasAnyRole('CAPTAIN', 'MANAGER', 'LEADER')")
     public void delete(UUID id) {
         if (!taskRepository.existsById(id))
             throw new IllegalArgumentException("Tarefa não encontrada");
@@ -102,7 +102,7 @@ public class TaskService {
     }
 
     @Transactional
-    @PreAuthorize("hasAnyRole('CAPTAIN', 'MANAGER', 'LEADER', 'MEMBER')")
+    @PreAuthorize("hasAnyRole('CAPTAIN', 'MANAGER', 'LEADER')")
     public TaskMemberResponse assignMember(TaskMemberRequest request) {
         Task task = taskRepository.findById(request.taskId())
             .orElseThrow(() -> new IllegalArgumentException("Tarefa não encontrada"));
@@ -120,7 +120,7 @@ public class TaskService {
     }
 
     @Transactional
-    @PreAuthorize("hasAnyRole('CAPTAIN', 'MANAGER', 'LEADER', 'MEMBER')")
+    @PreAuthorize("hasAnyRole('CAPTAIN', 'MANAGER', 'LEADER')")
     public void removeMember(UUID taskId, UUID userId) {
         TaskMember member = taskMemberRepository.findByTaskIdAndUserId(taskId, userId)
             .orElseThrow(() -> new IllegalArgumentException("Membro não encontrado na tarefa"));
