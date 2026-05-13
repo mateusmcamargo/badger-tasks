@@ -1,150 +1,163 @@
-.tasks {
+div.tasks {
   display: grid;
   grid-template-rows: auto 1fr;
-  min-height: 100vh;
+  height: 100vh;
   background-color: var(--color-bg-surface, #f4f5f7);
 }
 
-.header {
+header.header {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1rem;
+  height: 12rem;
   position: sticky;
   top: 0;
   z-index: 10;
   background-color: var(--color-pallete-blue-light);
   border-bottom: 2px solid var(--color-input-border, #e2e8f0);
-  padding: 2.4rem 3.2rem 1.6rem;
+  padding: 0 4rem;
 }
-.header .headerTop {
+header.header div.headerTop {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 2rem;
+  gap: 4rem;
+  height: 4rem;
 }
-.header .headerInfo img {
-  height: 5.2rem;
-}
-.header .headerInfo p {
-  color: var(--color-pallete-blue);
-  font-size: 1.4rem;
-  font-weight: 500;
-  margin-top: 0.4rem;
-}
-.header .headerIcon {
-  width: 4.4rem;
+header.header div.headerTop div.headerBranding img {
   height: 4.4rem;
-  background-color: var(--color-pallete-blue-dark);
+}
+header.header div.headerTop button.headerUser {
+  width: 4rem;
+  height: 4rem;
+  background-color: var(--color-pallete-blue-light);
+  border: 3px solid var(--color-pallete-blue-light);
   border-radius: 1.2rem;
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
+  transition: 0.2s ease;
 }
-.header .headerIcon svg {
-  color: var(--color-pallete-yellow, #f5c842);
+header.header div.headerTop button.headerUser svg {
+  color: var(--color-pallete-blue-dark);
   width: 2rem;
   height: 2rem;
 }
-
-.searchWrapper {
-  position: relative;
-  margin-bottom: 1.2rem;
+header.header div.headerTop button.headerUser:hover {
+  background-color: var(--color-pallete-blue-dark);
 }
-.searchWrapper svg {
-  position: absolute;
-  left: 1.2rem;
-  top: 50%;
-  transform: translateY(-50%);
+header.header div.headerTop button.headerUser:hover svg {
+  color: var(--color-pallete-blue-light);
+}
+header.header div.headerTop div.searchWrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 1rem;
+  height: 100%;
+  padding-left: 1rem;
+  border-radius: 1rem;
+  border: 2px solid var(--color-input-border, #e2e8f0);
+  background-color: white;
+}
+header.header div.headerTop div.searchWrapper svg {
   width: 1.8rem;
   height: 1.8rem;
   color: var(--color-input-placeholder, #94a3b8);
+  background-color: white;
   pointer-events: none;
 }
-.searchWrapper input {
+header.header div.headerTop div.searchWrapper input {
   width: 100%;
-  height: 4rem;
-  padding: 0 1.2rem 0 4rem;
-  border: 2px solid var(--color-input-border, #e2e8f0);
-  background-color: var(--color-bg-surface, #f4f5f7);
+  height: 100%;
+  padding: 0 2rem;
   color: var(--color-pallete-blue-dark);
-  border-radius: 1rem;
+  background-color: white;
+  border-radius: 0 1rem 1rem 0;
   font-size: 1.4rem;
   transition: 0.2s ease;
 }
-.searchWrapper input:hover {
-  border-color: var(--color-input-border-hover, #cbd5e1);
+header.header div.headerTop div.searchWrapper input::-moz-placeholder {
+  color: var(--color-input-placeholder);
 }
-.searchWrapper input:focus {
-  border-color: var(--color-input-border-focus, #3b82f6);
-  background-color: white;
-  box-shadow: 0 0 4px rgba(0, 0, 0, 0.12);
+header.header div.headerTop div.searchWrapper input::placeholder {
+  color: var(--color-input-placeholder);
 }
-.searchWrapper input::-moz-placeholder {
-  color: var(--color-input-placeholder, #94a3b8);
-}
-.searchWrapper input::placeholder {
-  color: var(--color-input-placeholder, #94a3b8);
-}
-
-.filters {
-  display: flex;
-  gap: 0.8rem;
-  overflow-x: auto;
-  padding-bottom: 0.4rem;
-  scrollbar-width: none;
-}
-.filters::-webkit-scrollbar {
-  display: none;
-}
-
-.chip {
+header.header div.filters {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  white-space: nowrap;
-  padding: 0.7rem 1.6rem;
+  justify-content: flex-start;
+  gap: 1rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+header.header div.filters::-webkit-scrollbar {
+  display: none;
+}
+header.header div.filters button.chip {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  height: 3.2rem;
+  padding: 0 1.6rem;
   border-radius: 10rem;
-  font-size: 1.3rem;
+  font-size: 1.4rem;
   font-weight: 600;
-  border: 2px solid var(--color-input-border, #e2e8f0);
   background-color: white;
-  color: var(--color-label, #64748b);
+  color: var(--color-label);
+  border: 2px solid var(--color-input-border, #e2e8f0);
   cursor: pointer;
   transition: 0.15s ease;
 }
-.chip svg {
-  width: 1.4rem;
-  height: 1.4rem;
+header.header div.filters button.chip svg {
+  width: 1.6rem;
+  height: 1.6rem;
 }
-.chip:hover {
+header.header div.filters button.chip:hover {
   border-color: var(--color-input-border-hover, #cbd5e1);
   background-color: var(--color-bg-surface, #f4f5f7);
 }
-.chip.active {
+header.header div.filters button.chip.active {
   border-color: transparent;
   color: white;
 }
-.chip.active.all {
+header.header div.filters button.chip.active.all {
   background-color: var(--color-pallete-blue-dark);
 }
-.chip.active.notStarted {
+header.header div.filters button.chip.active.notStarted {
   background-color: var(--color-task-not-started);
 }
-.chip.active.inProgress {
+header.header div.filters button.chip.active.inProgress {
   background-color: var(--color-task-in-progress);
 }
-.chip.active.inRevision {
+header.header div.filters button.chip.active.inRevision {
   background-color: var(--color-task-in-revision);
 }
-.chip.active.done {
+header.header div.filters button.chip.active.done {
   background-color: var(--color-task-done);
 }
 
-.main {
-  padding: 2.4rem 3.2rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.6rem;
-  max-width: 72rem;
+main.main {
   width: 100%;
-  margin: 0 auto;
+  max-width: 100%;
+  padding: 4rem;
+}
+main.main.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  align-items: start;
+  gap: 1.6rem;
+}
+main.main.column {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  align-items: start;
+  gap: 1rem;
+  padding-top: 2rem;
+  height: calc(100vh - 12rem);
 }
 
 .loading {
@@ -169,6 +182,26 @@
   color: var(--color-label, #64748b);
 }
 
+.loadingFilters {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 1rem;
+}
+.loadingFilters .spinner {
+  width: 2.4rem;
+  height: 2.4rem;
+  border: 4px solid var(--color-input-border);
+  border-top-color: var(--color-pallete-blue-dark);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+.loadingFilters p {
+  font-size: 1.4rem;
+  font-weight: 500;
+  color: var(--color-label, #64748b);
+}
+
 .empty {
   text-align: center;
   padding: 8rem 0;
@@ -178,31 +211,40 @@
   color: var(--color-label, #64748b);
 }
 
-.card {
+div.task {
+  display: flex;
+  flex-direction: column;
+  gap: 1.8rem;
   background-color: white;
   border: 2px solid var(--color-input-border, #e2e8f0);
-  border-radius: 1rem;
-  padding: 2rem 2.4rem;
+  border-radius: 1.2rem;
+  padding: 2rem;
   transition: 0.2s ease;
-  width: 40rem;
+  width: 100%;
 }
-.card:hover {
-  border-color: var(--color-input-border-hover, #cbd5e1);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+div.task:hover {
+  border-color: var(--color-input-border-hover);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   transform: translateY(-1px);
 }
-.card:active {
+div.task:active {
   transform: scale(0.99);
 }
-
-.cardTop {
+div.task div.taskHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 1.2rem;
 }
-
-.statusBadge {
+div.task div.taskHeader div {
+  display: flex;
+  gap: 1rem;
+}
+div.task div.taskHeader div.actions svg {
+  width: 2rem;
+  height: 2rem;
+  color: var(--color-pallete-blue-dark);
+}
+div.task div.taskHeader div span.statusBadge {
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -215,23 +257,27 @@
   border-radius: 0.6rem;
   text-transform: uppercase;
 }
-.statusBadge.notStarted {
+div.task div.taskHeader div span.statusBadge.notStarted {
   background-color: var(--color-task-not-started-light);
   color: var(--color-task-not-started);
   border: 2px solid var(--color-task-not-started);
 }
-.statusBadge.inProgress {
+div.task div.taskHeader div span.statusBadge.inProgress {
   background-color: var(--color-task-in-progress-light);
   color: var(--color-task-in-progress);
   border: 2px solid var(--color-task-in-progress);
 }
-.statusBadge.done {
+div.task div.taskHeader div span.statusBadge.inRevision {
+  background-color: var(--color-task-in-revision-light);
+  color: var(--color-task-in-revision);
+  border: 2px solid var(--color-task-in-revision);
+}
+div.task div.taskHeader div span.statusBadge.done {
   background-color: var(--color-task-done-light);
   color: var(--color-task-done);
   border: 2px solid var(--color-task-done);
 }
-
-.activeBadge {
+div.task div.taskHeader div span.activeBadge {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -245,42 +291,107 @@
   border: 2px solid var(--color-pallete-blue);
   border-radius: 0.6rem;
 }
-.activeBadge svg {
+div.task div.taskHeader div span.activeBadge svg {
   width: 1.6rem;
   height: 1.6rem;
 }
-
-.cardTitle {
+div.task div.taskMain {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.4rem;
+}
+div.task div.taskMain div {
+  width: 100%;
+}
+div.task div.taskMain div.taskInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+div.task div.taskMain div.taskInfo h3 {
   font-size: 1.8rem;
   font-weight: 600;
   color: var(--color-pallete-blue-dark);
-  line-height: 1.25;
-  margin-bottom: 0.6rem;
-  letter-spacing: -0.02em;
 }
-
-.cardDesc {
+div.task div.taskMain div.taskInfo p {
   font-size: 1.4rem;
   color: var(--color-label, #64748b);
-  line-height: 1.6;
-  margin-bottom: 1.6rem;
 }
-
-.cardFooter {
+div.task div.taskMain div.taskBadges {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 1rem;
+}
+div.task div.taskMain div.taskBadges p.taskBadge {
+  font-size: 1.2rem;
+  padding: 2px 8px;
+  color: var(--color-badge-blue);
+  background-color: var(--color-badge-blue-background);
+  border: 2px solid var(--color-badge-blue);
+  border-radius: 1rem;
+}
+div.task div.taskMain div.taskSteps p.taskStepsCounter {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 1rem;
+  width: 100%;
+  color: var(--color-pallete-blue-dark);
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+div.task div.taskMain div.taskSteps p.taskStepsCounter svg {
+  color: var(--color-pallete-orange);
+  width: 2rem;
+  height: 2rem;
+}
+div.task div.taskMain div.taskUsers {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 1rem;
+}
+div.task div.taskMain div.taskUsers div.userAvatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 4rem;
+  height: 4rem;
+  border-radius: 50%;
+  color: var(--color-pallete-blue-dark);
+  background-color: var(--color-pallete-blue-light);
+  border: 3px solid var(--color-pallete-blue-dark);
+}
+div.task div.taskMain div.taskUsers div.userAvatar img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+div.task div.taskMain div.taskUsers div.userAvatar span {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+div.task div.taskMain div.taskUsers p {
+  color: var(--color-pallete-blue-dark);
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+div.task div.taskFooter {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding-top: 1.4rem;
   border-top: 2px solid var(--color-input-border, #e2e8f0);
 }
-
-.deadline {
-  font-size: 1.2rem;
+div.task div.taskFooter span.taskDateLimit {
+  font-size: 1.4rem;
   font-weight: 600;
   color: var(--color-label, #64748b);
 }
-
-.assignBtn {
+div.task div.taskFooter button.taskAssignButton {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -288,31 +399,31 @@
   width: 12rem;
   height: 3.2rem;
   font-size: 1.4rem;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--color-pallete-blue-dark);
   background-color: var(--color-pallete-orange);
   border-radius: 0.6rem;
   cursor: pointer;
   transition: 0.2s ease;
 }
-.assignBtn svg {
+div.task div.taskFooter button.taskAssignButton svg {
   width: 1.6rem;
   height: 1.6rem;
 }
-.assignBtn:hover {
+div.task div.taskFooter button.taskAssignButton:hover {
   background-color: var(--color-pallete-orange-light);
 }
-.assignBtn:active {
+div.task div.taskFooter button.taskAssignButton:active {
   background-color: var(--color-pallete-orange-dark);
 }
 
-.fab {
+div.addTask {
   position: fixed;
   bottom: 2.4rem;
   right: 2.4rem;
   z-index: 20;
 }
-.fab button {
+div.addTask button {
   width: 5.6rem;
   height: 5.6rem;
   background-color: var(--color-pallete-blue-light);
@@ -326,15 +437,83 @@
   cursor: pointer;
   transition: 0.2s ease;
 }
-.fab button svg {
+div.addTask button svg {
   width: 2.8rem;
   height: 2.8rem;
 }
-.fab button:hover {
+div.addTask button:hover {
   background-color: var(--color-pallete-blue-dark);
 }
-.fab button:active {
+div.addTask button:active {
   transform: scale(0.95);
+}
+
+div.columns {
+  display: contents;
+}
+div.columns div.task {
+  width: 100%;
+}
+div.columns div.column {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+div.columns div.column div.columnHeader {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 0;
+  font-size: 1.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  border-bottom: 2px solid var(--color-input-border);
+}
+div.columns div.column div.columnHeader svg {
+  width: 1.8rem;
+  height: 1.8rem;
+}
+div.columns div.column div.columnHeader.notStarted {
+  color: var(--color-task-not-started);
+}
+div.columns div.column div.columnHeader.notStarted svg {
+  color: var(--color-task-not-started);
+}
+div.columns div.column div.columnHeader.inProgress {
+  color: var(--color-task-in-progress);
+}
+div.columns div.column div.columnHeader.inProgress svg {
+  color: var(--color-task-in-progress);
+}
+div.columns div.column div.columnHeader.inRevision {
+  color: var(--color-task-in-revision);
+}
+div.columns div.column div.columnHeader.inRevision svg {
+  color: var(--color-task-in-revision);
+}
+div.columns div.column div.columnHeader.done {
+  color: var(--color-task-done);
+}
+div.columns div.column div.columnHeader.done svg {
+  color: var(--color-task-done);
+}
+div.columns div.column div.columnTasks {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 1rem;
+  overflow-y: auto;
+  flex: 1;
+}
+div.columns div.column div.columnEmpty {
+  padding: 2.4rem 0;
+  text-align: center;
+}
+div.columns div.column div.columnEmpty p {
+  font-size: 1.3rem;
+  color: var(--color-label, #64748b);
 }
 
 @keyframes spin {

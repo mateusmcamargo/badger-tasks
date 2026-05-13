@@ -8,4 +8,5 @@ export interface User extends BaseEntity {
     email:  string;
     role:   Role;
     area:   Area;
+    photoUrl?: string;
 }
