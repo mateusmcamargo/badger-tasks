@@ -25,6 +25,7 @@ export function saveSession(auth: AuthResponse): void {
         ra:    auth.ra,
         email: auth.email,
         role:  auth.role,
+        area:  auth.area
     }));
 }
 
