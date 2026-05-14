@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { Search, CheckCircle, AlertCircle, Activity, Plus, ScanEye, Flag, User } from 'lucide-react';
+import { CheckCircle, AlertCircle, Activity, Plus, Flag } from 'lucide-react';
 
 import styles from './tasks.module.scss';
 import { Task, TaskFilter } from '@/types/Task';
