@@ -1,0 +1,153 @@
+header.header {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1rem;
+    
+    height: 12rem;
+
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: var(--color-pallete-blue-light);
+    border-bottom: 2px solid var(--color-input-border, #e2e8f0);
+    padding: 0 4rem;
+
+    div.headerTop {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 4rem;
+
+        height: 4rem;
+
+        div.headerBranding {
+            img {
+                height: 4.4rem;
+            }
+        }
+
+        div.headerSearch {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 1rem;
+
+            height: 100%;
+            padding-left: 1rem;
+            
+            border-radius: 1rem;
+            border: 2px solid var(--color-input-border, #e2e8f0);
+            background-color: white;
+
+            svg {
+                width: 1.8rem;
+                height: 1.8rem;
+                color: var(--color-input-placeholder, #94a3b8);
+                background-color: white;
+                pointer-events: none;
+            }
+
+            input {
+                width: 100%;
+                height: 100%;
+                padding: 0 2rem;
+                color: var(--color-pallete-blue-dark);
+                background-color: white;
+                border-radius: 0 1rem 1rem 0;
+                font-size: 1.4rem;
+                transition: 0.2s ease;
+
+                &::placeholder {
+                    color: var(--color-input-placeholder);
+                }
+            }
+        }
+
+        div.headerActions {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 1rem;
+
+            button {
+                width: 4rem;
+                height: 4rem;
+                background-color: var(--color-pallete-blue-light);
+                border: 3px solid var(--color-pallete-blue-light);
+                border-radius: 1.2rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                transition: .2s ease;
+                
+                svg {
+                    color: var(--color-pallete-blue-dark);
+                    width: 2rem;
+                    height: 2rem;
+                }
+                
+                &:hover {
+                    background-color: var(--color-pallete-blue-dark);
+
+                    svg {
+                        color: var(--color-pallete-blue-light);
+                    }
+                }
+            }
+        }
+    }
+
+    div.filters {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 1rem;
+        overflow-x: auto;
+        scrollbar-width: none;
+
+        &::-webkit-scrollbar {
+            display: none;
+        }
+
+        button.chip {
+            display: flex;
+            align-items: center;
+            gap: .8rem;
+
+            height: 3.2rem;
+            padding: 0 1.6rem;
+            border-radius: 10rem;
+            font-size: 1.4rem;
+            font-weight: 600;
+            background-color: white;
+            color: var(--color-label);
+            border: 2px solid var(--color-input-border, #e2e8f0);
+            cursor: pointer;
+            transition: 0.15s ease;
+
+            svg {
+                width: 1.6rem;
+                height: 1.6rem;
+            }
+
+            &:hover {
+                border-color: var(--color-input-border-hover, #cbd5e1);
+                background-color: var(--color-bg-surface, #f4f5f7);
+            }
+
+            &.active {
+                border-color: transparent;
+                color: white;
+
+                &.all        { background-color: var(--color-pallete-blue-dark); }
+                &.notStarted { background-color: var(--color-task-not-started); }
+                &.inProgress { background-color: var(--color-task-in-progress); }
+                &.inRevision { background-color: var(--color-task-in-revision); }
+                &.done       { background-color: var(--color-task-done); }
+            }
+        }
+    }
+}

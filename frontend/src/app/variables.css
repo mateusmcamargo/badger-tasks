@@ -24,7 +24,15 @@
     --color-task-in-revision-light: #ffddf2;
     --color-task-done-light: #dbffdf;
 
-    --color-badge-blue: #1d1d37;
-    --color-badge-blue-background: #e4e4ff;
+    --color-area-aero:        #0ea5e9;
+    --color-area-aero-bg:     #e0f2fe;
+    --color-area-dynamics:    #8b5cf6;
+    --color-area-dynamics-bg: #ede9fe;
+    --color-area-telemetry:   #f59e0b;
+    --color-area-telemetry-bg:#fef3c7;
+    --color-area-marketing:   #ec4899;
+    --color-area-marketing-bg:#fce7f3;
+    --color-area-structure:   #10b981;
+    --color-area-structure-bg:#d1fae5;
 
 }
