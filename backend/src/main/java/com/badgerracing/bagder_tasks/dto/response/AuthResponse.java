@@ -7,5 +7,5 @@ public record AuthResponse(
     String ra,
     String name,
     String role,
-    String areaName
+    String area
 ) {}
