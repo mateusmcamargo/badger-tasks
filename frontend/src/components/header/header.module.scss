@@ -100,53 +100,129 @@ header.header {
         }
     }
 
-    div.filters {
+    div.headerBottom {
         display: flex;
         align-items: center;
-        justify-content: flex-start;
-        gap: 1rem;
-        overflow-x: auto;
-        scrollbar-width: none;
+        justify-content: space-between;
 
-        &::-webkit-scrollbar {
-            display: none;
-        }
-
-        button.chip {
+        div.headerFilters {
             display: flex;
             align-items: center;
-            gap: .8rem;
+            justify-content: flex-start;
+            gap: 1rem;
+            overflow-x: auto;
+            scrollbar-width: none;
+    
+            &::-webkit-scrollbar {
+                display: none;
+            }
+    
+            button.chip {
+                display: flex;
+                align-items: center;
+                gap: .8rem;
+    
+                height: 3.2rem;
+                padding: 0 1.6rem;
+                border-radius: 10rem;
+                font-size: 1.4rem;
+                font-weight: 600;
+                background-color: white;
+                color: var(--color-label);
+                border: 2px solid var(--color-input-border, #e2e8f0);
+                cursor: pointer;
+                transition: 0.15s ease;
+    
+                svg {
+                    width: 1.6rem;
+                    height: 1.6rem;
+                }
+    
+                &:hover {
+                    border-color: var(--color-input-border-hover, #cbd5e1);
+                    background-color: var(--color-bg-surface, #f4f5f7);
+                }
+    
+                &.active {
+                    border-color: transparent;
+                    color: white;
+    
+                    &.all        { background-color: var(--color-pallete-blue-dark); }
+                    &.notStarted { background-color: var(--color-task-not-started); }
+                    &.inProgress { background-color: var(--color-task-in-progress); }
+                    &.inRevision { background-color: var(--color-task-in-revision); }
+                    &.done       { background-color: var(--color-task-done); }
+                }
+            }
+        }
 
-            height: 3.2rem;
-            padding: 0 1.6rem;
-            border-radius: 10rem;
-            font-size: 1.4rem;
-            font-weight: 600;
-            background-color: white;
-            color: var(--color-label);
-            border: 2px solid var(--color-input-border, #e2e8f0);
-            cursor: pointer;
-            transition: 0.15s ease;
+        div.headerUser {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 1rem;
 
-            svg {
-                width: 1.6rem;
-                height: 1.6rem;
+            p {
+                font-size: 1.2rem;
+                font-weight: 600;
+                padding: 2px 8px;
             }
 
-            &:hover {
-                border-color: var(--color-input-border-hover, #cbd5e1);
-                background-color: var(--color-bg-surface, #f4f5f7);
+            p.areaBadge {
+                border: 2px solid var(--color-pallete-blue-dark);
+                border-radius: 1rem;
+
+                &.areaAero {
+                    color: var(--color-area-aero);
+                    background: var(--color-area-aero-bg);
+                    border-color: var(--color-area-aero);
+                }
+                &.areaDynamics {
+                    color: var(--color-area-dynamics);
+                    background: var(--color-area-dynamics-bg);
+                    border-color: var(--color-area-dynamics);
+                }
+                &.areaTelemetry {
+                    color: var(--color-area-telemetry);
+                    background: var(--color-area-telemetry-bg);
+                    border-color: var(--color-area-telemetry);
+                }
+                &.areaMarketing {
+                    color: var(--color-area-marketing);
+                    background: var(--color-area-marketing-bg);
+                    border-color: var(--color-area-marketing);
+                }
+                &.areaStructure {
+                    color: var(--color-area-structure);
+                    background: var(--color-area-structure-bg);
+                    border-color: var(--color-area-structure);
+                }
             }
 
-            &.active {
-                border-color: transparent;
-                color: white;
+            p.roleBadge {
+                border: 2px solid var(--color-pallete-blue-dark);
+                border-radius: 1rem;
 
-                &.all        { background-color: var(--color-pallete-blue-dark); }
-                &.notStarted { background-color: var(--color-task-not-started); }
-                &.inProgress { background-color: var(--color-task-in-progress); }
-                &.inRevision { background-color: var(--color-task-in-revision); }
-                &.done       { background-color: var(--color-task-done); }
+                &.roleCaptain {
+                    color: var(--color-area-aero);
+                    background: var(--color-area-aero-bg);
+                    border-color: var(--color-area-aero);
+                }
+                &.roleLeader {
+                    color: var(--color-area-structure);
+                    background: var(--color-area-structure-bg);
+                    border-color: var(--color-area-structure);
+                }
+                &.roleManager {
+                    color: var(--color-area-dynamics);
+                    background: var(--color-area-dynamics-bg);
+                    border-color: var(--color-area-dynamics);
+                }
+                &.roleMember {
+                    color: var(--color-area-telemetry);
+                    background: var(--color-area-telemetry-bg);
+                    border-color: var(--color-area-telemetry);
+                }
             }
         }
     }

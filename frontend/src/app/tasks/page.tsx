@@ -7,7 +7,7 @@ import styles from './tasks.module.scss';
 import { Task, TaskFilter } from '@/types/Task';
 import { assignMember, getTasks } from '@/services/taskService';
 import { TaskCard } from '@/components/tasks/TaskCard';
-import { statusClass, statusLabel, areaLabel, areaClass } from '@/utils/taskHelpers';
+import { statusClass, statusLabel, areaLabel, areaClass, roleClass, roleLabel } from '@/utils/taskHelpers';
 import { Header } from '@/components/header/Header';
 import { getSession, hasAdminAccess, UserSession } from '@/utils/auth';
 import { Loading } from '@/components/loading/Loading';
@@ -88,6 +88,11 @@ export default function TasksPage() {
                 statusFilter={statusFilter}
                 counts={counts}
                 isAdmin={isAdmin}
+                currentUser={currentUser}
+                areaClass={areaClass}
+                areaLabel={areaLabel}
+                roleClass={roleClass}
+                roleLabel={roleLabel}
                 onStatusFilter={handleStatusFilter}
             />
 

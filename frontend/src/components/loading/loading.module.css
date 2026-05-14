@@ -11,11 +11,14 @@ div.loading.horizontal {
   align-items: center;
   justify-content: flex-start;
 }
+div.loading.spinner p {
+  display: none;
+}
 div.loading div.spinner {
   border-color: var(--color-input-border);
   border-top-color: var(--color-pallete-blue-dark);
   border-radius: 50%;
-  animation: spin 0.7s linear infinite;
+  animation: spin 0.5s linear infinite;
 }
 div.loading p {
   color: var(--color-label, #64748b);
@@ -53,9 +56,9 @@ div.loading.small {
   padding: 8rem 0;
 }
 div.loading.small div.spinner {
-  width: 2.4rem;
-  height: 2.4rem;
-  border-width: 4px;
+  width: 1.8rem;
+  height: 1.8rem;
+  border-width: 3px;
   border-style: solid;
 }
 div.loading.small p {

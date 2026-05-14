@@ -41,3 +41,23 @@ export function areaClass(area: string): string {
     };
     return classes[area] ?? '';
 }
+
+export function roleLabel(role: string): string {
+    const labels: Record<string, string> = {
+        CAPTAIN: 'Capitão',
+        MANAGER: 'Gestor',
+        LEADER:  'Líder',
+        MEMBER:  'Membro',
+    };
+    return labels[role] ?? role;
+}
+
+export function roleClass(role: string): string {
+    const classes: Record<string, string> = {
+        CAPTAIN: 'roleCaptain',
+        MANAGER: 'roleManager',
+        LEADER:  'roleLeader',
+        MEMBER:  'roleMember',
+    };
+    return classes[role] ?? '';
+}
