@@ -12,6 +12,9 @@ export default function TasksPage() {
     const [statusFilter,    setStatusFilter]    = useState<string>('ALL');
     const [loading,         setLoading]         = useState<boolean>(true);
     const [error,           setError]           = useState<string | null>(null);
+    const [currentUserId]                       = useState<string | null>(() =>
+        typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('user') ?? 'null')?.id : null
+    );
 
     const loadTasks = useCallback(async (filter: TaskFilter = {}) => {
         
@@ -34,10 +37,6 @@ export default function TasksPage() {
 
     const handleStatusFilter = (status: string) => {
         setStatusFilter(status);
-        const filter: TaskFilter = status === 'ALL' ? {} : {
-            status: status as Task['status']
-        };
-        loadTasks(filter);
     };
 
     const handleAssignTask = async (taskId: string) => {
@@ -53,13 +52,23 @@ export default function TasksPage() {
             const filter: TaskFilter = statusFilter === 'ALL' ? {}: {
                 status: statusFilter as Task['status']
             };
-            await loadTasks(filter);
+            await loadTasks(filter);    
         } catch (err) {
             alert(err instanceof Error ? err.message : 'Erro ao assumir tarefa.');
         }
     };
 
-    const filteredTasks = tasks;
+    const filteredTasks = statusFilter === 'ALL'
+        ? tasks
+        : tasks.filter(t => t.status === statusFilter);
+
+    const counts = {
+        ALL:         tasks.length,
+        NOT_STARTED: tasks.filter(t => t.status === 'NOT_STARTED').length,
+        IN_PROGRESS: tasks.filter(t => t.status === 'IN_PROGRESS').length,
+        IN_REVISION: tasks.filter(t => t.status === 'IN_REVISION').length,
+        DONE:        tasks.filter(t => t.status === 'DONE').length,
+    };
 
     function statusLabel(status: Task['status']) {
         if (status === 'DONE')        return 'Concluída';
@@ -75,13 +84,27 @@ export default function TasksPage() {
         return styles.notStarted;
     }
 
-        const counts = {
-        ALL:         tasks.length,
-        NOT_STARTED: tasks.filter(t => t.status === 'NOT_STARTED').length,
-        IN_PROGRESS: tasks.filter(t => t.status === 'IN_PROGRESS').length,
-        IN_REVISION: tasks.filter(t => t.status === 'IN_REVISION').length,
-        DONE:        tasks.filter(t => t.status === 'DONE').length,
-    };
+    function areaLabel(area: string) {
+        const labels: Record<string, string> = {
+            AERODYNAMICS: 'Aerodinâmica',
+            DYNAMICS:     'Dinâmica',
+            TELEMETRY:    'Telemetria',
+            MARKETING:    'Marketing',
+            STRUCTURE:    'Estruturas',
+        };
+        return labels[area] ?? area;
+    }
+
+    function areaClass(area: string) {
+        const classes: Record<string, string> = {
+            AERODYNAMICS: styles.areaAero,
+            DYNAMICS:     styles.areaDynamics,
+            TELEMETRY:    styles.areaTelemetry,
+            MARKETING:    styles.areaMarketing,
+            STRUCTURE:    styles.areaStructure,
+        };
+        return classes[area] ?? '';
+    }
 
     const columnIcon: Record<Task['status'], React.ReactNode> = {
         NOT_STARTED: <AlertCircle strokeWidth={3}/>,
@@ -96,9 +119,10 @@ export default function TasksPage() {
         statusClass:  (s: Task['status']) => string;
         handleAssignTask: (id: string) => void;
         viewMode?: 'column' | 'grid';
+        currentUserId: string | null;
     }
 
-    function TaskCard({ task, statusLabel, statusClass, handleAssignTask, viewMode}: TaskCardProps) {
+    function TaskCard({ task, statusLabel, statusClass, handleAssignTask, currentUserId, viewMode}: TaskCardProps) {
         return (
             <div className={styles.task}>
                 <div className={styles.taskHeader}>
@@ -130,7 +154,7 @@ export default function TasksPage() {
                     </div>
 
                     <div className={styles.taskBadges}>
-                        <p className={styles.taskBadge}>{task.area.name}</p>
+                        <p className={`${styles.taskBadge} ${areaClass(task.area.name)}`}>{areaLabel(task.area.name)}</p>
                         <p className={styles.taskBadge}>{task.category.name}</p>
                     </div>
                         
@@ -185,7 +209,7 @@ export default function TasksPage() {
                     <span className={styles.taskDateLimit}>
                         Prazo: {task.dateLimit ? new Date(task.dateLimit).toLocaleDateString('pt-BR') : 'Sem prazo estipulado'}
                     </span>
-                    {task.status !== 'DONE' && (
+                    {task.status !== 'DONE' && !task.assignedTo.some(u => u.id === currentUserId) && (
                         <button
                             onClick={() => handleAssignTask(task.id)}
                             className={styles.taskAssignButton}
@@ -229,35 +253,35 @@ export default function TasksPage() {
                     ) : (
                         <>
                         <button
-                            onClick={() => setStatusFilter('ALL')}
+                            onClick={() => handleStatusFilter('ALL')}
                             className={`${styles.chip} ${styles.all} ${statusFilter === 'ALL' ? styles.active : ''}`}
                         >
                             <ScanEye strokeWidth={3}/>
                             Todas ({counts.ALL})
                         </button>
                         <button
-                            onClick={() => setStatusFilter('NOT_STARTED')}
+                            onClick={() => handleStatusFilter('NOT_STARTED')}
                             className={`${styles.chip} ${styles.notStarted} ${statusFilter === 'NOT_STARTED' ? styles.active : ''}`}
                         >
                             <AlertCircle strokeWidth={3}/>
                             Pendentes ({counts.NOT_STARTED})
                         </button>
                         <button
-                            onClick={() => setStatusFilter('IN_PROGRESS')}
+                            onClick={() => handleStatusFilter('IN_PROGRESS')}
                             className={`${styles.chip} ${styles.inProgress} ${statusFilter === 'IN_PROGRESS' ? styles.active : ''}`}
                         >
                             <Activity strokeWidth={3}/>
                             Em Progresso ({counts.IN_PROGRESS})
                         </button>
                         <button
-                            onClick={() => setStatusFilter('IN_REVISION')}
+                            onClick={() => handleStatusFilter('IN_REVISION')}
                             className={`${styles.chip} ${styles.inRevision} ${statusFilter === 'IN_REVISION' ? styles.active : ''}`}
                         >
                             <Flag strokeWidth={3}/>
                             Em revisão ({counts.IN_REVISION})
                         </button>
                         <button
-                            onClick={() => setStatusFilter('DONE')}
+                            onClick={() => handleStatusFilter('DONE')}
                             className={`${styles.chip} ${styles.done} ${statusFilter === 'DONE' ? styles.active : ''}`}
                         >
                             <CheckCircle strokeWidth={3}/>
@@ -301,6 +325,7 @@ export default function TasksPage() {
                                                     statusLabel={statusLabel}
                                                     statusClass={statusClass}
                                                     handleAssignTask={handleAssignTask}
+                                                    currentUserId={currentUserId}
                                                     viewMode={'column'}
                                                 />
                                             ))
@@ -321,6 +346,7 @@ export default function TasksPage() {
                                 statusLabel={statusLabel}
                                 statusClass={statusClass}
                                 handleAssignTask={handleAssignTask}
+                                currentUserId={currentUserId}
                                 viewMode='grid'
                             />
                         ))
