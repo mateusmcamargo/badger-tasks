@@ -50,18 +50,12 @@ export default function TasksPage() {
 
     const handleAssignTask = async (taskId: string) => {
         try {
-            const raw = typeof window !== 'undefined' ? localStorage.getItem('user') : null;
-            const user = raw ? JSON.parse(raw) : null;
-            if (!user?.id) {
+            if (!currentUserId) {
                 alert('Usuário não identificado. Faça login novamente.');
                 return;
             }
-            await assignMember(taskId, user.id);
-            
-            const filter: TaskFilter = statusFilter === 'ALL' ? {}: {
-                status: statusFilter as Task['status']
-            };
-            await loadTasks(filter);    
+            await assignMember(taskId, currentUserId);
+            await loadTasks();    
         } catch (err) {
             console.error('Erro ao assumir tarefa.');
         }
