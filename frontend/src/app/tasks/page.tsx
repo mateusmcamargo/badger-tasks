@@ -10,6 +10,7 @@ import { TaskCard } from '@/components/tasks/TaskCard';
 import { statusClass, statusLabel, areaLabel, areaClass } from '@/utils/taskHelpers';
 import { Header } from '@/components/header/Header';
 import { hasAdminAccess } from '@/utils/auth';
+import { Loading } from '@/components/loading/Loading';
 
 export default function TasksPage() {
     const [tasks,           setTasks]           = useState<Task[]>([]);
@@ -97,10 +98,11 @@ export default function TasksPage() {
             />
 
             {loading ? (
-                <div className={styles.loading}>
-                    <div className={styles.spinner} />
-                    <p>Carregando tarefas...</p>
-                </div>
+                <Loading
+                    size='BIG'
+                    type='VERTICAL'
+                    content='tarefas'
+                />
             ) : error ? (
                 <div className={styles.empty}>
                     <p>{error}</p>

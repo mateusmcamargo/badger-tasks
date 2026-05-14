@@ -1,5 +1,6 @@
 import { Activity, AlertCircle, CheckCircle, Flag, ScanEye, Search, ShieldCog, User } from 'lucide-react';
 import styles from './header.module.scss';
+import { Loading } from '../loading/Loading';
 
 type Counts = {
     ALL:         number;
@@ -55,10 +56,11 @@ export function Header({
 
             <div className={styles.filters}>
                 {loading ? (
-                    <div className={styles.loadingFilters}>
-                        <div className={styles.spinner}/>
-                        <p>Carregando filtros...</p>
-                    </div>
+                    <Loading
+                        content='filtros'
+                        size='SMALL'
+                        type='HORIZONTAL'
+                    />
                 ) : (
                     <>
                     <button
