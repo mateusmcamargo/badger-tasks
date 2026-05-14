@@ -1,11 +1,12 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { Search, CheckCircle, UserPlus, AlertCircle, Activity, Plus, ScanEye, Flag, BookmarkCheck, ListTodo, ListChecks, Grip, ListX, ClockCheck, User, UserCheck } from 'lucide-react';
+import { Search, CheckCircle, AlertCircle, Activity, Plus, ScanEye, Flag, User } from 'lucide-react';
 
 import styles from './tasks.module.scss';
 import { Task, TaskFilter } from '@/types/Task';
 import { assignMember, getTasks } from '@/services/taskService';
+import { TaskCard } from '@/components/tasks/TaskCard';
 
 export default function TasksPage() {
     const [tasks,           setTasks]           = useState<Task[]>([]);
@@ -17,7 +18,6 @@ export default function TasksPage() {
     );
 
     const loadTasks = useCallback(async (filter: TaskFilter = {}) => {
-        
         setLoading(true);
         setError(null);
 
@@ -70,20 +70,6 @@ export default function TasksPage() {
         DONE:        tasks.filter(t => t.status === 'DONE').length,
     };
 
-    function statusLabel(status: Task['status']) {
-        if (status === 'DONE')        return 'Concluída';
-        if (status === 'IN_PROGRESS') return 'Em Progresso';
-        if (status === 'IN_REVISION') return 'Em Revisão';
-        return 'Pendente';
-    }
-
-    function statusClass(status: Task['status']) {
-        if (status === 'DONE')        return styles.done;
-        if (status === 'IN_PROGRESS') return styles.inProgress;
-        if (status === 'IN_REVISION') return styles.inRevision;
-        return styles.notStarted;
-    }
-
     function areaLabel(area: string) {
         const labels: Record<string, string> = {
             AERODYNAMICS: 'Aerodinâmica',
@@ -97,13 +83,33 @@ export default function TasksPage() {
 
     function areaClass(area: string) {
         const classes: Record<string, string> = {
-            AERODYNAMICS: styles.areaAero,
-            DYNAMICS:     styles.areaDynamics,
-            TELEMETRY:    styles.areaTelemetry,
-            MARKETING:    styles.areaMarketing,
-            STRUCTURE:    styles.areaStructure,
+            AERODYNAMICS: 'areaAero',
+            DYNAMICS:     'areaDynamics',
+            TELEMETRY:    'areaTelemetry',
+            MARKETING:    'areaMarketing',
+            STRUCTURE:    'areaStructure',
         };
         return classes[area] ?? '';
+    }
+
+    function statusLabel(status: Task['status']) {
+        const labels: Record<string, string> = {
+            NOT_STARTED: 'Pendente',
+            IN_PROGRESS: 'Em Progresso',
+            IN_REVISION: 'Em Revisão',
+            DONE:        'Concluída',
+        };
+        return labels[status] ?? '';
+    }
+
+    function statusClass(status: Task['status']) {
+        const classes: Record<string, string> = {
+            NOT_STARTED: 'notStarted',
+            IN_PROGRESS: 'inProgress',
+            IN_REVISION: 'inRevision',
+            DONE:        'done',
+        };
+        return classes[status] ?? '';
     }
 
     const columnIcon: Record<Task['status'], React.ReactNode> = {
@@ -112,125 +118,6 @@ export default function TasksPage() {
         IN_REVISION: <Flag strokeWidth={3}/>,
         DONE:        <CheckCircle strokeWidth={3}/>,
     };
-
-    type TaskCardProps = {
-        task: Task;
-        statusLabel: (s: Task['status']) => string;
-        statusClass:  (s: Task['status']) => string;
-        handleAssignTask: (id: string) => void;
-        viewMode?: 'column' | 'grid';
-        currentUserId: string | null;
-    }
-
-    function TaskCard({ task, statusLabel, statusClass, handleAssignTask, currentUserId, viewMode}: TaskCardProps) {
-        return (
-            <div className={styles.task}>
-                <div className={styles.taskHeader}>
-                    <div>
-                        {viewMode === 'grid' && (
-                            <span className={`${styles.statusBadge} ${statusClass(task.status)}`}>
-                            {statusLabel(task.status)}
-                        </span>
-                        )}
-                        {task.active && (
-                            <span className={styles.activeBadge}>
-                                <BookmarkCheck/>
-                                Ativa
-                            </span>
-                        )}
-                    </div>
-                    
-                    {viewMode === 'column' &&
-                    <div className={styles.actions}>
-                        <Grip/>
-                    </div>
-                    }
-                </div>
-
-                <div className={styles.taskMain}>
-                    <div className={styles.taskInfo}>
-                        <h3>{task.name}</h3>
-                        <p>{task.description}</p>
-                    </div>
-
-                    <div className={styles.taskBadges}>
-                        <p className={`${styles.taskBadge} ${areaClass(task.area.name)}`}>{areaLabel(task.area.name)}</p>
-                        <p className={styles.taskBadge}>{task.category.name}</p>
-                    </div>
-                        
-                    <div className={styles.taskSteps}>
-                        {task.status === 'DONE' ? (
-                            <p className={styles.taskStepsCounter}>
-                                <ListChecks strokeWidth={3}/>
-                                {`Todos os passos concluídos`}
-                            </p>
-                        ) : task.status === 'IN_REVISION' ? (
-                            <p className={styles.taskStepsCounter}>
-                                <ClockCheck strokeWidth={3}/>
-                                {`Em Revisão`}
-                            </p>
-                        ) : (
-                            task.steps.filter(step => step.done).length > 0 ? (
-                                <p className={styles.taskStepsCounter}>
-                                    <ListTodo strokeWidth={3}/>
-                                    {`${task.steps.filter(step => step.done).length} de ${task.steps.length} passos concluídos`}
-                                </p>
-                            ) : (
-                                <p className={styles.taskStepsCounter}>
-                                    <ListX strokeWidth={3}/>
-                                    {`Não iniciada`}
-                                </p>
-                            )
-                        )}
-                    </div>
-
-                    <div className={styles.taskUsers}>
-                        {task.assignedTo.length > 0 ? (
-                            task.assignedTo.map(user => (
-                                <div key={user.id} className={styles.userAvatar} title={user.name}>
-                                    {/* {user.photoUrl ? (
-                                        <img
-                                            src={user.photoUrl}
-                                            alt={user.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}
-                                        />
-                                    ) : (
-                                        <span>{user.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}</span>
-                                    )} */}
-                                    <span>{user.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}</span>
-                                </div>
-                            ))
-                        ) : (
-                            <p>Nenhum membro atribuído</p>
-                        )}
-                    </div>
-                </div>
-                
-                <div className={styles.taskFooter}>
-                    <span className={styles.taskDateLimit}>
-                        Prazo: {task.dateLimit ? new Date(task.dateLimit).toLocaleDateString('pt-BR') : 'Sem prazo estipulado'}
-                    </span>
-                    {task.status !== 'DONE' && !task.assignedTo.some(u => u.id === currentUserId) && (
-                        <button
-                            onClick={() => handleAssignTask(task.id)}
-                            className={styles.taskAssignButton}
-                        >
-                            <UserPlus/>
-                            Assumir
-                        </button>
-                    )}
-                    {task.status !== 'DONE' && task.assignedTo.some(u => u.id === currentUserId) && (
-                        <button
-                            className={`${styles.taskAssignButton} ${styles.disabled}`}
-                            disabled={true}
-                        >
-                            <UserCheck/>
-                            Atribuída
-                        </button>
-                    )}
-                </div>
-            </div>
-        );
-    }
 
     return (
         <div className={styles.tasks}>
@@ -317,7 +204,7 @@ export default function TasksPage() {
                         <div className={styles.columns}>
                             {(['NOT_STARTED', 'IN_PROGRESS', 'IN_REVISION', 'DONE'] as Task['status'][]).map(status => (
                                 <div key={status} className={styles.column}>
-                                    <div className={`${styles.columnHeader} ${statusClass(status)}`}>
+                                    <div className={`${styles.columnHeader} ${styles[statusClass(status)]}`}>
                                         {columnIcon[status]}
                                         {statusLabel(status)}
                                     </div>
@@ -332,7 +219,9 @@ export default function TasksPage() {
                                                     key={task.id}
                                                     task={task}
                                                     statusLabel={statusLabel}
+                                                    areaLabel={areaLabel}
                                                     statusClass={statusClass}
+                                                    areaClass={areaClass}
                                                     handleAssignTask={handleAssignTask}
                                                     currentUserId={currentUserId}
                                                     viewMode={'column'}
@@ -353,7 +242,9 @@ export default function TasksPage() {
                                 key={task.id}
                                 task={task}
                                 statusLabel={statusLabel}
+                                areaLabel={areaLabel}
                                 statusClass={statusClass}
+                                areaClass={areaClass}
                                 handleAssignTask={handleAssignTask}
                                 currentUserId={currentUserId}
                                 viewMode='grid'

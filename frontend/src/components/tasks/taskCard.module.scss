@@ -1,0 +1,283 @@
+div.task {
+    display: flex;
+    flex-direction: column;
+    gap: 1.8rem;
+
+    background-color: white;
+    border: 2px solid var(--color-input-border, #e2e8f0);
+    border-radius: 1.2rem;
+    padding: 2rem;
+    transition: 0.2s ease;
+    width: 100%;
+
+    &:hover {
+        border-color: var(--color-input-border-hover);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transform: translateY(-1px);
+    }
+
+    &:active {
+        transform: scale(0.99);
+    }
+
+    div.taskHeader {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        div {
+            display: flex;
+            gap: 1rem;
+
+            &.actions {
+                svg {
+                    width: 2rem;
+                    height: 2rem;
+                    color: var(--color-pallete-blue-dark);
+                }
+            }
+
+            span.statusBadge {
+                display: flex;
+                align-items: center;
+                justify-content: flex-start;
+                gap: .4rem;
+
+                height: 3.2rem;
+                padding-left: 1rem;
+                width: 12rem;
+                font-size: 1.2rem;
+                font-weight: 700;
+                
+                border-radius: .6rem;
+                text-transform: uppercase;
+
+                &.notStarted {
+                    background-color: var(--color-task-not-started-light);
+                    color: var(--color-task-not-started);
+                    border: 2px solid var(--color-task-not-started);
+                }
+                &.inProgress {
+                    background-color: var(--color-task-in-progress-light);
+                    color: var(--color-task-in-progress);
+                    border: 2px solid var(--color-task-in-progress);
+                }
+                &.inRevision {
+                    background-color: var(--color-task-in-revision-light);
+                    color: var(--color-task-in-revision);
+                    border: 2px solid var(--color-task-in-revision);
+                }
+                &.done {
+                    background-color: var(--color-task-done-light);
+                    color: var(--color-task-done);
+                    border: 2px solid var(--color-task-done);
+                }
+            }
+
+            span.activeBadge {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: .4rem;
+
+                height: 3.2rem;
+                width: 6.2rem;
+                font-size: 1.2rem;
+                font-weight: 700;
+                color: var(--color-pallete-blue);
+                background-color: var(--color-pallete-blue-light);
+                border: 2px solid var(--color-pallete-blue);
+                border-radius: .6rem;
+
+                svg {
+                    width: 1.6rem;
+                    height: 1.6rem;
+                }
+            }
+        }
+    }
+
+    div.taskMain {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 1.4rem;
+
+        div {
+            width: 100%;
+        }
+
+        div.taskInfo {
+            display: flex;
+            flex-direction: column;
+            gap: .6rem;
+
+            h3 {
+                font-size: 1.8rem;
+                font-weight: 600;
+                color: var(--color-pallete-blue-dark);
+            }
+
+            p {
+                font-size: 1.4rem;
+                color: var(--color-label, #64748b);
+            }
+        }
+
+        div.taskBadges {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 1rem;
+
+            p.taskBadge {
+                font-size: 1.2rem;
+                padding: 2px 8px;
+                border: 2px solid var(--color-pallete-blue-dark);
+                border-radius: 1rem;
+
+                &.areaAero {
+                    color: var(--color-area-aero);
+                    background: var(--color-area-aero-bg);
+                    border-color: var(--color-area-aero);
+                }
+                &.areaDynamics {
+                    color: var(--color-area-dynamics);
+                    background: var(--color-area-dynamics-bg);
+                    border-color: var(--color-area-dynamics);
+                }
+                &.areaTelemetry {
+                    color: var(--color-area-telemetry);
+                    background: var(--color-area-telemetry-bg);
+                    border-color: var(--color-area-telemetry);
+                }
+                &.areaMarketing {
+                    color: var(--color-area-marketing);
+                    background: var(--color-area-marketing-bg);
+                    border-color: var(--color-area-marketing);
+                }
+                &.areaStructure {
+                    color: var(--color-area-structure);
+                    background: var(--color-area-structure-bg);
+                    border-color: var(--color-area-structure);
+                }
+            }
+        }
+
+        div.taskSteps {
+
+            p.taskStepsCounter {
+                display: flex;
+                align-items: center;
+                justify-content: flex-start;
+                gap: 1rem;
+                
+                width: 100%;
+                
+                color: var(--color-pallete-blue-dark);
+                font-size: 1.4rem;
+                font-weight: 600;
+                
+                svg {
+                    color: var(--color-pallete-orange);
+                    width: 2rem;
+                    height: 2rem;
+                }
+            }
+        }
+
+        div.taskUsers {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 1rem;
+
+            div.userAvatar {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                width: 4rem;
+                height: 4rem;
+                border-radius: 50%;
+                color: var(--color-pallete-blue-dark);
+                background-color: var(--color-pallete-blue-light);
+                border: 3px solid var(--color-pallete-blue-dark);
+
+                img {
+                    width: 100%;
+                    height: 100%;
+                    border-radius: 50%;
+                }
+                
+                span {
+                    font-size: 1.2rem;
+                    font-weight: 600;
+                }
+
+            }
+
+            p {
+                color: var(--color-pallete-blue-dark);
+                font-size: 1.4rem;
+                font-weight: 600;    
+            }
+        }
+    }
+
+    div.taskFooter {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-top: 1.4rem;
+        border-top: 2px solid var(--color-input-border, #e2e8f0);
+
+        span.taskDateLimit {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--color-label, #64748b);
+        }
+
+        button.taskAssignButton {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+
+            width: 12rem;
+            height: 3.2rem;
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--color-pallete-blue-dark);
+            background-color: var(--color-pallete-orange);
+            border-radius: .6rem;
+            cursor: pointer;
+            transition: 0.2s ease;
+
+            svg {
+                width: 1.6rem;
+                height: 1.6rem;
+            }
+
+            &:disabled {
+                border: 2px solid var(--color-pallete-orange);
+                background-color: var(--color-pallete-blue-light);
+                cursor: not-allowed;
+
+                &:hover {
+                    background-color: var(--color-pallete-blue-light);
+                }
+                
+            }
+
+            &:hover {
+                background-color: var(--color-pallete-orange-light);
+            }
+
+            &:active {
+                background-color: var(--color-pallete-orange-dark);
+            }
+        }
+    }
+}
