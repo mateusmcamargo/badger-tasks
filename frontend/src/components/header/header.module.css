@@ -150,60 +150,27 @@ header.header div.headerBottom div.headerUser {
   gap: 1rem;
 }
 header.header div.headerBottom div.headerUser p {
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   font-weight: 600;
   padding: 2px 8px;
 }
-header.header div.headerBottom div.headerUser p.areaBadge {
+header.header div.headerBottom div.headerUser div.userAvatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.8rem;
+  height: 2.8rem;
+  border-radius: 50%;
+  color: var(--color-pallete-blue-dark);
+  background-color: var(--color-pallete-blue-light);
   border: 2px solid var(--color-pallete-blue-dark);
-  border-radius: 1rem;
 }
-header.header div.headerBottom div.headerUser p.areaBadge.areaAero {
-  color: var(--color-area-aero);
-  background: var(--color-area-aero-bg);
-  border-color: var(--color-area-aero);
+header.header div.headerBottom div.headerUser div.userAvatar img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
 }
-header.header div.headerBottom div.headerUser p.areaBadge.areaDynamics {
-  color: var(--color-area-dynamics);
-  background: var(--color-area-dynamics-bg);
-  border-color: var(--color-area-dynamics);
-}
-header.header div.headerBottom div.headerUser p.areaBadge.areaTelemetry {
-  color: var(--color-area-telemetry);
-  background: var(--color-area-telemetry-bg);
-  border-color: var(--color-area-telemetry);
-}
-header.header div.headerBottom div.headerUser p.areaBadge.areaMarketing {
-  color: var(--color-area-marketing);
-  background: var(--color-area-marketing-bg);
-  border-color: var(--color-area-marketing);
-}
-header.header div.headerBottom div.headerUser p.areaBadge.areaStructure {
-  color: var(--color-area-structure);
-  background: var(--color-area-structure-bg);
-  border-color: var(--color-area-structure);
-}
-header.header div.headerBottom div.headerUser p.roleBadge {
-  border: 2px solid var(--color-pallete-blue-dark);
-  border-radius: 1rem;
-}
-header.header div.headerBottom div.headerUser p.roleBadge.roleCaptain {
-  color: var(--color-area-aero);
-  background: var(--color-area-aero-bg);
-  border-color: var(--color-area-aero);
-}
-header.header div.headerBottom div.headerUser p.roleBadge.roleLeader {
-  color: var(--color-area-structure);
-  background: var(--color-area-structure-bg);
-  border-color: var(--color-area-structure);
-}
-header.header div.headerBottom div.headerUser p.roleBadge.roleManager {
-  color: var(--color-area-dynamics);
-  background: var(--color-area-dynamics-bg);
-  border-color: var(--color-area-dynamics);
-}
-header.header div.headerBottom div.headerUser p.roleBadge.roleMember {
-  color: var(--color-area-telemetry);
-  background: var(--color-area-telemetry-bg);
-  border-color: var(--color-area-telemetry);
+header.header div.headerBottom div.headerUser div.userAvatar span {
+  font-size: 1rem;
+  font-weight: 600;
 }/*# sourceMappingURL=header.module.css.map */

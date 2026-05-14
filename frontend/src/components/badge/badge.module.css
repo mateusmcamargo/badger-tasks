@@ -1,0 +1,98 @@
+span.badge {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 2px 8px;
+  border-radius: 1rem;
+  border: 2px solid;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+span.badge svg {
+  width: 1.6rem;
+  height: 1.6rem;
+}
+
+.notStarted {
+  color: var(--color-task-not-started);
+  background: color-mix(in srgb, var(--color-task-not-started) 12%, white);
+  border-color: var(--color-task-not-started);
+}
+
+.inProgress {
+  color: var(--color-task-in-progress);
+  background: color-mix(in srgb, var(--color-task-in-progress) 12%, white);
+  border-color: var(--color-task-in-progress);
+}
+
+.inRevision {
+  color: var(--color-task-in-revision);
+  background: color-mix(in srgb, var(--color-task-in-revision) 12%, white);
+  border-color: var(--color-task-in-revision);
+}
+
+.done {
+  color: var(--color-task-done);
+  background: color-mix(in srgb, var(--color-task-done) 12%, white);
+  border-color: var(--color-task-done);
+}
+
+.areaAero {
+  color: var(--color-area-aero);
+  background: var(--color-area-aero-bg);
+  border-color: var(--color-area-aero);
+}
+
+.areaDynamics {
+  color: var(--color-area-dynamics);
+  background: var(--color-area-dynamics-bg);
+  border-color: var(--color-area-dynamics);
+}
+
+.areaTelemetry {
+  color: var(--color-area-telemetry);
+  background: var(--color-area-telemetry-bg);
+  border-color: var(--color-area-telemetry);
+}
+
+.areaMarketing {
+  color: var(--color-area-marketing);
+  background: var(--color-area-marketing-bg);
+  border-color: var(--color-area-marketing);
+}
+
+.areaStructure {
+  color: var(--color-area-structure);
+  background: var(--color-area-structure-bg);
+  border-color: var(--color-area-structure);
+}
+
+.roleCaptain {
+  color: var(--color-area-aero);
+  background: var(--color-area-aero-bg);
+  border-color: var(--color-area-aero);
+}
+
+.roleLeader {
+  color: var(--color-area-structure);
+  background: var(--color-area-structure-bg);
+  border-color: var(--color-area-structure);
+}
+
+.roleManager {
+  color: var(--color-area-dynamics);
+  background: var(--color-area-dynamics-bg);
+  border-color: var(--color-area-dynamics);
+}
+
+.roleMember {
+  color: var(--color-area-telemetry);
+  background: var(--color-area-telemetry-bg);
+  border-color: var(--color-area-telemetry);
+}
+
+.category {
+  color: var(--color-pallete-blue);
+  background: var(--color-pallete-blue-light);
+  border-color: var(--color-pallete-blue);
+}/*# sourceMappingURL=badge.module.css.map */

@@ -7,7 +7,7 @@ import styles from './tasks.module.scss';
 import { Task, TaskFilter } from '@/types/Task';
 import { assignMember, getTasks } from '@/services/taskService';
 import { TaskCard } from '@/components/tasks/TaskCard';
-import { statusClass, statusLabel, areaLabel, areaClass, roleClass, roleLabel } from '@/utils/taskHelpers';
+import { STATUS_BADGES } from '@/utils/taskHelpers';
 import { Header } from '@/components/header/Header';
 import { getSession, hasAdminAccess, logout, UserSession } from '@/utils/auth';
 import { Loading } from '@/components/loading/Loading';
@@ -89,10 +89,6 @@ export default function TasksPage() {
                 counts={counts}
                 isAdmin={isAdmin}
                 currentUser={currentUser}
-                areaClass={areaClass}
-                areaLabel={areaLabel}
-                roleClass={roleClass}
-                roleLabel={roleLabel}
                 onStatusFilter={handleStatusFilter}
                 onLogout={logout}
             />
@@ -114,9 +110,14 @@ export default function TasksPage() {
                         <div className={styles.columns}>
                             {(['NOT_STARTED', 'IN_PROGRESS', 'IN_REVISION', 'DONE'] as Task['status'][]).map(status => (
                                 <div key={status} className={styles.column}>
-                                    <div className={`${styles.columnHeader} ${styles[statusClass(status)]}`}>
+                                    <div
+                                        className={`
+                                            ${styles.columnHeader}
+                                            ${styles[STATUS_BADGES[status].className]}
+                                        `}
+                                    >
                                         {columnIcon[status]}
-                                        {statusLabel(status)}
+                                        {STATUS_BADGES[status].label}
                                     </div>
                                     <div className={styles.columnTasks}>
                                         {tasks.filter(t => t.status === status).length === 0 ? (
@@ -128,10 +129,6 @@ export default function TasksPage() {
                                                 <TaskCard
                                                     key={task.id}
                                                     task={task}
-                                                    statusLabel={statusLabel}
-                                                    areaLabel={areaLabel}
-                                                    statusClass={statusClass}
-                                                    areaClass={areaClass}
                                                     handleAssignTask={handleAssignTask}
                                                     currentUserId={currentUserId}
                                                     viewMode={'column'}
@@ -151,10 +148,6 @@ export default function TasksPage() {
                             <TaskCard
                                 key={task.id}
                                 task={task}
-                                statusLabel={statusLabel}
-                                areaLabel={areaLabel}
-                                statusClass={statusClass}
-                                areaClass={areaClass}
                                 handleAssignTask={handleAssignTask}
                                 currentUserId={currentUserId}
                                 viewMode='grid'

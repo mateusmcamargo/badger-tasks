@@ -3,13 +3,11 @@ import styles from './taskCard.module.scss';
 
 import { Task } from '@/types/Task';
 import { AreaName } from '@/types/Enums';
+import { Badge } from '../badge/Badge';
+import { AREA_BADGES, STATUS_BADGES } from '@/utils/taskHelpers';
 
 type TaskCardProps = {
     task: Task;
-    statusLabel:        (s: Task['status']) => string;
-    statusClass:        (s: Task['status']) => string;
-    areaLabel:          (s: AreaName) => string;
-    areaClass:          (s: AreaName) => string;
     handleAssignTask:   ( id: string) => void;
     viewMode?: 'column' | 'grid';
     currentUserId: string | null;
@@ -17,10 +15,6 @@ type TaskCardProps = {
 
 export function TaskCard({
     task,
-    statusLabel,
-    areaLabel,
-    statusClass,
-    areaClass,
     handleAssignTask,
     currentUserId, 
     viewMode
@@ -30,9 +24,7 @@ export function TaskCard({
             <div className={styles.taskHeader}>
                 <div>
                     {viewMode === 'grid' && (
-                        <span className={`${styles.statusBadge} ${styles[statusClass(task.status)]}`}>
-                        {statusLabel(task.status)}
-                    </span>
+                        <Badge data={STATUS_BADGES[task.status]}/>
                     )}
                     {task.active && (
                         <span className={styles.activeBadge}>
@@ -56,12 +48,11 @@ export function TaskCard({
                 </div>
 
                 <div className={styles.taskBadges}>
-                    <p className={`${styles.taskBadge} ${styles[areaClass(task.area.name)]}`}>
-                        {areaLabel(task.area.name)}
-                    </p>
-                    <p className={styles.taskBadge}>
-                        {task.category.name}
-                    </p>
+                    <Badge data={AREA_BADGES[task.area.name]}/>
+                    <Badge
+                        label={task.category.name}
+                        variant='category'
+                    />
                 </div>
                     
                 <div className={styles.taskSteps}>

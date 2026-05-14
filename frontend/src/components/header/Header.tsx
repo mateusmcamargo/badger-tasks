@@ -3,6 +3,8 @@ import styles from './header.module.scss';
 import { Loading } from '../loading/Loading';
 import { UserSession } from '@/utils/auth';
 import { AreaName, RoleName } from '@/types/Enums';
+import { AREA_BADGES, ROLE_BADGES } from '@/utils/taskHelpers';
+import { Badge } from '../badge/Badge';
 
 type Counts = {
     ALL:         number;
@@ -18,10 +20,6 @@ type HeaderProps = {
     counts:             Counts;
     isAdmin:            boolean;
     currentUser:        UserSession | null;
-    areaLabel:          (s: AreaName) => string;
-    areaClass:          (s: AreaName) => string;
-    roleLabel:          (s: RoleName) => string;
-    roleClass:          (s: RoleName) => string;
     onStatusFilter:     (status: string) => void;
     onLogout:           () => void;
 }
@@ -32,10 +30,6 @@ export function Header({
     counts,
     isAdmin,
     currentUser,
-    areaLabel,
-    areaClass,
-    roleLabel,
-    roleClass,
     onStatusFilter,
     onLogout
 }: HeaderProps) {
@@ -157,17 +151,24 @@ export function Header({
                 <div className={styles.headerUser}>
                     {currentUser ? (
                     <>
+                        <div className={styles.userAvatar} title={currentUser.name}>
+                            {/* {user.photoUrl ? (
+                                <img
+                                    src={user.photoUrl}
+                                    alt={user.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}
+                                />
+                            ) : (
+                                <span>{user.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}</span>
+                            )} */}
+                            <span>{currentUser.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}</span>
+                        </div>
                         <p>
                             {currentUser.name}
                         </p>
                         {currentUser.role != 'CAPTAIN' &&
-                            <p className={`${styles.areaBadge} ${styles[areaClass(currentUser.area)]}`}>
-                                {areaLabel(currentUser.area)}
-                            </p>
+                            <Badge data={AREA_BADGES[currentUser.area]} />
                         }
-                        <p className={`${styles.roleBadge} ${styles[roleClass(currentUser.role)]}`}>
-                            {roleLabel(currentUser.role)}
-                        </p>
+                            <Badge data={ROLE_BADGES[currentUser.role]} />
                     </>
                     ) : (
                         <Loading
