@@ -9,7 +9,7 @@ import { assignMember, getTasks } from '@/services/taskService';
 import { TaskCard } from '@/components/tasks/TaskCard';
 import { statusClass, statusLabel, areaLabel, areaClass } from '@/utils/taskHelpers';
 import { Header } from '@/components/header/Header';
-import { hasAdminAccess } from '@/utils/auth';
+import { getSession, hasAdminAccess, UserSession } from '@/utils/auth';
 import { Loading } from '@/components/loading/Loading';
 
 export default function TasksPage() {
@@ -18,6 +18,7 @@ export default function TasksPage() {
     const [loading,         setLoading]         = useState<boolean>(true);
     const [error,           setError]           = useState<string | null>(null);
     const [isAdmin,         setIsAdmin]         = useState<boolean>(false);
+    const [currentUser,     setCurrentUser]     = useState<UserSession | null>(null);
     const [currentUserId,   setCurrentUserId]   = useState<string | null>(null);
 
     const loadTasks = useCallback(async (filter: TaskFilter = {}) => {
@@ -36,12 +37,11 @@ export default function TasksPage() {
     
     useEffect(() => {
 
-        const raw = localStorage.getItem('user');
-        const user = raw ? JSON.parse(raw) : null;
-        setCurrentUserId(user?.id ?? null);
-
-        loadTasks();
+        const session = getSession();
+        setCurrentUser(session);
+        setCurrentUserId(session?.id ?? null);
         setIsAdmin(hasAdminAccess());
+        loadTasks();
     }, [loadTasks]);
 
     const handleStatusFilter = (status: string) => {
