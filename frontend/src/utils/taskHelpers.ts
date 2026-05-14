@@ -1,4 +1,8 @@
+import {Crown, ShieldCheck, BriefcaseBusiness, User, LucideIcon} from 'lucide-react';
+
 import { Task } from '@/types/Task';
+import React from 'react';
+import { RoleName } from '@/types/Enums';
 
 export function statusLabel(status: Task['status']): string {
     const labels: Record<string, string> = {
@@ -60,4 +64,15 @@ export function roleClass(role: string): string {
         MEMBER:  'roleMember',
     };
     return classes[role] ?? '';
+}
+
+export function roleIcon(role: RoleName): LucideIcon {
+    const icons: Record<RoleName, LucideIcon> = {
+        CAPTAIN: Crown,
+        MANAGER: BriefcaseBusiness,
+        LEADER: ShieldCheck,
+        MEMBER: User,
+    };
+
+    return icons[role] ?? User;
 }

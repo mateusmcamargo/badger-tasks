@@ -160,9 +160,11 @@ export function Header({
                         <p>
                             {currentUser.name}
                         </p>
-                        <p className={`${styles.areaBadge} ${styles[areaClass(currentUser.area)]}`}>
-                            {areaLabel(currentUser.area)}
-                        </p>
+                        {currentUser.role != 'CAPTAIN' &&
+                            <p className={`${styles.areaBadge} ${styles[areaClass(currentUser.area)]}`}>
+                                {areaLabel(currentUser.area)}
+                            </p>
+                        }
                         <p className={`${styles.roleBadge} ${styles[roleClass(currentUser.role)]}`}>
                             {roleLabel(currentUser.role)}
                         </p>
