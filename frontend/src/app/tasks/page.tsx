@@ -8,6 +8,7 @@ import { Task, TaskFilter } from '@/types/Task';
 import { assignMember, getTasks } from '@/services/taskService';
 import { TaskCard } from '@/components/tasks/TaskCard';
 import { statusClass, statusLabel, areaLabel, areaClass } from '@/utils/taskHelpers';
+import { Header } from '@/components/header/Header';
 
 export default function TasksPage() {
     const [tasks,           setTasks]           = useState<Task[]>([]);
@@ -81,71 +82,12 @@ export default function TasksPage() {
     return (
         <div className={styles.tasks}>
 
-            <header className={styles.header}>
-                <div className={styles.headerTop}>
-                    <div className={styles.headerBranding}>
-                        <img src="/badger-tasks-logo-light.png" alt="Badger Tasks"/>
-                    </div>
-                    <div className={styles.searchWrapper}>
-                        <Search/>
-                        <input
-                            type="text"
-                            placeholder="Buscar tarefas..."
-                            autoComplete="off"
-                        />
-                    </div>
-                    <button className={styles.headerUser}>
-                        <User strokeWidth={3}/>
-                    </button>
-                </div>
-
-                <div className={styles.filters}>
-                    {loading ? (
-                        <div className={styles.loadingFilters}>
-                            <div className={styles.spinner}/>
-                            <p>Carregando filtros...</p>
-                        </div>
-                    ) : (
-                        <>
-                        <button
-                            onClick={() => handleStatusFilter('ALL')}
-                            className={`${styles.chip} ${styles.all} ${statusFilter === 'ALL' ? styles.active : ''}`}
-                        >
-                            <ScanEye strokeWidth={3}/>
-                            Todas ({counts.ALL})
-                        </button>
-                        <button
-                            onClick={() => handleStatusFilter('NOT_STARTED')}
-                            className={`${styles.chip} ${styles.notStarted} ${statusFilter === 'NOT_STARTED' ? styles.active : ''}`}
-                        >
-                            <AlertCircle strokeWidth={3}/>
-                            Pendentes ({counts.NOT_STARTED})
-                        </button>
-                        <button
-                            onClick={() => handleStatusFilter('IN_PROGRESS')}
-                            className={`${styles.chip} ${styles.inProgress} ${statusFilter === 'IN_PROGRESS' ? styles.active : ''}`}
-                        >
-                            <Activity strokeWidth={3}/>
-                            Em Progresso ({counts.IN_PROGRESS})
-                        </button>
-                        <button
-                            onClick={() => handleStatusFilter('IN_REVISION')}
-                            className={`${styles.chip} ${styles.inRevision} ${statusFilter === 'IN_REVISION' ? styles.active : ''}`}
-                        >
-                            <Flag strokeWidth={3}/>
-                            Em revisão ({counts.IN_REVISION})
-                        </button>
-                        <button
-                            onClick={() => handleStatusFilter('DONE')}
-                            className={`${styles.chip} ${styles.done} ${statusFilter === 'DONE' ? styles.active : ''}`}
-                        >
-                            <CheckCircle strokeWidth={3}/>
-                            Concluídas ({counts.DONE})
-                        </button>
-                        </>
-                    )}
-                </div>
-            </header>
+            <Header
+                loading={loading}
+                statusFilter={statusFilter}
+                counts={counts}
+                onStatusFilter={handleStatusFilter}
+            />
 
             {loading ? (
                 <div className={styles.loading}>
