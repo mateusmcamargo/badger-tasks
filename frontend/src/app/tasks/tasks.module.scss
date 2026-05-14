@@ -494,6 +494,17 @@ div.task {
                 height: 1.6rem;
             }
 
+            &:disabled {
+                border: 2px solid var(--color-pallete-orange);
+                background-color: var(--color-pallete-blue-light);
+                cursor: not-allowed;
+
+                &:hover {
+                    background-color: var(--color-pallete-blue-light);
+                }
+                
+            }
+
             &:hover {
                 background-color: var(--color-pallete-orange-light);
             }

@@ -433,6 +433,14 @@ div.task div.taskFooter button.taskAssignButton svg {
   width: 1.6rem;
   height: 1.6rem;
 }
+div.task div.taskFooter button.taskAssignButton:disabled {
+  border: 2px solid var(--color-pallete-orange);
+  background-color: var(--color-pallete-blue-light);
+  cursor: not-allowed;
+}
+div.task div.taskFooter button.taskAssignButton:disabled:hover {
+  background-color: var(--color-pallete-blue-light);
+}
 div.task div.taskFooter button.taskAssignButton:hover {
   background-color: var(--color-pallete-orange-light);
 }

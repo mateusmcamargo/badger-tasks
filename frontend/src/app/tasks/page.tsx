@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { Search, CheckCircle, UserPlus, AlertCircle, Activity, Plus, ScanEye, Flag, BookmarkCheck, ListTodo, ListChecks, Grip, ListX, ClockCheck, User } from 'lucide-react';
+import { Search, CheckCircle, UserPlus, AlertCircle, Activity, Plus, ScanEye, Flag, BookmarkCheck, ListTodo, ListChecks, Grip, ListX, ClockCheck, User, UserCheck } from 'lucide-react';
 
 import styles from './tasks.module.scss';
 import { Task, TaskFilter } from '@/types/Task';
@@ -54,7 +54,7 @@ export default function TasksPage() {
             };
             await loadTasks(filter);    
         } catch (err) {
-            alert(err instanceof Error ? err.message : 'Erro ao assumir tarefa.');
+            console.error('Erro ao assumir tarefa.');
         }
     };
 
@@ -216,6 +216,15 @@ export default function TasksPage() {
                         >
                             <UserPlus/>
                             Assumir
+                        </button>
+                    )}
+                    {task.status !== 'DONE' && task.assignedTo.some(u => u.id === currentUserId) && (
+                        <button
+                            className={`${styles.taskAssignButton} ${styles.disabled}`}
+                            disabled={true}
+                        >
+                            <UserCheck/>
+                            Atribuída
                         </button>
                     )}
                 </div>
