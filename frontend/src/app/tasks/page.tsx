@@ -9,7 +9,7 @@ import { assignMember, getTasks } from '@/services/taskService';
 import { TaskCard } from '@/components/tasks/TaskCard';
 import { statusClass, statusLabel, areaLabel, areaClass, roleClass, roleLabel } from '@/utils/taskHelpers';
 import { Header } from '@/components/header/Header';
-import { getSession, hasAdminAccess, UserSession } from '@/utils/auth';
+import { getSession, hasAdminAccess, logout, UserSession } from '@/utils/auth';
 import { Loading } from '@/components/loading/Loading';
 
 export default function TasksPage() {
@@ -94,6 +94,7 @@ export default function TasksPage() {
                 roleClass={roleClass}
                 roleLabel={roleLabel}
                 onStatusFilter={handleStatusFilter}
+                onLogout={logout}
             />
 
             {loading ? (

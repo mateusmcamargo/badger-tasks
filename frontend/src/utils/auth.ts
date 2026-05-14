@@ -1,3 +1,4 @@
+import { clearSession } from '@/services/authService';
 import { AuthResponse } from '@/types/Auth';
 
 export type UserSession = Omit<AuthResponse, 'token'>;
@@ -19,4 +20,12 @@ export function hasAdminAccess(): boolean {
     return isCaptain() ||
            isManager() ||
            isLeader();
+}
+
+export function logout(): void {
+    clearSession();
+
+    if (typeof window !== 'undefined') {
+        window.location.href = '/login';
+    }
 }

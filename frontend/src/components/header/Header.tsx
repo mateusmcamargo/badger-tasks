@@ -1,4 +1,4 @@
-import { Activity, AlertCircle, CheckCircle, Flag, ScanEye, Search, ShieldCog, User } from 'lucide-react';
+import { Activity, AlertCircle, CheckCircle, Flag, LogOut, ScanEye, Search, ShieldCog, User } from 'lucide-react';
 import styles from './header.module.scss';
 import { Loading } from '../loading/Loading';
 import { UserSession } from '@/utils/auth';
@@ -23,6 +23,7 @@ type HeaderProps = {
     roleLabel:          (s: RoleName) => string;
     roleClass:          (s: RoleName) => string;
     onStatusFilter:     (status: string) => void;
+    onLogout:           () => void;
 }
 
 export function Header({
@@ -35,7 +36,8 @@ export function Header({
     areaClass,
     roleLabel,
     roleClass,
-    onStatusFilter
+    onStatusFilter,
+    onLogout
 }: HeaderProps) {
 
     return (
@@ -54,8 +56,14 @@ export function Header({
                 </div>
 
                 <div className={styles.headerActions}>
-                    <button>
-                        <User strokeWidth={2}/>
+                    {/*
+                        placeholder:
+                        it now only logs out. in the future, it should display
+                        user data.
+                    */}
+                    <button onClick={onLogout}>
+                        {/*<User strokeWidth={2}/>*/}
+                        <LogOut strokeWidth={2}/>
                     </button>
 
                     {isAdmin &&
