@@ -9,15 +9,15 @@ import { assignMember, getTasks } from '@/services/taskService';
 import { TaskCard } from '@/components/tasks/TaskCard';
 import { statusClass, statusLabel, areaLabel, areaClass } from '@/utils/taskHelpers';
 import { Header } from '@/components/header/Header';
+import { hasAdminAccess } from '@/utils/auth';
 
 export default function TasksPage() {
     const [tasks,           setTasks]           = useState<Task[]>([]);
     const [statusFilter,    setStatusFilter]    = useState<string>('ALL');
     const [loading,         setLoading]         = useState<boolean>(true);
     const [error,           setError]           = useState<string | null>(null);
-    const [currentUserId]                       = useState<string | null>(() =>
-        typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('user') ?? 'null')?.id : null
-    );
+    const [isAdmin,         setIsAdmin]         = useState<boolean>(false);
+    const [currentUserId,   setCurrentUserId]   = useState<string | null>(null);
 
     const loadTasks = useCallback(async (filter: TaskFilter = {}) => {
         setLoading(true);
@@ -34,7 +34,13 @@ export default function TasksPage() {
     }, []);
     
     useEffect(() => {
+
+        const raw = localStorage.getItem('user');
+        const user = raw ? JSON.parse(raw) : null;
+        setCurrentUserId(user?.id ?? null);
+
         loadTasks();
+        setIsAdmin(hasAdminAccess());
     }, [loadTasks]);
 
     const handleStatusFilter = (status: string) => {
@@ -86,6 +92,7 @@ export default function TasksPage() {
                 loading={loading}
                 statusFilter={statusFilter}
                 counts={counts}
+                isAdmin={isAdmin}
                 onStatusFilter={handleStatusFilter}
             />
 

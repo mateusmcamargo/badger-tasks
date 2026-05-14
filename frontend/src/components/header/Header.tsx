@@ -13,6 +13,7 @@ type HeaderProps = {
     loading:            boolean;
     statusFilter:       string;
     counts:             Counts;
+    isAdmin:            boolean;
     onStatusFilter:     (status: string) => void;
 }
 
@@ -20,6 +21,7 @@ export function Header({
     loading,
     statusFilter,
     counts,
+    isAdmin,
     onStatusFilter
 }: HeaderProps) {
 
@@ -43,9 +45,11 @@ export function Header({
                         <User strokeWidth={2}/>
                     </button>
 
-                    <button>
-                        <ShieldCog strokeWidth={2}/>
-                    </button>
+                    {isAdmin &&
+                        <button>
+                            <ShieldCog strokeWidth={2}/>
+                        </button>
+                    }
                 </div>
             </div>
 
