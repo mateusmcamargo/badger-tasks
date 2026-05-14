@@ -7,6 +7,7 @@ import styles from './tasks.module.scss';
 import { Task, TaskFilter } from '@/types/Task';
 import { assignMember, getTasks } from '@/services/taskService';
 import { TaskCard } from '@/components/tasks/TaskCard';
+import { statusClass, statusLabel, areaLabel, areaClass } from '@/utils/taskHelpers';
 
 export default function TasksPage() {
     const [tasks,           setTasks]           = useState<Task[]>([]);
@@ -69,48 +70,6 @@ export default function TasksPage() {
         IN_REVISION: tasks.filter(t => t.status === 'IN_REVISION').length,
         DONE:        tasks.filter(t => t.status === 'DONE').length,
     };
-
-    function areaLabel(area: string) {
-        const labels: Record<string, string> = {
-            AERODYNAMICS: 'Aerodinâmica',
-            DYNAMICS:     'Dinâmica',
-            TELEMETRY:    'Telemetria',
-            MARKETING:    'Marketing',
-            STRUCTURE:    'Estruturas',
-        };
-        return labels[area] ?? area;
-    }
-
-    function areaClass(area: string) {
-        const classes: Record<string, string> = {
-            AERODYNAMICS: 'areaAero',
-            DYNAMICS:     'areaDynamics',
-            TELEMETRY:    'areaTelemetry',
-            MARKETING:    'areaMarketing',
-            STRUCTURE:    'areaStructure',
-        };
-        return classes[area] ?? '';
-    }
-
-    function statusLabel(status: Task['status']) {
-        const labels: Record<string, string> = {
-            NOT_STARTED: 'Pendente',
-            IN_PROGRESS: 'Em Progresso',
-            IN_REVISION: 'Em Revisão',
-            DONE:        'Concluída',
-        };
-        return labels[status] ?? '';
-    }
-
-    function statusClass(status: Task['status']) {
-        const classes: Record<string, string> = {
-            NOT_STARTED: 'notStarted',
-            IN_PROGRESS: 'inProgress',
-            IN_REVISION: 'inRevision',
-            DONE:        'done',
-        };
-        return classes[status] ?? '';
-    }
 
     const columnIcon: Record<Task['status'], React.ReactNode> = {
         NOT_STARTED: <AlertCircle strokeWidth={3}/>,
