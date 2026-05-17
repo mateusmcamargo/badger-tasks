@@ -215,11 +215,13 @@ export default function TasksPage() {
                     )}
                 </main>
 
-                <div className={styles.addTask}>
-                    <button aria-label="Nova tarefa">
-                        <Plus strokeWidth={3}/>
-                    </button>
-                </div>
+                {currentUser?.role !== 'MEMBER' &&
+                    <div className={styles.addTask}>
+                        <button aria-label="Nova tarefa">
+                            <Plus strokeWidth={3}/>
+                        </button>
+                    </div>
+                }
                 </>
             )}
         </div>
