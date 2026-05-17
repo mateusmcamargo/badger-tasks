@@ -1,3 +1,5 @@
+![Badger Tasks](/.github/images/badger-tasks-logo-github.png)
+
 # Bager Tasks
 
 Sistema web mobile-first de gestão de tarefas desenvolvido para o projeto de extensão ([Badger Racing](https://www.instagram.com/badger.racing/), anteriormente Fórmula CP), esquipe de Fórmula SAE da UTFPR Câmpus Cornélio Procópio, com objetivo de substituir o Notion, que atingiu seu limite de blocos, por uma solução personalizada com controle hierárquico, rastreabilidade de contribuições e interface adaptada ao ambiente de oficina.
