@@ -64,15 +64,38 @@ export default function TasksPage() {
 
     const filteredTasks = statusFilter === 'ALL'
         ? tasks
-        : tasks.filter(t => t.status === statusFilter);
+        : tasks.filter(task => task.status === statusFilter);
 
-    const counts = {
-        ALL:         tasks.length,
-        NOT_STARTED: tasks.filter(t => t.status === 'NOT_STARTED').length,
-        IN_PROGRESS: tasks.filter(t => t.status === 'IN_PROGRESS').length,
-        IN_REVISION: tasks.filter(t => t.status === 'IN_REVISION').length,
-        DONE:        tasks.filter(t => t.status === 'DONE').length,
-    };
+    let counts;
+    if (currentUser?.role === 'MEMBER') {
+        counts = {
+            ALL:         tasks.length,
+            NOT_STARTED: tasks.filter(
+                task => task.status    === 'NOT_STARTED' &&
+                        task.area.name === currentUser?.area
+            ).length,
+            IN_PROGRESS: tasks.filter(
+                task => task.status    === 'IN_PROGRESS' &&
+                        task.area.name === currentUser?.area
+            ).length,
+            IN_REVISION: tasks.filter(
+                task => task.status    === 'IN_REVISION' &&
+                        task.area.name === currentUser?.area
+            ).length,
+            DONE:        tasks.filter(
+                task => task.status    === 'DONE' &&
+                        task.area.name === currentUser?.area
+            ).length,
+        };
+    } else {
+        counts = {
+            ALL:         tasks.length,
+            NOT_STARTED: tasks.filter(task => task.status === 'NOT_STARTED').length,
+            IN_PROGRESS: tasks.filter(task => task.status === 'IN_PROGRESS').length,
+            IN_REVISION: tasks.filter(task => task.status === 'IN_REVISION').length,
+            DONE:        tasks.filter(task => task.status === 'DONE').length,
+        };
+    }
 
     const columnIcon: Record<Task['status'], React.ReactNode> = {
         NOT_STARTED: <AlertCircle strokeWidth={3}/>,
@@ -126,16 +149,34 @@ export default function TasksPage() {
                                                 <p>Nenhuma tarefa</p>
                                             </div>
                                         ) : (
-                                            tasks.filter(t => t.status === status).map(task => (
-                                                <TaskCard
-                                                    key={task.id}
-                                                    task={task}
-                                                    handleAssignTask={handleAssignTask}
-                                                    handleTakeOnTask={handleTakeOnTask}
-                                                    currentUser={currentUser}
-                                                    viewMode={'column'}
-                                                />
-                                            ))
+                                            <>
+                                            {currentUser?.role === 'MEMBER' ? (
+                                                tasks.filter(
+                                                    task => task.status === status &&
+                                                         task.area.name === currentUser.area
+                                                ).map(task => (
+                                                    <TaskCard
+                                                        key={task.id}
+                                                        task={task}
+                                                        handleAssignTask={handleAssignTask}
+                                                        handleTakeOnTask={handleTakeOnTask}
+                                                        currentUser={currentUser}
+                                                        viewMode={'column'}
+                                                    />
+                                                ))
+                                            ) : (
+                                                tasks.filter(task => task.status === status).map(task => (
+                                                    <TaskCard
+                                                        key={task.id}
+                                                        task={task}
+                                                        handleAssignTask={handleAssignTask}
+                                                        handleTakeOnTask={handleTakeOnTask}
+                                                        currentUser={currentUser}
+                                                        viewMode={'column'}
+                                                    />
+                                                ))
+                                            )}
+                                            </>
                                         )}
                                     </div>
                                 </div>
@@ -146,6 +187,19 @@ export default function TasksPage() {
                             <p>Nenhuma tarefa encontrada.</p>
                         </div>
                     ) : (
+                    <>
+                    {currentUser?.role === 'MEMBER' ? (
+                        filteredTasks.filter(task => task.area.name === currentUser.area).map(task => (
+                            <TaskCard
+                                key={task.id}
+                                task={task}
+                                handleAssignTask={handleAssignTask}
+                                handleTakeOnTask={handleTakeOnTask}
+                                currentUser={currentUser}
+                                viewMode={'column'}
+                            />
+                        ))
+                    ) : (
                         filteredTasks.map(task => (
                             <TaskCard
                                 key={task.id}
@@ -153,9 +207,11 @@ export default function TasksPage() {
                                 handleAssignTask={handleAssignTask}
                                 handleTakeOnTask={handleTakeOnTask}
                                 currentUser={currentUser}
-                                viewMode='grid'
+                                viewMode={'column'}
                             />
                         ))
+                    )}
+                    </>
                     )}
                 </main>
 
