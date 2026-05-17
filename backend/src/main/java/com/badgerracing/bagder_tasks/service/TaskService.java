@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -104,20 +105,44 @@ public class TaskService {
     }
 
     @Transactional
-    @PreAuthorize("hasAnyRole('CAPTAIN', 'MANAGER', 'LEADER')")
-    public TaskMemberResponse assignMember(TaskMemberRequest request) {
+    @PreAuthorize("hasAnyRole('CAPTAIN', 'MANAGER', 'LEADER', 'MEMBER')")
+    public TaskMemberResponse assignMember(TaskMemberRequest request, Authentication auth) {
         Task task = taskRepository.findById(request.taskId())
-            .orElseThrow(() -> new BusinessException("Tarefa não encontrada", HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new BusinessException("Tarefa não encontrada", HttpStatus.NOT_FOUND));
         User user = userRepository.findById(request.userId())
-            .orElseThrow(() -> new BusinessException("Usuário não encontrado", HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new BusinessException("Usuário não encontrado", HttpStatus.NOT_FOUND));
 
+        String roleName = auth.getAuthorities().iterator().next().getAuthority(); // "ROLE_MEMBER" etc.
+        String currentUserEmail = auth.getName();
+        User currentUser = userRepository.findByEmail(currentUserEmail)
+                .orElseThrow(() -> new BusinessException("Usuário autenticado não encontrado", HttpStatus.NOT_FOUND));
+
+        assert roleName != null;
+        boolean isMember  = roleName.equals("ROLE_MEMBER");
+        boolean isLeader  = roleName.equals("ROLE_LEADER");
+        boolean isManager = roleName.equals("ROLE_MANAGER");
+
+        if (isMember) {
+            // for members: can only self assign and must be in their area
+            if (!currentUser.getId().equals(user.getId()))
+                throw new BusinessException("Membros só podem se auto-atribuir", HttpStatus.FORBIDDEN);
+            if (!currentUser.getArea().getId().equals(task.getArea().getId()))
+                throw new BusinessException("Você não pertence à área desta tarefa", HttpStatus.FORBIDDEN);
+        } else if (isLeader || isManager) {
+            // for leaders and managers: can assign members, but only from their own area
+            // cannot assign themselves
+            if (!user.getArea().getId().equals(currentUser.getArea().getId()))
+                throw new BusinessException("Usuário não pertence à sua área", HttpStatus.FORBIDDEN);
+            if (currentUser.getId().equals(user.getId()))
+                throw new BusinessException("Líderes e gestores são vinculados à tarefa diretamente", HttpStatus.FORBIDDEN);
+        }
+        // for captain: no restrictions
         if (taskMemberRepository.existsByTaskIdAndUserId(request.taskId(), request.userId()))
             throw new BusinessException("Usuário já está associado a esta tarefa", HttpStatus.CONFLICT);
 
         TaskMember member = taskMemberRepository.save(
-            TaskMember.builder().task(task).user(user).build()
+                TaskMember.builder().task(task).user(user).build()
         );
-
         return new TaskMemberResponse(member.getId(), task.getId(), toUserResponse(user));
     }
 

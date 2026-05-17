@@ -1,24 +1,32 @@
-import { BookmarkCheck, ClockCheck, Grip, ListChecks, ListTodo, ListX, UserCheck, UserPlus } from 'lucide-react';
+import { BookmarkCheck, ClockCheck, Grip, Handshake, ListChecks, ListTodo, ListX, UserCheck, UserPlus } from 'lucide-react';
 import styles from './taskCard.module.scss';
 
 import { Task } from '@/types/Task';
-import { AreaName } from '@/types/Enums';
 import { Badge } from '../badge/Badge';
 import { AREA_BADGES, STATUS_BADGES } from '@/utils/taskHelpers';
+import { UserSession } from '@/utils/auth';
 
 type TaskCardProps = {
     task: Task;
-    handleAssignTask:   ( id: string) => void;
+    currentUser: UserSession | null;
+    handleTakeOnTask: (id: string) => void;
+    handleAssignTask: ( id: string) => void;
     viewMode?: 'column' | 'grid';
-    currentUserId: string | null;
 }
 
-export function TaskCard({
-    task,
-    handleAssignTask,
-    currentUserId, 
-    viewMode
-}: TaskCardProps) {
+export function TaskCard({task, currentUser, handleTakeOnTask, handleAssignTask, viewMode}: TaskCardProps) {
+
+    const userIsAssigned     = task.assignedTo.some(user => user.id === currentUser?.id);
+    const userIsLinked       = currentUser?.id === task.leader?.id   ||
+                               currentUser?.id === task.manager?.id;
+                    
+    const userIsCaptain      = currentUser?.role === 'CAPTAIN';
+    const userIsMember       = currentUser?.role === 'MEMBER';
+    const userHasSameArea    = currentUser?.area === task.area.name;
+    
+    const userCanSelfAssign  = userIsMember && userHasSameArea && !userIsAssigned;
+    const userCanAssignOther = !userIsMember && (userIsCaptain || userHasSameArea);
+
     return (
         <div className={styles.task}>
             <div className={styles.taskHeader}>
@@ -106,23 +114,35 @@ export function TaskCard({
                 <span className={styles.taskDateLimit}>
                     Prazo: {task.dateLimit ? new Date(task.dateLimit).toLocaleDateString('pt-BR') : 'Sem prazo estipulado'}
                 </span>
-                {task.status !== 'DONE' && !task.assignedTo.some(u => u.id === currentUserId) && (
-                    <button
-                        onClick={() => handleAssignTask(task.id)}
-                        className={styles.taskAssignButton}
-                    >
-                        <UserPlus/>
-                        Assumir
-                    </button>
-                )}
-                {task.status !== 'DONE' && task.assignedTo.some(u => u.id === currentUserId) && (
-                    <button
-                        className={`${styles.taskAssignButton} ${styles.disabled}`}
-                        disabled={true}
-                    >
-                        <UserCheck/>
-                        Atribuída
-                    </button>
+
+                {task.status !== 'DONE' && (
+                    <>
+                        {userIsAssigned ? (
+                            <button
+                                className={`${styles.taskAssignButton} ${styles.disabled}`}
+                                disabled={true}
+                            >
+                                <UserCheck/>
+                                Atribuída
+                            </button>
+                        ) : userCanAssignOther ? (
+                            <button
+                                onClick={() => handleAssignTask(task.id)}
+                                className={styles.taskAssignButton}
+                            >
+                                <UserPlus/>
+                                Atribuír
+                            </button>
+                        ) : userCanSelfAssign ? (
+                            <button
+                                onClick={() => handleTakeOnTask(task.id)}
+                                className={styles.taskAssignButton}
+                            >
+                                <Handshake/>
+                                Assumir
+                            </button>
+                        ) : null}
+                    </>
                 )}
             </div>
         </div>

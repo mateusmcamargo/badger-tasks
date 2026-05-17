@@ -13,13 +13,12 @@ import { getSession, hasAdminAccess, logout, UserSession } from '@/utils/auth';
 import { Loading } from '@/components/loading/Loading';
 
 export default function TasksPage() {
-    const [tasks,           setTasks]           = useState<Task[]>([]);
-    const [statusFilter,    setStatusFilter]    = useState<string>('ALL');
-    const [loading,         setLoading]         = useState<boolean>(true);
-    const [error,           setError]           = useState<string | null>(null);
-    const [isAdmin,         setIsAdmin]         = useState<boolean>(false);
-    const [currentUser,     setCurrentUser]     = useState<UserSession | null>(null);
-    const [currentUserId,   setCurrentUserId]   = useState<string | null>(null);
+    const [tasks,        setTasks]        = useState<Task[]>([]);
+    const [statusFilter, setStatusFilter] = useState<string>('ALL');
+    const [loading,      setLoading]      = useState<boolean>(true);
+    const [error,        setError]        = useState<string | null>(null);
+    const [isAdmin,      setIsAdmin]      = useState<boolean>(false);
+    const [currentUser,  setCurrentUser]  = useState<UserSession | null>(null);
 
     const loadTasks = useCallback(async (filter: TaskFilter = {}) => {
         setLoading(true);
@@ -36,10 +35,8 @@ export default function TasksPage() {
     }, []);
     
     useEffect(() => {
-
         const session = getSession();
         setCurrentUser(session);
-        setCurrentUserId(session?.id ?? null);
         setIsAdmin(hasAdminAccess());
         loadTasks();
     }, [loadTasks]);
@@ -49,12 +46,16 @@ export default function TasksPage() {
     };
 
     const handleAssignTask = async (taskId: string) => {
+        alert('Função de atribuir membros ainda não configurada.');
+    };
+
+    const handleTakeOnTask = async (taskId: string) => {
         try {
-            if (!currentUserId) {
+            if (!currentUser?.id) {
                 alert('Usuário não identificado. Faça login novamente.');
                 return;
             }
-            await assignMember(taskId, currentUserId);
+            await assignMember(taskId, currentUser.id);
             await loadTasks();    
         } catch (err) {
             console.error('Erro ao assumir tarefa.');
@@ -130,7 +131,8 @@ export default function TasksPage() {
                                                     key={task.id}
                                                     task={task}
                                                     handleAssignTask={handleAssignTask}
-                                                    currentUserId={currentUserId}
+                                                    handleTakeOnTask={handleTakeOnTask}
+                                                    currentUser={currentUser}
                                                     viewMode={'column'}
                                                 />
                                             ))
@@ -149,7 +151,8 @@ export default function TasksPage() {
                                 key={task.id}
                                 task={task}
                                 handleAssignTask={handleAssignTask}
-                                currentUserId={currentUserId}
+                                handleTakeOnTask={handleTakeOnTask}
+                                currentUser={currentUser}
                                 viewMode='grid'
                             />
                         ))
