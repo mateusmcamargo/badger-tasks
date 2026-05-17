@@ -22,18 +22,18 @@ Then paste the SQL directly and hit Enter.
 
 # Quick reference for loggin in after seeding users
 
-| Role    | Name           | Email              | Area         | RA      | Password |
-|---------|----------------|--------------------|--------------|---------|----------|
-| Captain | Ana Silva      | ana@badger.com     | —            | 1111111 | 123456   |
-| Manager | Bruno Costa    | bruno@badger.com   | Aerodynamics | 1222222 | 123456   |
-| Manager | Camila Rocha   | camila@badger.com  | Dynamics     | 1333333 | 123456   |
-| Manager | Diego Mendes   | diego@badger.com   | Telemetry    | 1444444 | 123456   |
-| Manager | Elisa Barros   | elisa@badger.com   | Marketing    | 1555555 | 123456   |
-| Manager | Felipe Azevedo | felipe@badger.com  | Structure    | 1666666 | 123456   |
-| Leader  | Gabriela Lima  | gabriela@badger.com| Aerodynamics | 1777777 | 123456   |
-| Leader  | Henrique Pinto | henrique@badger.com| Dynamics     | 1888888 | 123456   |
-| Leader  | Isabela Nunes  | isabela@badger.com | Telemetry    | 1999999 | 123456   |
-| Leader  | Joao Ferreira  | joao@badger.com    | Marketing    | 2111111 | 123456   |
-| Leader  | Karen Souza    | karen@badger.com   | Structure    | 2222222 | 123456   |
+| Role    | Name           | Email               | Area         | RA      | Password |
+|---------|----------------|---------------------|--------------|---------|----------|
+| Captain | Ana Silva      | ana@badger.com      | —            | 1111111 | senha123 |
+| Manager | Bruno Costa    | bruno@badger.com    | Aerodynamics | 1222222 | senha123 |
+| Manager | Camila Rocha   | camila@badger.com   | Dynamics     | 1333333 | senha123 |
+| Manager | Diego Mendes   | diego@badger.com    | Telemetry    | 1444444 | senha123 |
+| Manager | Elisa Barros   | elisa@badger.com    | Marketing    | 1555555 | senha123 |
+| Manager | Felipe Azevedo | felipe@badger.com   | Structure    | 1666666 | senha123 |
+| Leader  | Gabriela Lima  | gabriela@badger.com | Aerodynamics | 1777777 | senha123 |
+| Leader  | Henrique Pinto | henrique@badger.com | Dynamics     | 1888888 | senha123 |
+| Leader  | Isabela Nunes  | isabela@badger.com  | Telemetry    | 1999999 | senha123 |
+| Leader  | Joao Ferreira  | joao@badger.com     | Marketing    | 2111111 | senha123 |
+| Leader  | Karen Souza    | karen@badger.com    | Structure    | 2222222 | senha123 |
 
-> All passwords are '123456'
+> All passwords are `senha123`
