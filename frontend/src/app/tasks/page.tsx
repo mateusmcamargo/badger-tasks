@@ -9,7 +9,7 @@ import { assignMember, getTasks } from '@/services/taskService';
 import { TaskCard } from '@/components/tasks/TaskCard';
 import { STATUS_BADGES } from '@/utils/taskHelpers';
 import { Header } from '@/components/header/Header';
-import { getSession, hasAdminAccess, logout, UserSession } from '@/utils/auth';
+import { getSession, hasAdminAccess, isMember, logout, UserSession } from '@/utils/auth';
 import { Loading } from '@/components/loading/Loading';
 
 export default function TasksPage() {
@@ -67,7 +67,7 @@ export default function TasksPage() {
         : tasks.filter(task => task.status === statusFilter);
 
     let counts;
-    if (currentUser?.role === 'MEMBER') {
+    if (isMember()) {
         counts = {
             ALL:         tasks.length,
             NOT_STARTED: tasks.filter(
@@ -150,10 +150,10 @@ export default function TasksPage() {
                                             </div>
                                         ) : (
                                             <>
-                                            {currentUser?.role === 'MEMBER' ? (
+                                            {isMember() ? (
                                                 tasks.filter(
                                                     task => task.status === status &&
-                                                         task.area.name === currentUser.area
+                                                         task.area.name === currentUser?.area
                                                 ).map(task => (
                                                     <TaskCard
                                                         key={task.id}
@@ -188,8 +188,8 @@ export default function TasksPage() {
                         </div>
                     ) : (
                     <>
-                    {currentUser?.role === 'MEMBER' ? (
-                        filteredTasks.filter(task => task.area.name === currentUser.area).map(task => (
+                    {hasAdminAccess() ? (
+                        filteredTasks.filter(task => task.area.name === currentUser?.area).map(task => (
                             <TaskCard
                                 key={task.id}
                                 task={task}
@@ -215,7 +215,7 @@ export default function TasksPage() {
                     )}
                 </main>
 
-                {currentUser?.role !== 'MEMBER' &&
+                {hasAdminAccess() &&
                     <div className={styles.addTask}>
                         <button aria-label="Nova tarefa">
                             <Plus strokeWidth={3}/>

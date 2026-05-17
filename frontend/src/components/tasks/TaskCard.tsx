@@ -4,7 +4,7 @@ import styles from './taskCard.module.scss';
 import { Task } from '@/types/Task';
 import { Badge } from '../badge/Badge';
 import { AREA_BADGES, STATUS_BADGES } from '@/utils/taskHelpers';
-import { UserSession } from '@/utils/auth';
+import { isCaptain, isMember, UserSession } from '@/utils/auth';
 
 type TaskCardProps = {
     task: Task;
@@ -20,12 +20,10 @@ export function TaskCard({task, currentUser, handleTakeOnTask, handleAssignTask,
     const userIsLinked       = currentUser?.id === task.leader?.id   ||
                                currentUser?.id === task.manager?.id;
                     
-    const userIsCaptain      = currentUser?.role === 'CAPTAIN';
-    const userIsMember       = currentUser?.role === 'MEMBER';
     const userHasSameArea    = currentUser?.area === task.area.name;
     
-    const userCanSelfAssign  = userIsMember && userHasSameArea && !userIsAssigned;
-    const userCanAssignOther = !userIsMember && (userIsCaptain || userHasSameArea);
+    const userCanSelfAssign  = isMember() && userHasSameArea && !userIsAssigned;
+    const userCanAssignOther = !isMember() && (isCaptain() || userHasSameArea);
 
     return (
         <div className={styles.task}>
