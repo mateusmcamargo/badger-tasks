@@ -10,8 +10,9 @@ import com.badgerracing.bagder_tasks.service.TaskService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.*;
+
 import java.util.UUID;
 
 @RestController
@@ -48,8 +49,12 @@ public class TaskController {
     }
 
     @PostMapping("/members")
-    public ResponseEntity<TaskMemberResponse> assignMember(@Valid @RequestBody TaskMemberRequest request) {
-        return ResponseEntity.ok(taskService.assignMember(request));
+    public ResponseEntity<TaskMemberResponse> assignMember(
+            @Valid @RequestBody
+            TaskMemberRequest request,
+            Authentication auth
+    ) {
+        return ResponseEntity.ok(taskService.assignMember(request, auth));
     }
 
     @DeleteMapping("/{taskId}/members/{userId}")

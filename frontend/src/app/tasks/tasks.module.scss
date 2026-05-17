@@ -129,6 +129,8 @@ div.columns {
     div.column {
         display: flex;
         flex-direction: column;
+        gap: 1rem;
+
         height: 100%;
         overflow: hidden;
 
@@ -162,6 +164,8 @@ div.columns {
             padding: 1rem;
             overflow-y: auto;
             flex: 1;
+            border-radius: 1rem;
+            background-color: #eaeaea;
         }
 
         div.columnEmpty {

@@ -1,11 +1,18 @@
+import { clearSession } from '@/services/authService';
 import { AuthResponse } from '@/types/Auth';
+import { getCookie } from '@/utils/cookies';
 
 export type UserSession = Omit<AuthResponse, 'token'>;
 
 export function getSession(): UserSession | null {
-    if (typeof window === 'undefined') {return null;}
-    const  raw = localStorage.getItem('user');
-    return raw ? JSON.parse(raw) : null;
+    const raw = getCookie('user');
+    if (!raw) return null;
+
+    try {
+        return JSON.parse(raw);
+    } catch {
+        return null;
+    }
 }
 
 export function getRole():  string | null {return getSession()?.role ?? null;}
@@ -19,4 +26,12 @@ export function hasAdminAccess(): boolean {
     return isCaptain() ||
            isManager() ||
            isLeader();
+}
+
+export function logout(): void {
+    clearSession();
+
+    if (typeof window !== 'undefined') {
+        window.location.href = '/login';
+    }
 }

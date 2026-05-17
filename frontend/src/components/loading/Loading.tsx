@@ -3,7 +3,7 @@ import styles from './loading.module.scss';
 type LoadingProps = {
     content?: string;
     size: 'BIG' |'MEDIUM' | 'SMALL';
-    type: 'VERTICAL' | 'HORIZONTAL';
+    type: 'VERTICAL' | 'HORIZONTAL'| 'SPINNER';
 }
 
 export function Loading({content, size, type}: LoadingProps) {
@@ -17,6 +17,7 @@ export function Loading({content, size, type}: LoadingProps) {
     const typeClass: Record<LoadingProps['type'], string> = {
         VERTICAL: 'vertical',
         HORIZONTAL: 'horizontal',
+        SPINNER: 'spinner'
     };
 
     return (

@@ -1,8 +1,10 @@
 # Bager Tasks
 
-Sistema web de gestão de tarefas desenvolvido para a equipe Badger Racing, com foco em produtividade, controle hierárquico e acompanhamento de atividades em ambiente universitário.
+Sistema web mobile-first de gestão de tarefas desenvolvido para o projeto de extensão ([Badger Racing](https://www.instagram.com/badger.racing/), anteriormente Fórmula CP), esquipe de Fórmula SAE da UTFPR Câmpus Cornélio Procópio, com objetivo de substituir o Notion, que atingiu seu limite de blocos, por uma solução personalizada com controle hierárquico, rastreabilidade de contribuições e interface adaptada ao ambiente de oficina.
+ 
+Projeto fullstack com frontend em Next.js e backend em Java Spring Boot, banco de dados PostgreSQL e infraestrutura em Docker.
 
-Projeto fullstack com front-end em Next.js e back-end em Java Spring Boot, com banco de dados PostgreSQL.
+---
 
 ## Principais Funcionalidades
 
@@ -11,33 +13,39 @@ Projeto fullstack com front-end em Next.js e back-end em Java Spring Boot, com b
 * Controle de Acesso por Papel: Cada usuário acessa apenas as informações permitidas pelo seu nível hierárquico;
 * Associação Membro-Tarefa: Permite vincular responsáveis a tarefas específicas;
 * Listagem com Filtros: Visualização de tarefas com filtros personalizados;
-* Interface Mobile-First: Sistema projetado para uso com uma mão, mesmo em ambientes como oficina;
+* Interface Mobile-First: Interface responsiva e adaptável;
+* Loop de uso simples: Sistema projetado para uso com uma mão, mesmo em ambientes como oficina;
 * Histórico de Contribuições (futuro): Registro de atividades realizadas por cada membro ao longo do tempo;
 * Dashboard (futuro): Visualização de produtividade e progresso da equipe através de gráficos e relatórios;
+
+---
 
 ## Tecnologias Utilizadas
 
 * Front-end:
   * Next.js (React)
   * TypeScript
-  * TailwindCSS
-
+  * Módulos SCSS
 * Back-end:
   * Java
   * Spring Boot
-
 * Banco de Dados:
   * PostgreSQL
+* Infraestrutura e Versionamento:
+  * Docker e Docker Desktop
+  * Git e Github
+
+---
 
 ## Equipe e Metodologia
 
 > Este projeto segue os princípios do Manifesto Ágil, utilizando Scrum para organização das tarefas e desenvolvimento iterativo por sprints.
 
-* *Mateus de Melo Camargo* **https://github.com/mateusmcamargo**
-* *Gabriel Almeida* **[Link GitHub]**
-* *Heitor Stefani Alves* **[Link GitHub]**
+* [Mateus de Melo Camargo](https://github.com/mateusmcamargo)
+* [Gabriel Almeida](https://github.com)
+* [Heitor Stefani Alves](https://github.com/HeitorStefani)
 
-## Estrutura do Projeto
+<!-- ## Estrutura do Projeto
 
 ```
 task-manager/
@@ -48,7 +56,9 @@ task-manager/
 ├── docker/         # Configurações de container (opcional)
 ├── docker-compose.yml
 └── README.md
-```
+``` -->
+
+---
 
 ## Como Rodar o Sistema
 
@@ -80,19 +90,42 @@ http://localhost:3000
 
 ### Backend (Spring Boot)
 
-1. Acesse a pasta do backend:
+1. Para usar o Docker, abra o aplicativo [Docker Desktop](https://www.docker.com/products/docker-desktop/):
+
+> Certifique-se de que o PostgreSQL está configurado corretamente no application.properties
+
+2. Acesse a pasta do backend:
 
 ```bash
 cd backend
 ```
 
-2. Execute a aplicação:
+3. Inicialize o container:
+
+```bash
+docker compose up -d
+```
+
+3. Verifique se o container inicializou corretamente:
+
+```bash
+docker ps
+```
+
+> Você deverá ver algo assim no console:
+
+```
+CONTAINER ID  IMAGE               COMMAND       CREATED    STATUS    PORTS            NAMES
+f880008f8c05  postgres:16-alpine  "docker-en…"  14 sec...  Up 14...  0.0.0.0:5433...  badger-tasks-db
+```
+
+4. Execute a aplicação:
 
 ```bash
 ./mvnw spring-boot:run
 ```
 
-> Certifique-se de que o PostgreSQL está configurado corretamente no application.properties
+---
 
 ## Requisitos do Sistema
 
@@ -102,6 +135,8 @@ cd backend
 * Persistência segura de dados;
 * Escalabilidade da arquitetura;
 
+---
+
 ## Metodologia de Desenvolvimento
 
 O projeto será desenvolvido em sprints:
@@ -110,6 +145,8 @@ O projeto será desenvolvido em sprints:
 * Sprint 02: CRUD de tarefas + associação membro-tarefa;
 * Sprint 03: Ajustes de UX e interface mobile-first;
 * Sprint 04: Testes, validação e documentação;
+
+---
 
 ## Considerações Finais
 

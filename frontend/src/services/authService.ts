@@ -1,4 +1,5 @@
 import { LoginRequest, AuthResponse } from '@/types/Auth';
+import { getCookie } from '@/utils/cookies';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8080';
 
@@ -18,21 +19,26 @@ export async function login(data: LoginRequest): Promise<AuthResponse> {
 }
 
 export function saveSession(auth: AuthResponse): void {
-    localStorage.setItem('token', auth.token);
-    localStorage.setItem('user', JSON.stringify({
+    const secure = process.env.NODE_ENV === 'production' ? '; Secure' : '';
+    const base   = `path=/; SameSite=Strict${secure}`;
+
+    document.cookie = `token=${auth.token}; ${base}`;
+    document.cookie = `user=${encodeURIComponent(JSON.stringify({
         id:    auth.id,
         name:  auth.name,
         ra:    auth.ra,
         email: auth.email,
         role:  auth.role,
-    }));
+        area:  auth.area,
+    }))}; ${base}`;
 }
 
 export function clearSession(): void {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    const expired = 'path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+    document.cookie = `token=; ${expired}`;
+    document.cookie = `user=; ${expired}`;
 }
 
 export function getToken(): string | null {
-    return localStorage.getItem('token');
+    return getCookie('token');
 }

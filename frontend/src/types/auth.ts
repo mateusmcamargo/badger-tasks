@@ -1,4 +1,4 @@
-import { RoleName } from './Enums';
+import { AreaName, RoleName } from './Enums';
 
 export type LoginRequest = {
     login:      string;
@@ -12,4 +12,5 @@ export type AuthResponse = {
     ra:     string;
     name:   string;
     role:   RoleName;
+    area:   AreaName;
 };

@@ -7,18 +7,18 @@ import styles from './tasks.module.scss';
 import { Task, TaskFilter } from '@/types/Task';
 import { assignMember, getTasks } from '@/services/taskService';
 import { TaskCard } from '@/components/tasks/TaskCard';
-import { statusClass, statusLabel, areaLabel, areaClass } from '@/utils/taskHelpers';
+import { STATUS_BADGES } from '@/utils/taskHelpers';
 import { Header } from '@/components/header/Header';
-import { hasAdminAccess } from '@/utils/auth';
+import { getSession, hasAdminAccess, isMember, logout, UserSession } from '@/utils/auth';
 import { Loading } from '@/components/loading/Loading';
 
 export default function TasksPage() {
-    const [tasks,           setTasks]           = useState<Task[]>([]);
-    const [statusFilter,    setStatusFilter]    = useState<string>('ALL');
-    const [loading,         setLoading]         = useState<boolean>(true);
-    const [error,           setError]           = useState<string | null>(null);
-    const [isAdmin,         setIsAdmin]         = useState<boolean>(false);
-    const [currentUserId,   setCurrentUserId]   = useState<string | null>(null);
+    const [tasks,        setTasks]        = useState<Task[]>([]);
+    const [statusFilter, setStatusFilter] = useState<string>('ALL');
+    const [loading,      setLoading]      = useState<boolean>(true);
+    const [error,        setError]        = useState<string | null>(null);
+    const [isAdmin,      setIsAdmin]      = useState<boolean>(false);
+    const [currentUser,  setCurrentUser]  = useState<UserSession | null>(null);
 
     const loadTasks = useCallback(async (filter: TaskFilter = {}) => {
         setLoading(true);
@@ -35,13 +35,10 @@ export default function TasksPage() {
     }, []);
     
     useEffect(() => {
-
-        const raw = localStorage.getItem('user');
-        const user = raw ? JSON.parse(raw) : null;
-        setCurrentUserId(user?.id ?? null);
-
-        loadTasks();
+        const session = getSession();
+        setCurrentUser(session);
         setIsAdmin(hasAdminAccess());
+        loadTasks();
     }, [loadTasks]);
 
     const handleStatusFilter = (status: string) => {
@@ -49,19 +46,17 @@ export default function TasksPage() {
     };
 
     const handleAssignTask = async (taskId: string) => {
+        alert('Função de atribuir membros ainda não configurada.');
+    };
+
+    const handleTakeOnTask = async (taskId: string) => {
         try {
-            const raw = typeof window !== 'undefined' ? localStorage.getItem('user') : null;
-            const user = raw ? JSON.parse(raw) : null;
-            if (!user?.id) {
+            if (!currentUser?.id) {
                 alert('Usuário não identificado. Faça login novamente.');
                 return;
             }
-            await assignMember(taskId, user.id);
-            
-            const filter: TaskFilter = statusFilter === 'ALL' ? {}: {
-                status: statusFilter as Task['status']
-            };
-            await loadTasks(filter);    
+            await assignMember(taskId, currentUser.id);
+            await loadTasks();    
         } catch (err) {
             console.error('Erro ao assumir tarefa.');
         }
@@ -69,15 +64,38 @@ export default function TasksPage() {
 
     const filteredTasks = statusFilter === 'ALL'
         ? tasks
-        : tasks.filter(t => t.status === statusFilter);
+        : tasks.filter(task => task.status === statusFilter);
 
-    const counts = {
-        ALL:         tasks.length,
-        NOT_STARTED: tasks.filter(t => t.status === 'NOT_STARTED').length,
-        IN_PROGRESS: tasks.filter(t => t.status === 'IN_PROGRESS').length,
-        IN_REVISION: tasks.filter(t => t.status === 'IN_REVISION').length,
-        DONE:        tasks.filter(t => t.status === 'DONE').length,
-    };
+    let counts;
+    if (isMember()) {
+        counts = {
+            ALL:         tasks.length,
+            NOT_STARTED: tasks.filter(
+                task => task.status    === 'NOT_STARTED' &&
+                        task.area.name === currentUser?.area
+            ).length,
+            IN_PROGRESS: tasks.filter(
+                task => task.status    === 'IN_PROGRESS' &&
+                        task.area.name === currentUser?.area
+            ).length,
+            IN_REVISION: tasks.filter(
+                task => task.status    === 'IN_REVISION' &&
+                        task.area.name === currentUser?.area
+            ).length,
+            DONE:        tasks.filter(
+                task => task.status    === 'DONE' &&
+                        task.area.name === currentUser?.area
+            ).length,
+        };
+    } else {
+        counts = {
+            ALL:         tasks.length,
+            NOT_STARTED: tasks.filter(task => task.status === 'NOT_STARTED').length,
+            IN_PROGRESS: tasks.filter(task => task.status === 'IN_PROGRESS').length,
+            IN_REVISION: tasks.filter(task => task.status === 'IN_REVISION').length,
+            DONE:        tasks.filter(task => task.status === 'DONE').length,
+        };
+    }
 
     const columnIcon: Record<Task['status'], React.ReactNode> = {
         NOT_STARTED: <AlertCircle strokeWidth={3}/>,
@@ -94,7 +112,9 @@ export default function TasksPage() {
                 statusFilter={statusFilter}
                 counts={counts}
                 isAdmin={isAdmin}
+                currentUser={currentUser}
                 onStatusFilter={handleStatusFilter}
+                onLogout={logout}
             />
 
             {loading ? (
@@ -114,9 +134,14 @@ export default function TasksPage() {
                         <div className={styles.columns}>
                             {(['NOT_STARTED', 'IN_PROGRESS', 'IN_REVISION', 'DONE'] as Task['status'][]).map(status => (
                                 <div key={status} className={styles.column}>
-                                    <div className={`${styles.columnHeader} ${styles[statusClass(status)]}`}>
+                                    <div
+                                        className={`
+                                            ${styles.columnHeader}
+                                            ${styles[STATUS_BADGES[status].className]}
+                                        `}
+                                    >
                                         {columnIcon[status]}
-                                        {statusLabel(status)}
+                                        {STATUS_BADGES[status].label}
                                     </div>
                                     <div className={styles.columnTasks}>
                                         {tasks.filter(t => t.status === status).length === 0 ? (
@@ -124,19 +149,34 @@ export default function TasksPage() {
                                                 <p>Nenhuma tarefa</p>
                                             </div>
                                         ) : (
-                                            tasks.filter(t => t.status === status).map(task => (
-                                                <TaskCard
-                                                    key={task.id}
-                                                    task={task}
-                                                    statusLabel={statusLabel}
-                                                    areaLabel={areaLabel}
-                                                    statusClass={statusClass}
-                                                    areaClass={areaClass}
-                                                    handleAssignTask={handleAssignTask}
-                                                    currentUserId={currentUserId}
-                                                    viewMode={'column'}
-                                                />
-                                            ))
+                                            <>
+                                            {isMember() ? (
+                                                tasks.filter(
+                                                    task => task.status === status &&
+                                                         task.area.name === currentUser?.area
+                                                ).map(task => (
+                                                    <TaskCard
+                                                        key={task.id}
+                                                        task={task}
+                                                        handleAssignTask={handleAssignTask}
+                                                        handleTakeOnTask={handleTakeOnTask}
+                                                        currentUser={currentUser}
+                                                        viewMode={'column'}
+                                                    />
+                                                ))
+                                            ) : (
+                                                tasks.filter(task => task.status === status).map(task => (
+                                                    <TaskCard
+                                                        key={task.id}
+                                                        task={task}
+                                                        handleAssignTask={handleAssignTask}
+                                                        handleTakeOnTask={handleTakeOnTask}
+                                                        currentUser={currentUser}
+                                                        viewMode={'column'}
+                                                    />
+                                                ))
+                                            )}
+                                            </>
                                         )}
                                     </div>
                                 </div>
@@ -147,27 +187,41 @@ export default function TasksPage() {
                             <p>Nenhuma tarefa encontrada.</p>
                         </div>
                     ) : (
+                    <>
+                    {hasAdminAccess() ? (
+                        filteredTasks.filter(task => task.area.name === currentUser?.area).map(task => (
+                            <TaskCard
+                                key={task.id}
+                                task={task}
+                                handleAssignTask={handleAssignTask}
+                                handleTakeOnTask={handleTakeOnTask}
+                                currentUser={currentUser}
+                                viewMode={'column'}
+                            />
+                        ))
+                    ) : (
                         filteredTasks.map(task => (
                             <TaskCard
                                 key={task.id}
                                 task={task}
-                                statusLabel={statusLabel}
-                                areaLabel={areaLabel}
-                                statusClass={statusClass}
-                                areaClass={areaClass}
                                 handleAssignTask={handleAssignTask}
-                                currentUserId={currentUserId}
-                                viewMode='grid'
+                                handleTakeOnTask={handleTakeOnTask}
+                                currentUser={currentUser}
+                                viewMode={'column'}
                             />
                         ))
                     )}
+                    </>
+                    )}
                 </main>
 
-                <div className={styles.addTask}>
-                    <button aria-label="Nova tarefa">
-                        <Plus strokeWidth={3}/>
-                    </button>
-                </div>
+                {hasAdminAccess() &&
+                    <div className={styles.addTask}>
+                        <button aria-label="Nova tarefa">
+                            <Plus strokeWidth={3}/>
+                        </button>
+                    </div>
+                }
                 </>
             )}
         </div>

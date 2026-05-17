@@ -85,7 +85,12 @@ header.header div.headerTop div.headerActions button:hover {
 header.header div.headerTop div.headerActions button:hover svg {
   color: var(--color-pallete-blue-light);
 }
-header.header div.filters {
+header.header div.headerBottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+header.header div.headerBottom div.headerFilters {
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -93,10 +98,10 @@ header.header div.filters {
   overflow-x: auto;
   scrollbar-width: none;
 }
-header.header div.filters::-webkit-scrollbar {
+header.header div.headerBottom div.headerFilters::-webkit-scrollbar {
   display: none;
 }
-header.header div.filters button.chip {
+header.header div.headerBottom div.headerFilters button.chip {
   display: flex;
   align-items: center;
   gap: 0.8rem;
@@ -111,30 +116,61 @@ header.header div.filters button.chip {
   cursor: pointer;
   transition: 0.15s ease;
 }
-header.header div.filters button.chip svg {
+header.header div.headerBottom div.headerFilters button.chip svg {
   width: 1.6rem;
   height: 1.6rem;
 }
-header.header div.filters button.chip:hover {
+header.header div.headerBottom div.headerFilters button.chip:hover {
   border-color: var(--color-input-border-hover, #cbd5e1);
   background-color: var(--color-bg-surface, #f4f5f7);
 }
-header.header div.filters button.chip.active {
+header.header div.headerBottom div.headerFilters button.chip.active {
   border-color: transparent;
   color: white;
 }
-header.header div.filters button.chip.active.all {
+header.header div.headerBottom div.headerFilters button.chip.active.all {
   background-color: var(--color-pallete-blue-dark);
 }
-header.header div.filters button.chip.active.notStarted {
+header.header div.headerBottom div.headerFilters button.chip.active.notStarted {
   background-color: var(--color-task-not-started);
 }
-header.header div.filters button.chip.active.inProgress {
+header.header div.headerBottom div.headerFilters button.chip.active.inProgress {
   background-color: var(--color-task-in-progress);
 }
-header.header div.filters button.chip.active.inRevision {
+header.header div.headerBottom div.headerFilters button.chip.active.inRevision {
   background-color: var(--color-task-in-revision);
 }
-header.header div.filters button.chip.active.done {
+header.header div.headerBottom div.headerFilters button.chip.active.done {
   background-color: var(--color-task-done);
+}
+header.header div.headerBottom div.headerUser {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+header.header div.headerBottom div.headerUser p {
+  font-size: 1.4rem;
+  font-weight: 600;
+  padding: 2px 8px;
+}
+header.header div.headerBottom div.headerUser div.userAvatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.8rem;
+  height: 2.8rem;
+  border-radius: 50%;
+  color: var(--color-pallete-blue-dark);
+  background-color: var(--color-pallete-blue-light);
+  border: 2px solid var(--color-pallete-blue-dark);
+}
+header.header div.headerBottom div.headerUser div.userAvatar img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+header.header div.headerBottom div.headerUser div.userAvatar span {
+  font-size: 1rem;
+  font-weight: 600;
 }/*# sourceMappingURL=header.module.css.map */

@@ -1,38 +1,36 @@
-import { BookmarkCheck, ClockCheck, Grip, ListChecks, ListTodo, ListX, UserCheck, UserPlus } from 'lucide-react';
+import { BookmarkCheck, ClockCheck, Grip, Handshake, ListChecks, ListTodo, ListX, UserCheck, UserPlus } from 'lucide-react';
 import styles from './taskCard.module.scss';
 
 import { Task } from '@/types/Task';
-import { AreaName } from '@/types/Enums';
+import { Badge } from '../badge/Badge';
+import { AREA_BADGES, STATUS_BADGES } from '@/utils/taskHelpers';
+import { isCaptain, isMember, UserSession } from '@/utils/auth';
 
 type TaskCardProps = {
     task: Task;
-    statusLabel:        (s: Task['status']) => string;
-    statusClass:        (s: Task['status']) => string;
-    areaLabel:          (s: AreaName) => string;
-    areaClass:          (s: AreaName) => string;
-    handleAssignTask:   ( id: string) => void;
+    currentUser: UserSession | null;
+    handleTakeOnTask: (id: string) => void;
+    handleAssignTask: ( id: string) => void;
     viewMode?: 'column' | 'grid';
-    currentUserId: string | null;
 }
 
-export function TaskCard({
-    task,
-    statusLabel,
-    areaLabel,
-    statusClass,
-    areaClass,
-    handleAssignTask,
-    currentUserId, 
-    viewMode
-}: TaskCardProps) {
+export function TaskCard({task, currentUser, handleTakeOnTask, handleAssignTask, viewMode}: TaskCardProps) {
+
+    const userIsAssigned     = task.assignedTo.some(user => user.id === currentUser?.id);
+    const userIsLinked       = currentUser?.id === task.leader?.id   ||
+                               currentUser?.id === task.manager?.id;
+                    
+    const userHasSameArea    = currentUser?.area === task.area.name;
+    
+    const userCanSelfAssign  = isMember() && userHasSameArea && !userIsAssigned;
+    const userCanAssignOther = !isMember() && (isCaptain() || userHasSameArea);
+
     return (
         <div className={styles.task}>
             <div className={styles.taskHeader}>
                 <div>
                     {viewMode === 'grid' && (
-                        <span className={`${styles.statusBadge} ${styles[statusClass(task.status)]}`}>
-                        {statusLabel(task.status)}
-                    </span>
+                        <Badge data={STATUS_BADGES[task.status]}/>
                     )}
                     {task.active && (
                         <span className={styles.activeBadge}>
@@ -56,12 +54,11 @@ export function TaskCard({
                 </div>
 
                 <div className={styles.taskBadges}>
-                    <p className={`${styles.taskBadge} ${styles[areaClass(task.area.name)]}`}>
-                        {areaLabel(task.area.name)}
-                    </p>
-                    <p className={styles.taskBadge}>
-                        {task.category.name}
-                    </p>
+                    <Badge data={AREA_BADGES[task.area.name]}/>
+                    <Badge
+                        label={task.category.name}
+                        variant='category'
+                    />
                 </div>
                     
                 <div className={styles.taskSteps}>
@@ -115,23 +112,35 @@ export function TaskCard({
                 <span className={styles.taskDateLimit}>
                     Prazo: {task.dateLimit ? new Date(task.dateLimit).toLocaleDateString('pt-BR') : 'Sem prazo estipulado'}
                 </span>
-                {task.status !== 'DONE' && !task.assignedTo.some(u => u.id === currentUserId) && (
-                    <button
-                        onClick={() => handleAssignTask(task.id)}
-                        className={styles.taskAssignButton}
-                    >
-                        <UserPlus/>
-                        Assumir
-                    </button>
-                )}
-                {task.status !== 'DONE' && task.assignedTo.some(u => u.id === currentUserId) && (
-                    <button
-                        className={`${styles.taskAssignButton} ${styles.disabled}`}
-                        disabled={true}
-                    >
-                        <UserCheck/>
-                        Atribuída
-                    </button>
+
+                {task.status !== 'DONE' && (
+                    <>
+                        {userIsAssigned ? (
+                            <button
+                                className={`${styles.taskAssignButton} ${styles.disabled}`}
+                                disabled={true}
+                            >
+                                <UserCheck/>
+                                Atribuída
+                            </button>
+                        ) : userCanAssignOther ? (
+                            <button
+                                onClick={() => handleAssignTask(task.id)}
+                                className={styles.taskAssignButton}
+                            >
+                                <UserPlus/>
+                                Atribuír
+                            </button>
+                        ) : userCanSelfAssign ? (
+                            <button
+                                onClick={() => handleTakeOnTask(task.id)}
+                                className={styles.taskAssignButton}
+                            >
+                                <Handshake/>
+                                Assumir
+                            </button>
+                        ) : null}
+                    </>
                 )}
             </div>
         </div>

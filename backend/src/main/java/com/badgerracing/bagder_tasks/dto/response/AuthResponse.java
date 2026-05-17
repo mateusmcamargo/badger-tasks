@@ -6,5 +6,6 @@ public record AuthResponse(
     String email,
     String ra,
     String name,
-    String role
+    String role,
+    String area
 ) {}
