@@ -2,9 +2,9 @@ debug: true
 
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5433/badger_tasks
-    username: ${DB_USER:postgres}
-    password: ${DB_PASS:postgres}
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5433/badger_tasks}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:postgres}
     driver-class-name: org.postgresql.Driver
   docker:
     compose:
@@ -27,6 +27,5 @@ server:
   port: 8080
 
 jwt:
-  secret: ${JWT_SECRET:dev-badger-tasks-secret-key-2026}
-  # secret: ${JWT_SECRET:dev-secret-change-in-prod}
-  expiration-ms: 86400000 # = 24h
+  secret: ${JWT_SECRET:2d488f318be90198fd1365c391a0860ef5890866e88dde331bb7397c2a9afa98}
+  expiration-ms: ${JWT_EXPIRATION:86400000}
