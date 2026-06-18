@@ -2,9 +2,11 @@
 
 # Bager Tasks
 
-Sistema web mobile-first de gestão de tarefas desenvolvido para o projeto de extensão ([Badger Racing](https://www.instagram.com/badger.racing/), anteriormente Fórmula CP), esquipe de Fórmula SAE da UTFPR Câmpus Cornélio Procópio, com objetivo de substituir o Notion, que atingiu seu limite de blocos, por uma solução personalizada com controle hierárquico, rastreabilidade de contribuições e interface adaptada ao ambiente de oficina.
+Sistema web mobile-first de gestão de tarefas desenvolvido para o projeto de extensão [Badger Racing](https://www.instagram.com/badger.racing/) (anteriormente Fórmula CP), esquipe de Fórmula SAE da UTFPR Câmpus Cornélio Procópio.
+
+Construído com objetivo de substituir o Notion da equipe, que atingiu seu limite de blocos, por uma solução personalizada com controle hierárquico, rastreabilidade de contribuições e interface adaptada ao ambiente de oficina.
  
-Projeto fullstack com frontend em Next.js e backend em Java Spring Boot, banco de dados PostgreSQL e infraestrutura em Docker.
+Projeto fullstack com frontend em Next.js, backend em Java Spring Boot, banco de dados PostgreSQL e infraestrutura em Docker.
 
 ---
 
@@ -48,49 +50,31 @@ Projeto fullstack com frontend em Next.js e backend em Java Spring Boot, banco d
 * [Heitor Stefani Alves](https://github.com/HeitorStefani)
 
 <!-- ## Estrutura do Projeto
-
 ```
-task-manager/
+badger-tasks/
 │
-├── frontend/        # Aplicação Next.js
 ├── backend/        # API Spring Boot
 ├── docs/           # Documentação do projeto
-├── docker/         # Configurações de container (opcional)
-├── docker-compose.yml
+├── frontend/       # Aplicação Next.js
+├── seed/           # Scripts de seeding do banco
 └── README.md
-``` -->
+```
+-->
 
 ---
 
 ## Como Rodar o Sistema
 
-> O sistema utiliza Node.js LTS e ambiente Java para o backend
-
-### Frontend
-
-1. Acesse a pasta do frontend:
+### Instalação
 
 ```bash
-cd frontend
+git clone https://github.com/mateusmcamargo/badger-tasks
+cd badger-tasks
 ```
-
-2. Instale as dependências:
-
-```bash
-npm install
-```
-
-3. Rode o servidor de desenvolvimento:
-
-```bash
-npm run dev
-```
-
-4. Abra no navegador:
-
-http://localhost:3000
 
 ### Backend (Spring Boot)
+
+> A API roda em ambiente Java com JDK **[VERSÃO]** e Spring Boot **[VERSÃO]**
 
 1. Para usar o Docker, abra o aplicativo [Docker Desktop](https://www.docker.com/products/docker-desktop/):
 
@@ -128,6 +112,57 @@ f880008f8c05  postgres:16-alpine  "docker-en…"  14 sec...  Up 14...  0.0.0.0:5
 ```
 
 ---
+
+### Frontend
+
+> O sistema utiliza Next.js LTS **[VERSÃO]**, rodando com NPM LTS **[VERSÃO]**
+
+1. Acesse a pasta do frontend:
+
+```bash
+cd frontend
+```
+
+2. Instale as dependências:
+
+```bash
+npm install
+```
+
+> As dependências usadas no último build seguem as versões:
+
+``` json
+"dependencies": {
+  "lucide-react": "^1.14.0",
+  "next": "16.2.3",
+  "react": "19.2.4",
+  "react-dom": "19.2.4",
+  "sass": "^1.99.0"
+},
+"devDependencies": {
+  "@tailwindcss/postcss": "^4.2.4",
+  "@types/node": "^20",
+  "@types/react": "^19",
+  "@types/react-dom": "^19",
+  "autoprefixer": "^10.5.0",
+  "babel-plugin-react-compiler": "1.0.0",
+  "eslint": "^9",
+  "eslint-config-next": "16.2.3",
+  "postcss": "^8.5.14",
+  "tailwindcss": "^4.2.4",
+  "typescript": "^5"
+}
+```
+
+3. Rode o servidor de desenvolvimento:
+
+```bash
+npm run dev
+```
+
+4. Abra no navegador:
+
+http://localhost:3000
 
 ## Requisitos do Sistema
 
