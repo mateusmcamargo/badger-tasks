@@ -187,19 +187,6 @@ export default function TasksPage() {
                             <p>Nenhuma tarefa encontrada.</p>
                         </div>
                     ) : (
-                    <>
-                    {hasAdminAccess() ? (
-                        filteredTasks.filter(task => task.area.name === currentUser?.area).map(task => (
-                            <TaskCard
-                                key={task.id}
-                                task={task}
-                                handleAssignTask={handleAssignTask}
-                                handleTakeOnTask={handleTakeOnTask}
-                                currentUser={currentUser}
-                                viewMode={'column'}
-                            />
-                        ))
-                    ) : (
                         filteredTasks.map(task => (
                             <TaskCard
                                 key={task.id}
@@ -210,8 +197,6 @@ export default function TasksPage() {
                                 viewMode={'column'}
                             />
                         ))
-                    )}
-                    </>
                     )}
                 </main>
 
