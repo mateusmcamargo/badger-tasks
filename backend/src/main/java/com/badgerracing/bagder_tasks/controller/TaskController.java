@@ -23,28 +23,31 @@ public class TaskController {
     private final TaskService taskService;
 
     @GetMapping
-    public ResponseEntity<TaskFilterResponse> getTasks(TaskFilterRequest filter) {
-        return ResponseEntity.ok(taskService.getTasksWithFilters(filter));
+    public ResponseEntity<TaskFilterResponse> getTasks(TaskFilterRequest filter, Authentication authentication) {
+        return ResponseEntity.ok(taskService.getTasksWithFilters(filter, authentication));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TaskResponse> getTask(@PathVariable UUID id) {
-        return ResponseEntity.ok(taskService.getById(id));
+    public ResponseEntity<TaskResponse> getTask(@PathVariable UUID id, Authentication authentication) {
+        return ResponseEntity.ok(taskService.getById(id, authentication));
     }
 
     @PostMapping
-    public ResponseEntity<TaskResponse> createTask(@Valid @RequestBody TaskRequest request) {
-        return ResponseEntity.ok(taskService.create(request));
+    public ResponseEntity<TaskResponse> createTask(@Valid @RequestBody TaskRequest request, Authentication authentication) {
+        return ResponseEntity.ok(taskService.create(request, authentication));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<TaskResponse> updateTask(@PathVariable UUID id, @Valid @RequestBody TaskRequest request) {
-        return ResponseEntity.ok(taskService.update(id, request));
+    public ResponseEntity<TaskResponse> updateTask(
+            @PathVariable UUID id,
+            @Valid @RequestBody TaskRequest request,
+            Authentication authentication) {
+        return ResponseEntity.ok(taskService.update(id, request, authentication));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTask(@PathVariable UUID id) {
-        taskService.delete(id);
+    public ResponseEntity<Void> deleteTask(@PathVariable UUID id, Authentication authentication) {
+        taskService.delete(id, authentication);
         return ResponseEntity.noContent().build();
     }
 
@@ -52,14 +55,17 @@ public class TaskController {
     public ResponseEntity<TaskMemberResponse> assignMember(
             @Valid @RequestBody
             TaskMemberRequest request,
-            Authentication auth
+            Authentication authentication
     ) {
-        return ResponseEntity.ok(taskService.assignMember(request, auth));
+        return ResponseEntity.ok(taskService.assignMember(request, authentication));
     }
 
     @DeleteMapping("/{taskId}/members/{userId}")
-    public ResponseEntity<Void> removeMember(@PathVariable UUID taskId, @PathVariable UUID userId) {
-        taskService.removeMember(taskId, userId);
+    public ResponseEntity<Void> removeMember(
+            @PathVariable UUID taskId,
+            @PathVariable UUID userId,
+            Authentication authentication) {
+        taskService.removeMember(taskId, userId, authentication);
         return ResponseEntity.noContent().build();
     }
 }

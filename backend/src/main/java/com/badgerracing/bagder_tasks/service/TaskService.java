@@ -29,9 +29,44 @@ public class TaskService {
     private final CategoryRepository   categoryRepository;
     private final AreaRepository       areaRepository;
 
+    // helpers
+    private User resolveCurrentUser(Authentication auth) {
+        return userRepository.findByEmail(auth.getName())
+            .orElseThrow(() -> new BusinessException("Usuário autenticado não encontrado", HttpStatus.NOT_FOUND));
+    }
+
+    private String resolveRole(Authentication auth) {
+        return auth.getAuthorities().iterator().next().getAuthority();
+    }
+
+    private boolean isCaptain(String role) { return role.equals("ROLE_CAPTAIN"); }
+    private boolean isLeader(String role)  { return role.equals("ROLE_LEADER");  }
+    private boolean isManager(String role) { return role.equals("ROLE_MANAGER"); }
+    private boolean isMember(String role)  { return role.equals("ROLE_MEMBER");  }
+
+    private void assertSameArea(User currentUser, Task task) {
+        if (!currentUser.getArea().getId().equals(task.getArea().getId()))
+            throw new BusinessException("Acesso negado: tarefa pertence a outra área", HttpStatus.FORBIDDEN);
+    }
+
+    // read ops
     @Transactional(readOnly = true)
     @PreAuthorize("hasAnyRole('CAPTAIN', 'MANAGER', 'LEADER', 'MEMBER')")
-    public TaskFilterResponse getTasksWithFilters(TaskFilterRequest filter) {
+    public TaskFilterResponse getTasksWithFilters(TaskFilterRequest filter, Authentication auth) {
+        String role = resolveRole(auth);
+
+        if (!isCaptain(role)) {
+            User currentUser = resolveCurrentUser(auth);
+            // force area to authenticated user's area, ignoring client-provided value
+            filter = new TaskFilterRequest(
+                currentUser.getArea().getId(),
+                filter.categoryId(),
+                filter.status(),
+                filter.active(),
+                filter.memberId()
+            );
+        }
+
         Specification<Task> spec = TaskSpecification.getFilterSpecification(filter);
         List<TaskResponse> tasks = taskRepository.findAll(spec)
             .stream().map(this::toResponse).toList();
@@ -40,15 +75,29 @@ public class TaskService {
 
     @Transactional(readOnly = true)
     @PreAuthorize("hasAnyRole('CAPTAIN', 'MANAGER', 'LEADER', 'MEMBER')")
-    public TaskResponse getById(UUID id) {
+    public TaskResponse getById(UUID id, Authentication auth) {
         Task task = taskRepository.findById(id)
             .orElseThrow(() -> new BusinessException("Tarefa não encontrada", HttpStatus.NOT_FOUND));
+
+        String role = resolveRole(auth);
+        if (!isCaptain(role)) {
+            assertSameArea(resolveCurrentUser(auth), task);
+        }
+
         return toResponse(task);
     }
 
+    // write ops
     @Transactional
     @PreAuthorize("hasAnyRole('CAPTAIN', 'MANAGER', 'LEADER')")
-    public TaskResponse create(TaskRequest request) {
+    public TaskResponse create(TaskRequest request, Authentication authentication) {
+        String role = resolveRole(authentication);
+        if (!isCaptain(role)) {
+            User currentUser = resolveCurrentUser(authentication);
+            if (!currentUser.getArea().getId().equals(request.areaId()))
+                throw new BusinessException("Você só pode criar tarefas na sua própria área", HttpStatus.FORBIDDEN);
+        }
+
         Category category = categoryRepository.findById(request.categoryId())
             .orElseThrow(() -> new BusinessException("Categoria não encontrada", HttpStatus.NOT_FOUND));
         Area area = areaRepository.findById(request.areaId())
@@ -75,9 +124,14 @@ public class TaskService {
 
     @Transactional
     @PreAuthorize("hasAnyRole('CAPTAIN', 'MANAGER', 'LEADER')")
-    public TaskResponse update(UUID id, TaskRequest request) {
+    public TaskResponse update(UUID id, TaskRequest request, Authentication auth) {
         Task task = taskRepository.findById(id)
             .orElseThrow(() -> new BusinessException("Tarefa não encontrada", HttpStatus.NOT_FOUND));
+
+        String role = resolveRole(auth);
+        if (!isCaptain(role)) {
+            assertSameArea(resolveCurrentUser(auth), task);
+        }
 
         task.setName(request.name());
         task.setDescription(request.description());
@@ -98,12 +152,19 @@ public class TaskService {
 
     @Transactional
     @PreAuthorize("hasAnyRole('CAPTAIN', 'MANAGER', 'LEADER')")
-    public void delete(UUID id) {
-        if (!taskRepository.existsById(id))
-            throw new BusinessException("Tarefa não encontrada", HttpStatus.NOT_FOUND);
+    public void delete(UUID id, Authentication auth) {
+        Task task = taskRepository.findById(id)
+            .orElseThrow(() -> new BusinessException("Tarefa não encontrada", HttpStatus.NOT_FOUND));
+
+        String role = resolveRole(auth);
+        if (!isCaptain(role)) {
+            assertSameArea(resolveCurrentUser(auth), task);
+        }
+
         taskRepository.deleteById(id);
     }
 
+    // members
     @Transactional
     @PreAuthorize("hasAnyRole('CAPTAIN', 'MANAGER', 'LEADER', 'MEMBER')")
     public TaskMemberResponse assignMember(TaskMemberRequest request, Authentication auth) {
@@ -112,31 +173,21 @@ public class TaskService {
         User user = userRepository.findById(request.userId())
                 .orElseThrow(() -> new BusinessException("Usuário não encontrado", HttpStatus.NOT_FOUND));
 
-        String roleName = auth.getAuthorities().iterator().next().getAuthority(); // "ROLE_MEMBER" etc.
-        String currentUserEmail = auth.getName();
-        User currentUser = userRepository.findByEmail(currentUserEmail)
-                .orElseThrow(() -> new BusinessException("Usuário autenticado não encontrado", HttpStatus.NOT_FOUND));
+        String role        = resolveRole(auth);
+        User   currentUser = resolveCurrentUser(auth);
 
-        assert roleName != null;
-        boolean isMember  = roleName.equals("ROLE_MEMBER");
-        boolean isLeader  = roleName.equals("ROLE_LEADER");
-        boolean isManager = roleName.equals("ROLE_MANAGER");
-
-        if (isMember) {
-            // for members: can only self assign and must be in their area
+        if (isMember(role)) {
             if (!currentUser.getId().equals(user.getId()))
                 throw new BusinessException("Membros só podem se auto-atribuir", HttpStatus.FORBIDDEN);
             if (!currentUser.getArea().getId().equals(task.getArea().getId()))
                 throw new BusinessException("Você não pertence à área desta tarefa", HttpStatus.FORBIDDEN);
-        } else if (isLeader || isManager) {
-            // for leaders and managers: can assign members, but only from their own area
-            // cannot assign themselves
+        } else if (isLeader(role) || isManager(role)) {
             if (!user.getArea().getId().equals(currentUser.getArea().getId()))
                 throw new BusinessException("Usuário não pertence à sua área", HttpStatus.FORBIDDEN);
             if (currentUser.getId().equals(user.getId()))
                 throw new BusinessException("Líderes e gestores são vinculados à tarefa diretamente", HttpStatus.FORBIDDEN);
         }
-        // for captain: no restrictions
+
         if (taskMemberRepository.existsByTaskIdAndUserId(request.taskId(), request.userId()))
             throw new BusinessException("Usuário já está associado a esta tarefa", HttpStatus.CONFLICT);
 
@@ -147,10 +198,22 @@ public class TaskService {
     }
 
     @Transactional
-    @PreAuthorize("hasAnyRole('CAPTAIN', 'MANAGER', 'LEADER')")
-    public void removeMember(UUID taskId, UUID userId) {
+    @PreAuthorize("hasAnyRole('CAPTAIN', 'MANAGER', 'LEADER', 'MEMBER')")
+    public void removeMember(UUID taskId, UUID userId, Authentication auth) {
         TaskMember member = taskMemberRepository.findByTaskIdAndUserId(taskId, userId)
-            .orElseThrow(() ->  new BusinessException("Membro não encontrado na tarefa", HttpStatus.NOT_FOUND));
+            .orElseThrow(() -> new BusinessException("Membro não encontrado na tarefa", HttpStatus.NOT_FOUND));
+
+        String role        = resolveRole(auth);
+        User   currentUser = resolveCurrentUser(auth);
+
+        if (isMember(role)) {
+            if (!currentUser.getId().equals(userId))
+                throw new BusinessException("Membros só podem se remover da própria tarefa", HttpStatus.FORBIDDEN);
+        } else if (isLeader(role) || isManager(role)) {
+            if (!member.getUser().getArea().getId().equals(currentUser.getArea().getId()))
+                throw new BusinessException("Usuário não pertence à sua área", HttpStatus.FORBIDDEN);
+        }
+
         taskMemberRepository.delete(member);
     }
 
