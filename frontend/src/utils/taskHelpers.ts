@@ -7,7 +7,12 @@ import {
     CheckCircle,
     Flag,
     AlertCircle,
-    Activity
+    Activity,
+    WindArrowDown,
+    TrendingUpDown,
+    ChartArea,
+    Headset,
+    Wrench
 } from 'lucide-react';
 
 import { Task } from '@/types/Task';
@@ -51,22 +56,27 @@ export const AREA_BADGES: Record<AreaName, BadgeData> = {
     AERODYNAMICS: {
         label: 'Aerodinâmica',
         className: 'areaAero',
+        icon: WindArrowDown
     },
     DYNAMICS: {
         label: 'Dinâmica',
         className: 'areaDynamics',
+        icon: TrendingUpDown
     },
     TELEMETRY: {
         label: 'Telemetria',
         className: 'areaTelemetry',
+        icon: ChartArea
     },
     MARKETING: {
         label: 'Marketing',
         className: 'areaMarketing',
+        icon: Headset
     },
     STRUCTURE: {
         label: 'Estrutura',
         className: 'areaStructure',
+        icon: Wrench
     },
 };
 
