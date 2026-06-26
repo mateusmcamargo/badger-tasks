@@ -28,6 +28,7 @@ public class TaskService {
     private final UserRepository       userRepository;
     private final CategoryRepository   categoryRepository;
     private final AreaRepository       areaRepository;
+    private final StepRepository       stepRepository;
 
     // helpers
     private User resolveCurrentUser(Authentication auth) {
@@ -108,16 +109,43 @@ public class TaskService {
             .orElseThrow(() -> new BusinessException("Gestor não encontrado", HttpStatus.NOT_FOUND));
 
         Task task = Task.builder()
-                .name(request.name())
-                .description(request.description())
-                .category(category)
-                .area(area)
-                .leader(leader)
-                .manager(manager)
-                .status(request.status())
-                .active(request.active())
-                .dateLimit(request.dateLimit())
-                .build();
+            .name(request.name())
+            .description(request.description())
+            .category(category)
+            .area(area)
+            .leader(leader)
+            .manager(manager)
+            .status(request.status())
+            .active(request.active())
+            .dateLimit(request.dateLimit())
+            .build();
+
+        taskRepository.save(task);
+
+
+        // steps
+        if (request.steps() != null) {
+            request.steps().forEach(s -> stepRepository.save(
+                Step.builder()
+                    .task(task)
+                    .name(s.name())
+                    .description(s.description())
+                    .priority(s.priority())
+                    .done(s.done())
+                    .build()
+            ));
+        }
+
+        // members
+        if (request.memberIds() != null) {
+            request.memberIds().forEach(userId -> {
+                User member = userRepository.findById(userId)
+                    .orElseThrow(() -> new BusinessException("Usuário não encontrado", HttpStatus.NOT_FOUND));
+                taskMemberRepository.save(
+                    TaskMember.builder().task(task).user(member).build()
+                );
+            });
+        }
 
         return toResponse(taskRepository.save(task));
     }

@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.UUID;
+import java.util.List;
 
 public record TaskRequest(
     @NotBlank String name,
@@ -15,5 +16,7 @@ public record TaskRequest(
     @NotNull UUID managerId,
     @NotNull TaskStatus status,
     @NotNull Boolean active,
-    LocalDateTime dateLimit
+    LocalDateTime dateLimit,
+    List<StepRequest> steps,
+    List<UUID> memberIds
 ) {}
