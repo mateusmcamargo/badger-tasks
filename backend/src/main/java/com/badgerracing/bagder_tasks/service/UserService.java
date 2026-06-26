@@ -29,8 +29,11 @@ public class UserService {
 
     @Transactional(readOnly = true)
     @PreAuthorize("hasAnyRole('CAPTAIN', 'MANAGER', 'LEADER')")
-    public List<UserResponse> getAll() {
-        return userRepository.findAll().stream().map(this::toResponse).toList();
+    public List<UserResponse> getAll(UUID areaId) {
+        List<User> users = areaId != null
+                ? userRepository.findByAreaId(areaId)
+                : userRepository.findAll();
+        return users.stream().map(this::toResponse).toList();
     }
 
     @Transactional(readOnly = true)

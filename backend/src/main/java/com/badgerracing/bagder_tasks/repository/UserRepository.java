@@ -6,12 +6,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 import java.util.UUID;
+import java.util.List;
 
 public interface UserRepository extends JpaRepository<User, UUID> {
 
     Optional<User> findByEmail(String email);
-
     Optional<User> findByRa(String ra);
+    List<User>     findByAreaId(UUID areaId);
 
     boolean existsByEmail(String email);
     boolean existsByRa(String ra);

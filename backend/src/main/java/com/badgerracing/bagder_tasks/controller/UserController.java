@@ -19,10 +19,11 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    public ResponseEntity<List<UserResponse>> getAll() {
-        return ResponseEntity.ok(userService.getAll());
+    public ResponseEntity<List<UserResponse>> getAll(
+            @RequestParam(required = false) UUID areaId
+    ) {
+        return ResponseEntity.ok(userService.getAll(areaId));
     }
-
     @GetMapping("/{id}")
     public ResponseEntity<UserResponse> getById(@PathVariable UUID id) {
         return ResponseEntity.ok(userService.getById(id));
