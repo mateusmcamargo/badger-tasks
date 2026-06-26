@@ -21,7 +21,7 @@ div.field div.inputWrapper {
   position: relative;
   width: 100%;
 }
-div.field div.inputWrapper input {
+div.field div.inputWrapper input, div.field div.inputWrapper select, div.field div.inputWrapper textarea {
   height: 3.6rem;
   padding: 0 1rem;
   width: 100%;
@@ -32,34 +32,50 @@ div.field div.inputWrapper input {
   font-size: 1.4rem;
   transition: 0.2s ease;
 }
-div.field div.inputWrapper input:hover {
+div.field div.inputWrapper input:disabled, div.field div.inputWrapper select:disabled, div.field div.inputWrapper textarea:disabled {
+  border: 2px dashed var(--color-input-border);
+  cursor: not-allowed;
+}
+div.field div.inputWrapper input:hover, div.field div.inputWrapper select:hover, div.field div.inputWrapper textarea:hover {
   border-color: var(--color-input-border-hover);
 }
-div.field div.inputWrapper input:focus {
+div.field div.inputWrapper input:focus, div.field div.inputWrapper select:focus, div.field div.inputWrapper textarea:focus {
   border-color: var(--color-input-border-focus);
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
 }
-div.field div.inputWrapper input::-moz-placeholder {
+div.field div.inputWrapper input::-moz-placeholder, div.field div.inputWrapper select::-moz-placeholder, div.field div.inputWrapper textarea::-moz-placeholder {
   color: var(--color-input-placeholder);
 }
-div.field div.inputWrapper input::placeholder {
+div.field div.inputWrapper input::placeholder, div.field div.inputWrapper select::placeholder, div.field div.inputWrapper textarea::placeholder {
   color: var(--color-input-placeholder);
 }
-div.field div.inputWrapper input.withIconLeft {
+div.field div.inputWrapper input.withIconLeft, div.field div.inputWrapper select.withIconLeft, div.field div.inputWrapper textarea.withIconLeft {
   padding-left: 3.2rem;
 }
-div.field div.inputWrapper input.withIconRight {
+div.field div.inputWrapper input.withIconRight, div.field div.inputWrapper select.withIconRight, div.field div.inputWrapper textarea.withIconRight {
   padding-right: 3.2rem;
+}
+div.field div.inputWrapper textarea {
+  resize: vertical;
+  padding: 1rem;
+  height: 10.8rem;
 }
 div.field div.inputWrapper .iconLeft {
   position: absolute;
   left: 1rem;
   top: 50%;
   transform: translateY(-50%);
-  color: var(--color-pallete-blue-dark);
+  color: var(--color-input-placeholder);
   display: flex;
   align-items: center;
   pointer-events: none;
+  transition: 0.2s ease;
+}
+div.field div.inputWrapper:has(input:hover, select:hover, textarea:hover) .iconLeft {
+  color: var(--color-input-border-hover);
+}
+div.field div.inputWrapper:has(input:focus, select:focus, textarea:focus) .iconLeft {
+  color: var(--color-input-border-focus);
 }
 div.field div.inputWrapper .iconRight {
   position: absolute;
@@ -78,16 +94,42 @@ div.field div.inputWrapper .iconRight:hover {
   color: var(--color-pallete-orange-dark);
 }
 
-button.button[type=submit] {
-  width: 100%;
+button.button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
   height: 3.6rem;
   font-size: 1.6rem;
   font-weight: 500;
   color: var(--color-pallete-blue-dark);
-  background-color: var(--color-pallete-orange);
   border-radius: 1rem;
   cursor: pointer;
   transition: 0.2s ease;
+}
+button.button.close {
+  width: 3.6rem;
+  background: none;
+  color: var(--color-task-not-started);
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+button.button.close:hover {
+  background-color: var(--color-pallete-blue-light);
+}
+button.button.outline {
+  background: none;
+  border: 2px dashed var(--color-input-border);
+  justify-content: flex-start;
+  padding: 1rem;
+}
+button.button.outline:hover {
+  border-color: var(--color-pallete-orange);
+  color: var(--color-pallete-orange);
+}
+button.button[type=submit] {
+  width: 100%;
+  background-color: var(--color-pallete-orange);
 }
 button.button[type=submit]:hover {
   background-color: var(--color-pallete-orange-light);

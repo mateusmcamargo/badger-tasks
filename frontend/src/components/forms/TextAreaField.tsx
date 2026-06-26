@@ -1,6 +1,8 @@
+import { LucideIcon } from 'lucide-react';
 import styles from './forms.module.scss';
 
 type TextAreaFieldProps = {
+    icon?:        LucideIcon
     id:           string;
     label:        string;
     value:        string;
@@ -9,10 +11,10 @@ type TextAreaFieldProps = {
     required?:    boolean;
     disabled?:    boolean;
     error?:       string;
-    rows?:        number;
 };
 
-export function TextAreaField({
+export default function TextAreaField({
+    icon: Icon,
     id,
     label,
     value,
@@ -21,7 +23,6 @@ export function TextAreaField({
     required  = false,
     disabled  = false,
     error,
-    rows      = 3,
 }: TextAreaFieldProps) {
     return (
         <div className={`${styles.field} ${error ? styles.fieldError : ''}`}>
@@ -29,16 +30,24 @@ export function TextAreaField({
                 {label}
                 {required && <span className={styles.required}>*</span>}
             </label>
-            <textarea
-                id={id}
-                placeholder={placeholder}
-                value={value}
-                onChange={e => onChange(e.target.value)}
-                required={required}
-                disabled={disabled}
-                rows={rows}
-            />
-            {error && <span className={styles.errorMessage}>{error}</span>}
+
+            <div className={styles.inputWrapper}>
+                {Icon && (
+                    <span className={styles.iconLeft}>
+                        <Icon size={16} strokeWidth={2}/>
+                    </span>
+                )}
+                <textarea
+                    id={id}
+                    placeholder={placeholder}
+                    value={value}
+                    onChange={e => onChange(e.target.value)}
+                    required={required}
+                    disabled={disabled}
+                    className={`${Icon        ? styles.withIconLeft  : ''}`}
+                />
+                {error && <span className={styles.errorMessage}>{error}</span>}
+            </div>
         </div>
     );
 }

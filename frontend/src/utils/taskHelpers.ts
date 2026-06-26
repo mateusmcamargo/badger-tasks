@@ -14,10 +14,15 @@ import { Task } from '@/types/Task';
 import { AreaName, RoleName } from '@/types/Enums';
 
 export type BadgeData = {
-    label: string;
+    label?: string;
     className: string;
     icon?: LucideIcon;
 }
+
+export type UserBadgeData = {
+    className: string;
+    icon: LucideIcon;
+};
 
 export const STATUS_BADGES: Record<Task['status'], BadgeData> = {
     NOT_STARTED: {
@@ -83,6 +88,25 @@ export const ROLE_BADGES: Record<RoleName, BadgeData> = {
     },
     MEMBER: {
         label: 'Membro',
+        className: 'roleMember',
+        icon: User,
+    },
+};
+
+export const USER_BADGES: Record<RoleName, UserBadgeData> = {
+    CAPTAIN: {
+        className: 'roleCaptain',
+        icon: Crown,
+    },
+    MANAGER: {
+        className: 'roleManager',
+        icon: BriefcaseBusiness,
+    },
+    LEADER: {
+        className: 'roleLeader',
+        icon: ShieldCheck,
+    },
+    MEMBER: {
         className: 'roleMember',
         icon: User,
     },

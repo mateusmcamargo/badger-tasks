@@ -24,7 +24,7 @@ div.field {
         position: relative;
         width:    100%;
 
-        input {
+        input, select, textarea {
             height: 3.6rem;
             padding: 0 1rem;
             width: 100%;
@@ -34,6 +34,11 @@ div.field {
             border-radius: 1rem;
             font-size: 1.4rem;
             transition: .2s ease;
+            
+            &:disabled {
+                border: 2px dashed var(--color-input-border);
+                cursor: not-allowed;
+            }
 
             &:hover {
                 border-color: var(--color-input-border-hover);
@@ -52,15 +57,29 @@ div.field {
             &.withIconRight { padding-right: 3.2rem; }
         }
 
+        textarea {
+            resize: vertical;
+            padding: 1rem;
+            height: calc(3.6rem * 3);
+        }
+
         .iconLeft {
             position:    absolute;
             left:        1rem;
             top:         50%;
             transform:   translateY(-50%);
-            color:       var(--color-pallete-blue-dark);
+            color:       var(--color-input-placeholder);
             display:     flex;
             align-items: center;
             pointer-events: none;
+            transition: .2s ease;
+        }
+        &:has(input:hover, select:hover, textarea:hover) .iconLeft {
+            color: var(--color-input-border-hover);
+        }
+
+        &:has(input:focus, select:focus, textarea:focus) .iconLeft {
+            color: var(--color-input-border-focus);
         }
 
         .iconRight {
@@ -84,17 +103,46 @@ div.field {
 }
 
 button.button {
-    
-    &[type="submit"] {
-    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+
     height: 3.6rem;
     font-size: 1.6rem;
     font-weight: 500;
     color: var(--color-pallete-blue-dark);
-    background-color: var(--color-pallete-orange);
     border-radius: 1rem;
     cursor: pointer;
     transition: .2s ease;
+
+    &.close {
+        width: 3.6rem;
+        background: none;
+        color: var(--color-task-not-started);
+        cursor: pointer;
+        transition: .2s ease;
+
+        &:hover {
+            background-color: var(--color-pallete-blue-light);
+        }
+    }
+
+    &.outline {
+        background:    none;
+        border:        2px dashed var(--color-input-border);
+        justify-content: flex-start;
+        padding: 1rem;
+
+        &:hover {
+            border-color: var(--color-pallete-orange);
+            color:        var(--color-pallete-orange);
+        }
+    }
+
+    &[type="submit"] {
+        width: 100%;
+        background-color: var(--color-pallete-orange);
         
         &:hover {
             background-color: var(--color-pallete-orange-light);

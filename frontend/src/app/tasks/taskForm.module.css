@@ -1,0 +1,153 @@
+div.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 2rem;
+}
+
+div.form {
+  width: 100%;
+  max-width: 52rem;
+  max-height: 90vh;
+  overflow-y: auto;
+  background: white;
+  border-radius: 1rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.16);
+}
+
+div.formHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  padding: 1rem 2rem;
+  background-color: var(--color-pallete-blue);
+}
+div.formHeader h2 {
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--color-pallete-blue-light);
+}
+div.formHeader svg.icon {
+  width: 2.4rem;
+  height: 2.4rem;
+  color: var(--color-pallete-blue-light);
+}
+
+form.formBody {
+  display: flex;
+  flex-direction: column;
+  gap: 1.6rem;
+  padding: 2rem 2rem 0 2rem;
+}
+
+div.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.2rem;
+}
+
+div.activeToggle {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+div.activeToggle label {
+  font-size: 1.4rem;
+  font-weight: 500;
+  color: var(--color-label);
+  cursor: pointer;
+}
+div.activeToggle input[type=checkbox] {
+  width: 1.8rem;
+  height: 1.8rem;
+  cursor: pointer;
+}
+
+/* SECTION */
+h3.sectionTitle {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--color-pallete-blue-dark);
+}
+
+ul.tagList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  list-style: none;
+}
+
+li.tag {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.8rem;
+  background: var(--color-input-border);
+  border-radius: 2rem;
+  font-size: 1.3rem;
+  color: var(--color-pallete-blue-dark);
+}
+li.tag button {
+  display: flex;
+  align-items: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-label);
+  padding: 0;
+}
+li.tag button:hover {
+  color: var(--color-task-not-started);
+}
+
+div.stepRow {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+span.stepPriority {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--color-label);
+  width: 2rem;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+div.stepFields {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  flex: 1;
+}
+
+p.error {
+  font-size: 1.3rem;
+  color: var(--color-task-not-started);
+  text-align: center;
+}
+
+div.formActions {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+  padding: 2rem 0;
+  border-top: 1px solid var(--color-input-border);
+  background-color: white;
+}
+div.formActions > * {
+  flex: 1;
+}/*# sourceMappingURL=taskForm.module.css.map */

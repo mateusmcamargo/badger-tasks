@@ -1,6 +1,7 @@
 span.badge {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: .4rem;
 
     padding: 2px 8px;
@@ -14,6 +15,13 @@ span.badge {
     svg {
         width: 1.6rem;
         height: 1.6rem;
+    }
+
+    button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
     }
 }
 
@@ -93,6 +101,12 @@ span.badge {
     color: var(--color-area-telemetry);
     background: var(--color-area-telemetry-bg);
     border-color: var(--color-area-telemetry);
+
+    button {
+        background: none;
+        color: var(--color-area-telemetry);
+        svg {stroke-width: 3;}
+    }
 }
 
 .category {

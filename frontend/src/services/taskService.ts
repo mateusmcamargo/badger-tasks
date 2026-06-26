@@ -40,6 +40,13 @@ export async function getTaskById(id: string): Promise<Task> {
     return handleResponse<Task>(res);
 }
 
+export type StepRequest = {
+    name:         string;
+    description?: string;
+    priority:     number;
+    done:         boolean;
+};
+
 export type TaskRequest = {
     name:        string;
     description?: string;
@@ -50,6 +57,8 @@ export type TaskRequest = {
     status:      Task['status'];
     active:      boolean;
     dateLimit?:  string; // ISO string
+    steps?:      StepRequest[];
+    memberIds?:  string[];
 };
 
 export async function createTask(data: TaskRequest): Promise<Task> {

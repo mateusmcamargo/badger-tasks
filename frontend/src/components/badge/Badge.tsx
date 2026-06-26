@@ -7,9 +7,20 @@ type BadgeProps = {
     label?: string;
     variant?: string;
     icon?: LucideIcon;
+
+    action?: {
+        icon: LucideIcon;
+        onClick: () => void;
+    };
 };
 
-export function Badge({data, label, variant, icon: CustomIcon}: BadgeProps) {
+export function Badge({
+    data,
+    label,
+    variant,
+    icon: CustomIcon,
+    action,
+}: BadgeProps) {
 
     const finalLabel   = data?.label     ?? label       ?? '';
     const finalVariant = data?.className ?? variant     ?? '';
@@ -19,6 +30,16 @@ export function Badge({data, label, variant, icon: CustomIcon}: BadgeProps) {
         <span className={`${styles.badge} ${styles[finalVariant]}`}>
             {Icon && <Icon strokeWidth={2} />}
             {finalLabel}
+
+            {action && (
+                <button
+                    type="button"
+                    className={styles.rightAction}
+                    onClick={action.onClick}
+                >
+                    <action.icon/>
+                </button>
+            )}
         </span>
     );
 }

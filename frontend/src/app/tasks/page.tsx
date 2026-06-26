@@ -11,6 +11,7 @@ import { STATUS_BADGES } from '@/utils/taskHelpers';
 import { Header } from '@/components/header/Header';
 import { getSession, hasAdminAccess, isMember, logout, UserSession } from '@/utils/auth';
 import { Loading } from '@/components/loading/Loading';
+import { TaskForm } from './TaskForm';
 
 export default function TasksPage() {
     const [tasks,        setTasks]        = useState<Task[]>([]);
@@ -18,7 +19,9 @@ export default function TasksPage() {
     const [loading,      setLoading]      = useState<boolean>(true);
     const [error,        setError]        = useState<string | null>(null);
     const [isAdmin,      setIsAdmin]      = useState<boolean>(false);
+    const [newTaskForm,  setNewTaskForm]  = useState<boolean>(false);
     const [currentUser,  setCurrentUser]  = useState<UserSession | null>(null);
+
 
     const loadTasks = useCallback(async (filter: TaskFilter = {}) => {
         setLoading(true);
@@ -61,6 +64,10 @@ export default function TasksPage() {
             console.error('Erro ao assumir tarefa.');
         }
     };
+
+    function handleNewTask() {
+        setNewTaskForm(true);
+    }
 
     const filteredTasks = statusFilter === 'ALL'
         ? tasks
@@ -129,6 +136,13 @@ export default function TasksPage() {
                 </div>
             ) : (
                 <>
+                {newTaskForm &&
+                <TaskForm
+                    currentUser={currentUser}
+                    onClose={() => setNewTaskForm(false)}
+                    onSuccess={loadTasks}
+                />
+                }
                 <main className={`${styles.main} ${statusFilter === 'ALL' ? styles.column : styles.grid}`}>
                     {statusFilter === 'ALL' ? (
                         <div className={styles.columns}>
@@ -202,7 +216,10 @@ export default function TasksPage() {
 
                 {hasAdminAccess() &&
                     <div className={styles.addTask}>
-                        <button aria-label="Nova tarefa">
+                        <button
+                            aria-label="Nova tarefa"
+                            onClick={handleNewTask}
+                        >
                             <Plus strokeWidth={3}/>
                         </button>
                     </div>
