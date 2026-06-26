@@ -1,0 +1,107 @@
+div.field {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: .6rem;
+
+    label {
+        font-size: 1.6rem;
+        font-weight: 500;
+        color: var(--color-label);
+        pointer-events: none;
+        
+        span {
+            font-size: 1.8rem;
+            padding-left: 4px;
+            font-weight: 500;
+            color: var(--color-task-not-started);
+            
+        }
+    }
+
+    div.inputWrapper {
+        position: relative;
+        width:    100%;
+
+        input {
+            height: 3.6rem;
+            padding: 0 1rem;
+            width: 100%;
+            border: 2px solid var(--color-input-border);
+            background-color: white;
+            color: var(--color-pallete-blue-dark);
+            border-radius: 1rem;
+            font-size: 1.4rem;
+            transition: .2s ease;
+
+            &:hover {
+                border-color: var(--color-input-border-hover);
+            }
+
+            &:focus {
+                border-color: var(--color-input-border-focus);
+                box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+            }
+
+            &::placeholder {
+                color: var(--color-input-placeholder);
+            }
+
+            &.withIconLeft  { padding-left:  3.2rem; }
+            &.withIconRight { padding-right: 3.2rem; }
+        }
+
+        .iconLeft {
+            position:    absolute;
+            left:        1rem;
+            top:         50%;
+            transform:   translateY(-50%);
+            color:       var(--color-pallete-blue-dark);
+            display:     flex;
+            align-items: center;
+            pointer-events: none;
+        }
+
+        .iconRight {
+            position:         absolute;
+            right:            1rem;
+            top:              50%;
+            transform:        translateY(-50%);
+            color:            var(--color-pallete-blue-dark);
+            display:          flex;
+            align-items:      center;
+            background:       none;
+            border:           none;
+            cursor:           pointer;
+            padding:          0;
+            
+            &:hover {
+                color: var(--color-pallete-orange-dark); 
+            }
+        }
+    }
+}
+
+button.button {
+    
+    &[type="submit"] {
+    width: 100%;
+    height: 3.6rem;
+    font-size: 1.6rem;
+    font-weight: 500;
+    color: var(--color-pallete-blue-dark);
+    background-color: var(--color-pallete-orange);
+    border-radius: 1rem;
+    cursor: pointer;
+    transition: .2s ease;
+        
+        &:hover {
+            background-color: var(--color-pallete-orange-light);
+        }
+        
+        &:active {
+            background-color: var(--color-pallete-orange-dark);
+        }
+    }
+}

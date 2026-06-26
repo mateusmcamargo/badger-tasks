@@ -3,8 +3,11 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { login, saveSession } from '@/services/authService';
+import { User, Lock } from 'lucide-react';
 
 import styles from './login.module.scss';
+import Field from '@/components/forms/Field';
+import { Button } from '@/components/forms/Button';
 
 export default function LoginPage() {
     const router = useRouter();
@@ -32,8 +35,8 @@ export default function LoginPage() {
     return (
         <main className={styles.login}>
             <section className={styles.hero}>
-                <img className={styles.logo}       src="/badger-tasks-logo-dark.png" alt="Badger Tasks"/>
-                <img className={styles.screenshot} src="/badger-tasks-screenshot.png" alt="Screenshot"/>
+                <img className={styles.logo}       src='/badger-tasks-logo-dark.png' alt='Badger Tasks'/>
+                <img className={styles.screenshot} src='/badger-tasks-screenshot.png' alt='Screenshot'/>
 
                 <h2>Produtividade digna de um Fórmula SAE</h2>
             </section>
@@ -47,37 +50,39 @@ export default function LoginPage() {
                     </div>
 
                     <form onSubmit={handleSubmit} className={styles.loginForm}>
-                        <div className={styles.field}>
-                            <label htmlFor="login">Email ou RA</label>
-                            <input
-                                id="login"
-                                type="text"
-                                placeholder="seu@email.com ou 1234567"
-                                value={loginInput}
-                                onChange={e => setLoginInput(e.target.value)}
-                                required
-                                autoComplete="username"
-                            />
-                        </div>
+                        <Field
+                            label='Email ou RA'
+                            icon={User}
+                            id='login'
+                            type='text'
+                            placeholder='seu@email.com ou 1234567'
+                            value={loginInput}
+                            onChange={setLoginInput}
+                            required
+                            autoComplete='username'
+                        />
 
-                        <div className={styles.field}>
-                            <label htmlFor="password">Senha</label>
-                            <input
-                                id="password"
-                                type="password"
-                                placeholder="••••••••"
-                                value={password}
-                                onChange={e => setPassword(e.target.value)}
-                                required
-                                autoComplete="current-password"
-                            />
-                        </div>
+                        <Field
+                            label='Senha'
+                            icon={Lock}
+                            id='password'
+                            type='password'
+                            placeholder='••••••••'
+                            value={password}
+                            onChange={setPassword}
+                            required
+                            autoComplete='current-password'
+                        />
 
-                        {error && <p className="login-error">{error}</p>}
+                        {error && <p className='login-error'>{error}</p>}
 
-                        <button type="submit" disabled={loading} className="login-btn">
-                            {loading ? 'Entrando...' : 'Entrar'}
-                        </button>
+                        <Button
+                            type='submit'
+                            label='Entrar'
+                            loadingLabel='Entrando...'
+                            loading={loading}
+                            fullWidth
+                        />
                     </form>
                 </div>
             </section>
