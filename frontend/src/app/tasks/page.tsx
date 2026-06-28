@@ -14,6 +14,7 @@ import { Loading } from '@/components/loading/Loading';
 import { TaskForm } from './TaskForm';
 import { TaskView } from './TaskView';
 import { TaskEdit } from './TaskEdit';
+import { TaskAssign } from './TaskAssign';
 
 export default function TasksPage() {
     const [tasks,        setTasks]        = useState<Task[]>([]);
@@ -23,6 +24,7 @@ export default function TasksPage() {
     const [isAdmin,      setIsAdmin]      = useState<boolean>(false);
     const [newTaskForm,  setNewTaskForm]  = useState<boolean>(false);
     const [viewingTask,  setViewingTask]  = useState<Task | null>(null);
+    const [assignTask,   setAssignTask]   = useState<Task | null>(null);
     const [currentUser,  setCurrentUser]  = useState<UserSession | null>(null);
 
 
@@ -51,10 +53,6 @@ export default function TasksPage() {
         setStatusFilter(status);
     };
 
-    const handleAssignTask = async (taskId: string) => {
-        alert('Função de atribuir membros ainda não configurada.');
-    };
-
     const handleTakeOnTask = async (taskId: string) => {
         try {
             if (!currentUser?.id) {
@@ -72,6 +70,9 @@ export default function TasksPage() {
         setViewingTask(task);
     }
 
+    function handleAssignTask(task: Task) {
+        setAssignTask(task);
+    }
 
     function handleNewTask() {
         setNewTaskForm(true);
@@ -144,29 +145,39 @@ export default function TasksPage() {
                 </div>
             ) : (
                 <>
-                {viewingTask && (
-                    hasAdminAccess()
-                        ? <TaskEdit
-                            task={viewingTask}
-                            currentUser={currentUser}
-                            onClose={() => setViewingTask(null)}
-                            onSuccess={loadTasks}
-                          />
-                        : <TaskView
-                            task={viewingTask}
-                            currentUser={currentUser}
-                            onClose={() => setViewingTask(null)}
-                            onSuccess={loadTasks}
-                          />
+                {viewingTask && (hasAdminAccess() ?
+                    <TaskEdit
+                        task={viewingTask}
+                        currentUser={currentUser}
+                        onClose={() => setViewingTask(null)}
+                        onSuccess={loadTasks}
+                        />
+                    :
+                    <TaskView
+                        task={viewingTask}
+                        currentUser={currentUser}
+                        onClose={() => setViewingTask(null)}
+                        onSuccess={loadTasks}
+                    />
                 )}
 
                 {newTaskForm &&
-                <TaskForm
-                    currentUser={currentUser}
-                    onClose={() => setNewTaskForm(false)}
-                    onSuccess={loadTasks}
-                />
+                    <TaskForm
+                        currentUser={currentUser}
+                        onClose={() => setNewTaskForm(false)}
+                        onSuccess={loadTasks}
+                    />
                 }
+
+                {assignTask &&
+                    <TaskAssign
+                        task={assignTask}
+                        currentUser={currentUser}
+                        onClose={() => setAssignTask(null)}
+                        onSuccess={loadTasks}
+                    />
+                }
+
                 <main className={`${styles.main} ${statusFilter === 'ALL' ? styles.column : styles.grid}`}>
                     {statusFilter === 'ALL' ? (
                         <div className={styles.columns}>

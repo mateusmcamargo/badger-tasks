@@ -10,7 +10,7 @@ type TaskCardProps = {
     task:               Task;
     currentUser:        UserSession | null;
     handleTakeOnTask:   (id: string) => void;
-    handleAssignTask:   ( id: string) => void;
+    handleAssignTask:   (task: Task) => void;
     onOpenTask:         (task: Task) => void;
     viewMode?:          'column' | 'grid';
 }
@@ -138,7 +138,7 @@ export function TaskCard({
                             </button>
                         ) : userCanAssignOther ? (
                             <button
-                                onClick={(e) => { e.stopPropagation(); handleAssignTask(task.id); }}
+                                onClick={(e) => { e.stopPropagation(); handleAssignTask(task); }}
                                 className={styles.taskAssignButton}
                             >
                                 <UserPlus/>
