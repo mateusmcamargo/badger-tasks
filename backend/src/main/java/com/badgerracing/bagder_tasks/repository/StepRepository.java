@@ -8,4 +8,5 @@ import java.util.UUID;
 
 public interface StepRepository extends JpaRepository<Step, UUID> {
     List<Step> findByTaskId(UUID taskId);
+    boolean existsByTaskIdAndPriority(UUID taskId, int priority);
 }

@@ -5,7 +5,7 @@ import {
     X, Plus, Trash2, NotebookPen, Bookmark,
     BriefcaseBusiness, UserCog, UserStar, Hourglass,
     CopyCheck, UserSearch, PenLine,
-    CheckSquare, Square,
+    CheckSquare, Square, ShieldCheck,
 } from 'lucide-react';
 
 import styles from './taskForm.module.scss';
@@ -15,9 +15,9 @@ import SelectField from '@/components/forms/SelectField';
 import TextAreaField from '@/components/forms/TextAreaField';
 import { Button } from '@/components/forms/Button';
 import { Task } from '@/types/Task';
-import { TaskRequest, StepRequest, updateTask } from '@/services/taskService';
+import { TaskRequest, StepRequest, updateTask, approveTask } from '@/services/taskService';
 import { assignMember, removeMember as removeMemberService } from '@/services/taskService';
-//import { createStep, updateStep as updateStepService, deleteStep } from '@/services/stepService';
+import { createStep, updateStep as updateStepService, deleteStep } from '@/services/stepService';
 import { getAreas } from '@/services/areaService';
 import { getCategories } from '@/services/categoryService';
 import { getUsersByArea } from '@/services/userService';
@@ -48,7 +48,8 @@ const STATUS_OPTIONS = [
 
 export function TaskEdit({ task, currentUser, onClose, onSuccess }: TaskEditProps) {
 
-    const isCaptain = currentUser?.role === 'CAPTAIN';
+    const isCaptain    = currentUser?.role === 'CAPTAIN';
+    const isInRevision = task.status === 'IN_REVISION';
 
     const [name,        setName]        = useState(task.name);
     const [description, setDescription] = useState(task.description ?? '');
@@ -176,19 +177,17 @@ export function TaskEdit({ task, currentUser, onClose, onSuccess }: TaskEditProp
             };
             await updateTask(task.id, payload);
 
-            // const originalIds = new Set((task.steps ?? []).map(s => s.id));
-
             await Promise.all(steps.map(async s => {
                 if (s.mode === 'existing' && s.deleted) {
-                    //await deleteStep(s.id);
+                    await deleteStep(s.id);
                 } else if (s.mode === 'existing') {
                     const orig = task.steps?.find(o => o.id === s.id);
                     if (orig && (orig.name !== s.name || (orig.description ?? '') !== s.description)) {
-                        //await updateStepService(s.id, { name: s.name, description: s.description });
+                        await updateStepService(s.id, { name: s.name, description: s.description, priority: s.priority });
                     }
                 } else {
                     // new step
-                    //await createStep(task.id, { name: s.name, description: s.description, priority: s.priority });
+                    await createStep(task.id, { name: s.name, description: s.description, priority: s.priority });
                 }
             }));
 
@@ -205,6 +204,20 @@ export function TaskEdit({ task, currentUser, onClose, onSuccess }: TaskEditProp
             onClose();
         } catch (err) {
             setError(err instanceof Error ? err.message : 'Erro ao salvar tarefa');
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    async function handleApprove() {
+        setLoading(true);
+        setError(null);
+        try {
+            await approveTask(task.id);
+            onSuccess();
+            onClose();
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'Erro ao aprovar tarefa');
         } finally {
             setLoading(false);
         }
@@ -229,6 +242,16 @@ export function TaskEdit({ task, currentUser, onClose, onSuccess }: TaskEditProp
             variant='secondary'
             onClick={onClose}
         />
+            {isInRevision && (
+                <Button
+                    label='Aprovar Tarefa'
+                    icon={ShieldCheck}
+                    variant='save'
+                    loading={loading}
+                    loadingLabel='Aprovando...'
+                    onClick={handleApprove}
+                />
+            )}
             <Button
                 label='Salvar'
                 loadingLabel='Salvando...'

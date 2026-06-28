@@ -71,7 +71,7 @@ div.task div.taskHeader div span.activeBadge {
   justify-content: center;
   gap: 0.4rem;
   height: 3.2rem;
-  width: 6.2rem;
+  padding: 0 1rem;
   font-size: 1.2rem;
   font-weight: 700;
   color: var(--color-pallete-blue);

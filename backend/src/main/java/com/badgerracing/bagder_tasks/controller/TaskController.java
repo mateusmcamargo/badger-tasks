@@ -39,9 +39,10 @@ public class TaskController {
 
     @PutMapping("/{id}")
     public ResponseEntity<TaskResponse> updateTask(
-            @PathVariable UUID id,
-            @Valid @RequestBody TaskRequest request,
-            Authentication authentication) {
+        @PathVariable UUID id,
+        @Valid @RequestBody TaskRequest request,
+        Authentication authentication
+    ) {
         return ResponseEntity.ok(taskService.update(id, request, authentication));
     }
 
@@ -51,20 +52,36 @@ public class TaskController {
         return ResponseEntity.noContent().build();
     }
 
+    @PatchMapping("/{id}/start")
+    public ResponseEntity<TaskResponse> startTask(@PathVariable UUID id, Authentication authentication) {
+        return ResponseEntity.ok(taskService.start(id, authentication));
+    }
+
+    @PatchMapping("/{id}/submit")
+    public ResponseEntity<TaskResponse> submitTask(@PathVariable UUID id, Authentication authentication) {
+        return ResponseEntity.ok(taskService.submit(id, authentication));
+    }
+
+    @PatchMapping("/{id}/approve")
+    public ResponseEntity<TaskResponse> approveTask(@PathVariable UUID id, Authentication authentication) {
+        return ResponseEntity.ok(taskService.approve(id, authentication));
+    }
+
     @PostMapping("/members")
     public ResponseEntity<TaskMemberResponse> assignMember(
-            @Valid @RequestBody
-            TaskMemberRequest request,
-            Authentication authentication
+        @Valid @RequestBody
+        TaskMemberRequest request,
+        Authentication authentication
     ) {
         return ResponseEntity.ok(taskService.assignMember(request, authentication));
     }
 
     @DeleteMapping("/{taskId}/members/{userId}")
     public ResponseEntity<Void> removeMember(
-            @PathVariable UUID taskId,
-            @PathVariable UUID userId,
-            Authentication authentication) {
+        @PathVariable UUID taskId,
+        @PathVariable UUID userId,
+        Authentication authentication
+    ) {
         taskService.removeMember(taskId, userId, authentication);
         return ResponseEntity.noContent().build();
     }

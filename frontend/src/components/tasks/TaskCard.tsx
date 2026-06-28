@@ -1,4 +1,4 @@
-import { BookmarkCheck, ClockCheck, Grip, Handshake, ListChecks, ListTodo, ListX, UserCheck, UserPlus } from 'lucide-react';
+import { BookmarkCheck, BookmarkOff, ClockCheck, Grip, Handshake, ListChecks, ListTodo, ListX, PartyPopper, UserCheck, UserPlus } from 'lucide-react';
 import styles from './taskCard.module.scss';
 
 import { Task } from '@/types/Task';
@@ -40,10 +40,15 @@ export function TaskCard({
                     {viewMode === 'grid' && (
                         <Badge data={STATUS_BADGES[task.status]}/>
                     )}
-                    {task.active && (
+                    {task.active ? (
                         <span className={styles.activeBadge}>
                             <BookmarkCheck/>
                             Ativa
+                        </span>
+                    ) : (
+                        <span className={styles.activeBadge}>
+                            <BookmarkOff/>
+                            Inativa
                         </span>
                     )}
                 </div>

@@ -3,6 +3,27 @@ import { getToken } from './authService';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8080';
 
+export type StepRequest = {
+    name:         string;
+    description?: string;
+    priority:     number;
+    done:         boolean;
+};
+
+export type TaskRequest = {
+    name:        string;
+    description?: string;
+    categoryId:  string;
+    areaId:      string;
+    leaderId:    string;
+    managerId:   string;
+    status:      Task['status'];
+    active:      boolean;
+    dateLimit?:  string; // ISO string
+    steps?:      StepRequest[];
+    memberIds?:  string[];
+};
+
 function authHeaders(): HeadersInit {
     const token = getToken();
     return {
@@ -40,27 +61,6 @@ export async function getTaskById(id: string): Promise<Task> {
     return handleResponse<Task>(res);
 }
 
-export type StepRequest = {
-    name:         string;
-    description?: string;
-    priority:     number;
-    done:         boolean;
-};
-
-export type TaskRequest = {
-    name:        string;
-    description?: string;
-    categoryId:  string;
-    areaId:      string;
-    leaderId:    string;
-    managerId:   string;
-    status:      Task['status'];
-    active:      boolean;
-    dateLimit?:  string; // ISO string
-    steps?:      StepRequest[];
-    memberIds?:  string[];
-};
-
 export async function createTask(data: TaskRequest): Promise<Task> {
     const res = await fetch(`${API_URL}/api/tasks`, {
         method:  'POST',
@@ -79,6 +79,14 @@ export async function updateTask(id: string, data: TaskRequest): Promise<Task> {
     return handleResponse<Task>(res);
 }
 
+async function patchTask(id: string, action: string): Promise<Task> {
+    const res = await fetch(`${API_URL}/api/tasks/${id}/${action}`, {
+        method:  'PATCH',
+        headers: authHeaders(),
+    });
+    return handleResponse<Task>(res);
+}
+
 export async function deleteTask(id: string): Promise<void> {
     const res = await fetch(`${API_URL}/api/tasks/${id}`, {
         method:  'DELETE',
@@ -88,6 +96,21 @@ export async function deleteTask(id: string): Promise<void> {
         const err = await res.json().catch(() => ({}));
         throw new Error(err.message ?? `Erro ${res.status}`);
     }
+}
+
+// NOT_STARTED to IN_PROGRESS
+export async function startTask(id: string): Promise<Task> {
+    return patchTask(id, 'start');
+}
+ 
+// ANY to IN_REVISION
+export async function submitTask(id: string): Promise<Task> {
+    return patchTask(id, 'submit');
+}
+ 
+// IN_REVISION to DONE
+export async function approveTask(id: string): Promise<Task> {
+    return patchTask(id, 'approve');
 }
 
 export async function assignMember(taskId: string, userId: string): Promise<void> {

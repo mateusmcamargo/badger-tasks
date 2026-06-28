@@ -1,9 +1,3 @@
-// TaskView-specific styles.
-// Overlay, panel, header, headerError, panelBody, and panelActions
-// are provided by floatingPanel.module.scss.
-
-// ── Member view ─────────────────────────────────────────────
-
 div.memberView {
     display:        flex;
     flex-direction: column;
@@ -187,79 +181,28 @@ div.memberView {
     }
 }
 
-// ── Admin form body (for future AdminTaskView path) ──────────
-// Mirrors taskForm.module.scss. Consider extracting to a shared
-// _form-body.scss partial once the admin view is built.
+div.footerActions {
+    display:         flex;
+    align-items:     center;
+    justify-content: space-between;
+    gap:             1.2rem;
 
-form.formBody {
-    display:        flex;
-    flex-direction: column;
-    gap:            1.6rem;
-    padding:        2rem 2rem 0 2rem;
+    position:         sticky;
+    bottom:           0;
+    z-index:          1;
+    padding:          2rem;
+    border-top:       2px solid var(--color-input-border);
+    background-color: white;
+
+    > * { flex: 1; }
 }
 
-div.row {
-    display:               grid;
-    grid-template-columns: 1fr 1fr;
-    gap:                   1.2rem;
-}
-
-div.activeToggle {
-    display:     flex;
-    align-items: center;
-    gap:         1rem;
-
-    label {
-        font-size:   1.4rem;
-        font-weight: 500;
-        color:       var(--color-label);
-        cursor:      pointer;
+div.footerSingle {
+    padding:          2rem;
+    border-top:       2px solid var(--color-input-border);
+    background-color: white;
+    
+    button {
+        width: 100%;
     }
-
-    input[type='checkbox'] {
-        width:  1.8rem;
-        height: 1.8rem;
-        cursor: pointer;
-    }
-}
-
-h3.sectionTitle {
-    font-size:   1.4rem;
-    font-weight: 600;
-    color:       var(--color-pallete-blue-dark);
-}
-
-ul.tagList {
-    display:    flex;
-    flex-wrap:  wrap;
-    gap:        .6rem;
-    list-style: none;
-}
-
-div.stepRow {
-    display:     flex;
-    align-items: center;
-    gap:         .8rem;
-}
-
-span.stepPriority {
-    font-size:   1.3rem;
-    font-weight: 600;
-    color:       var(--color-label);
-    width:       2rem;
-    text-align:  center;
-    flex-shrink: 0;
-}
-
-div.stepFields {
-    display:        flex;
-    flex-direction: column;
-    gap:            .4rem;
-    flex:           1;
-}
-
-p.error {
-    font-size:  1.3rem;
-    color:      var(--color-task-not-started);
-    text-align: center;
 }

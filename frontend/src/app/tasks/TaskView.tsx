@@ -10,15 +10,20 @@ import {
     Clock,
     TriangleAlert,
     LucideIcon,
+    Play,
+    Send,
+    Save,
 } from 'lucide-react';
 
 import styles from './taskView.module.scss';
 import { Badge } from '@/components/badge/Badge';
 import { Task } from '@/types/Task';
 import { toggleStepDone } from '@/services/stepService';
-import { UserSession, hasAdminAccess } from '@/utils/auth';
+import { startTask, submitTask } from '@/services/taskService';
+import { UserSession } from '@/utils/auth';
 import { ACTIVE_BADGES, AREA_BADGES, MESSAGE_BADGES, STATUS_BADGES, USER_BADGES } from '@/utils/taskHelpers';
 import { FloatingPanel } from '@/components/floatingPanel/FloatingPanel';
+import { Button } from '@/components/forms/Button';
 
 type TaskViewProps = {
     task:        Task;
@@ -87,6 +92,110 @@ export function TaskView({ task, currentUser, onClose, onSuccess }: TaskViewProp
         }
     }
 
+    async function handleStart() {
+        setLoading(true);
+        setError(null);
+        try {
+            await startTask(task.id);
+            onSuccess();
+            onClose();
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'Erro ao iniciar tarefa');
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    async function handleSubmit() {
+        setLoading(true);
+        setError(null);
+        try {
+            await submitTask(task.id);
+            onSuccess();
+            onClose();
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'Erro ao enviar para revisão');
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    const isDone       = task.status === 'DONE';
+    const isInRevision = task.status === 'IN_REVISION';
+    const isNotStarted = task.status === 'NOT_STARTED';
+    const isInProgress = task.status === 'IN_PROGRESS';
+
+    const hasStepChanges = steps.some(s => {
+        const orig = task.steps?.find(o => o.id === s.id);
+        return orig && orig.done !== s.done;
+    });
+
+    let footer: React.ReactNode;
+
+    if (isDone || isInRevision) {
+        footer = (
+            <div className={styles.footerSingle}>
+                <Button
+                    icon={X}
+                    label='Fechar'
+                    variant='cancel'
+                    onClick={onClose}
+                />
+            </div>
+        );
+    } else if (isNotStarted) {
+        footer = (
+            <div className={styles.footerActions}>
+                <Button
+                    icon={X}
+                    label='Cancelar'
+                    variant='cancel'
+                    onClick={onClose}
+                />
+                <Button
+                    label='Iniciar Tarefa'
+                    icon={Play}
+                    variant='save'
+                    loading={loading}
+                    loadingLabel='Iniciando...'
+                    disabled={!isAssigned}
+                    onClick={handleStart}
+                />
+            </div>
+        );
+    } else {
+        footer = (
+            <div className={styles.footerActions}>
+                <Button
+                    icon={X}
+                    label='Cancelar'
+                    variant='cancel'
+                    onClick={onClose}
+                />
+                {hasStepChanges && (
+                    <Button
+                        label='Salvar Passos'
+                        icon={Save}
+                        variant='outline'
+                        loading={loading}
+                        loadingLabel='Salvando...'
+                        disabled={!isAssigned}
+                        onClick={handleSave}
+                    />
+                )}
+                <Button
+                    label='Enviar para Revisão'
+                    icon={Send}
+                    variant='save'
+                    loading={loading}
+                    loadingLabel='Enviando...'
+                    disabled={!isAssigned}
+                    onClick={handleSubmit}
+                />
+            </div>
+        );
+    }
+
     const doneCount    = steps.filter(s => s.done).length;
     const statusBadge  = STATUS_BADGES[task.status];
     const activeBadge  = ACTIVE_BADGES[`${task.active}`];
@@ -97,11 +206,11 @@ export function TaskView({ task, currentUser, onClose, onSuccess }: TaskViewProp
         <FloatingPanel
             headerIcon={ClipboardList}
             headerTitle={task.name}
-            headerText={`Tarefa ${task.status}`}
+            headerText={task.name}
             loading={loading}
             error={error}
             onClose={onClose}
-            handleSave={handleSave}
+            footer={footer}
         >
             <div className={styles.memberView}>
 
@@ -118,7 +227,7 @@ export function TaskView({ task, currentUser, onClose, onSuccess }: TaskViewProp
                     </BadgeItem>
 
                     <BadgeItem icon={FolderBookmark} label='Ativo'>
-                        {task.active && <Badge data={activeBadge}/>}
+                        <Badge data={activeBadge}/>
                     </BadgeItem>
 
                     <BadgeItem icon={BriefcaseBusiness} label='Área'>
@@ -170,7 +279,7 @@ export function TaskView({ task, currentUser, onClose, onSuccess }: TaskViewProp
                     </div>
                 )}
 
-                {!isAssigned && (
+                {!isAssigned && !isDone && (
                     <p className={styles.notAssignedNote}>
                         <TriangleAlert/>
                         Você não está atribuído a esta tarefa. Para marcar passos, solicite ao líder ou gestor da área.
@@ -189,31 +298,36 @@ export function TaskView({ task, currentUser, onClose, onSuccess }: TaskViewProp
                         <p className={styles.noSteps}>Nenhum passo cadastrado.</p>
                     ) : (
                         <ul className={styles.stepsList}>
-                            {steps.map(step => (
-                                <li
-                                    key={step.id}
-                                    className={`${styles.stepItem} ${step.done ? styles.stepDone : ''}`}
-                                >
-                                    <button
-                                        className={styles.stepToggle}
-                                        onClick={() => isAssigned && handleToggle(step.id)}
-                                        disabled={!isAssigned}
-                                        title={
-                                            isAssigned
-                                                ? (step.done ? 'Marcar como pendente' : 'Marcar como concluído')
-                                                : 'Você não está atribuído a esta tarefa'
-                                        }
+                            {steps.map(step => {
+                                const canToggle = isAssigned && isInProgress;
+                                return (
+                                    <li
+                                        key={step.id}
+                                        className={`${styles.stepItem} ${step.done ? styles.stepDone : ''}`}
                                     >
-                                        {step.done ? <CheckSquare size={20}/> : <Square size={20}/>}
-                                    </button>
-                                    <div className={styles.stepContent}>
-                                        <span className={styles.stepName}>{step.name}</span>
-                                        {step.description && (
-                                            <span className={styles.stepDesc}>{step.description}</span>
-                                        )}
-                                    </div>
-                                </li>
-                            ))}
+                                        <button
+                                            className={styles.stepToggle}
+                                            onClick={() => canToggle && handleToggle(step.id)}
+                                            disabled={!canToggle}
+                                            title={
+                                                !isAssigned   ? 'Você não está atribuído a esta tarefa' :
+                                                isNotStarted  ? 'Inicie a tarefa para marcar passos'    :
+                                                isInRevision  ? 'Aguarde a revisão da tarefa'           :
+                                                step.done     ? 'Marcar como pendente'                  :
+                                                                'Marcar como concluído'
+                                            }
+                                        >
+                                            {step.done ? <CheckSquare size={20}/> : <Square size={20}/>}
+                                        </button>
+                                        <div className={styles.stepContent}>
+                                            <span className={styles.stepName}>{step.name}</span>
+                                            {step.description && (
+                                                <span className={styles.stepDesc}>{step.description}</span>
+                                            )}
+                                        </div>
+                                    </li>
+                                );
+                            })}
                         </ul>
                     )}
                 </div>

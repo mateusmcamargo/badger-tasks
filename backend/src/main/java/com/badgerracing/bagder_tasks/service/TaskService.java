@@ -1,6 +1,7 @@
 package com.badgerracing.bagder_tasks.service;
 
 import com.badgerracing.bagder_tasks.domain.entity.*;
+import com.badgerracing.bagder_tasks.domain.enums.TaskStatus;
 import com.badgerracing.bagder_tasks.dto.request.TaskFilterRequest;
 import com.badgerracing.bagder_tasks.dto.request.TaskMemberRequest;
 import com.badgerracing.bagder_tasks.dto.request.TaskRequest;
@@ -50,6 +51,13 @@ public class TaskService {
             throw new BusinessException("Acesso negado: tarefa pertence a outra área", HttpStatus.FORBIDDEN);
     }
 
+    private void assertMemberAssigned(User currentUser, Task task) {
+        boolean isAssigned = taskMemberRepository
+            .existsByTaskIdAndUserId(task.getId(), currentUser.getId());
+        if (!isAssigned)
+            throw new BusinessException("Você não está atribuído a esta tarefa", HttpStatus.FORBIDDEN);
+    }
+
     // read ops
     @Transactional(readOnly = true)
     @PreAuthorize("hasAnyRole('CAPTAIN', 'MANAGER', 'LEADER', 'MEMBER')")
@@ -58,7 +66,6 @@ public class TaskService {
 
         if (!isCaptain(role)) {
             User currentUser = resolveCurrentUser(auth);
-            // force area to authenticated user's area, ignoring client-provided value
             filter = new TaskFilterRequest(
                 currentUser.getArea().getId(),
                 filter.categoryId(),
@@ -88,7 +95,6 @@ public class TaskService {
         return toResponse(task);
     }
 
-    // write ops
     @Transactional
     @PreAuthorize("hasAnyRole('CAPTAIN', 'MANAGER', 'LEADER')")
     public TaskResponse create(TaskRequest request, Authentication authentication) {
@@ -122,8 +128,6 @@ public class TaskService {
 
         taskRepository.save(task);
 
-
-        // steps
         if (request.steps() != null) {
             request.steps().forEach(s -> stepRepository.save(
                 Step.builder()
@@ -136,7 +140,6 @@ public class TaskService {
             ));
         }
 
-        // members
         if (request.memberIds() != null) {
             request.memberIds().forEach(userId -> {
                 User member = userRepository.findById(userId)
@@ -192,7 +195,89 @@ public class TaskService {
         taskRepository.deleteById(id);
     }
 
-    // members
+    /**
+     * PATCH /api/tasks/{id}/start
+     * member-initiated, moves NOT_STARTED to IN_PROGRESS.
+     * caller member must be assigned to the task.
+     */
+    @Transactional
+    @PreAuthorize("hasAnyRole('CAPTAIN', 'MANAGER', 'LEADER', 'MEMBER')")
+    public TaskResponse start(UUID id, Authentication auth) {
+        Task task = taskRepository.findById(id)
+            .orElseThrow(() -> new BusinessException("Tarefa não encontrada", HttpStatus.NOT_FOUND));
+
+        String role = resolveRole(auth);
+
+        if (isMember(role)) {
+            assertMemberAssigned(resolveCurrentUser(auth), task);
+        } else {
+            if (!isCaptain(role)) assertSameArea(resolveCurrentUser(auth), task);
+        }
+
+        if (task.getStatus() != TaskStatus.NOT_STARTED)
+            throw new BusinessException("Apenas tarefas não iniciadas podem ser iniciadas", HttpStatus.CONFLICT);
+
+        task.setStatus(TaskStatus.IN_PROGRESS);
+        return toResponse(taskRepository.save(task));
+    }
+
+    /**
+     * PATCH /api/tasks/{id}/submit
+     * member-initiated, checks all steps and moves to IN_REVISION.
+     * caller must be assigned to the task.
+     */
+    @Transactional
+    @PreAuthorize("hasAnyRole('CAPTAIN', 'MANAGER', 'LEADER', 'MEMBER')")
+    public TaskResponse submit(UUID id, Authentication auth) {
+        Task task = taskRepository.findById(id)
+            .orElseThrow(() -> new BusinessException("Tarefa não encontrada", HttpStatus.NOT_FOUND));
+
+        String role = resolveRole(auth);
+
+        if (isMember(role)) {
+            assertMemberAssigned(resolveCurrentUser(auth), task);
+        } else {
+            if (!isCaptain(role)) assertSameArea(resolveCurrentUser(auth), task);
+        }
+
+        if (task.getStatus() == TaskStatus.DONE)
+            throw new BusinessException("Tarefa já foi concluída", HttpStatus.CONFLICT);
+
+        if (task.getStatus() == TaskStatus.IN_REVISION)
+            throw new BusinessException("Tarefa já está em revisão", HttpStatus.CONFLICT);
+
+        // mark every step as done
+        List<Step> steps = stepRepository.findByTaskId(id);
+        steps.forEach(s -> s.setDone(true));
+        stepRepository.saveAll(steps);
+
+        task.setStatus(TaskStatus.IN_REVISION);
+        return toResponse(taskRepository.save(task));
+    }
+
+    /**
+     * PATCH /api/tasks/{id}/approve
+     * admin-only, moves IN_REVISION to DONE and deactivates the task.
+     */
+    @Transactional
+    @PreAuthorize("hasAnyRole('CAPTAIN', 'MANAGER', 'LEADER')")
+    public TaskResponse approve(UUID id, Authentication auth) {
+        Task task = taskRepository.findById(id)
+            .orElseThrow(() -> new BusinessException("Tarefa não encontrada", HttpStatus.NOT_FOUND));
+
+        String role = resolveRole(auth);
+        if (!isCaptain(role)) {
+            assertSameArea(resolveCurrentUser(auth), task);
+        }
+
+        if (task.getStatus() != TaskStatus.IN_REVISION)
+            throw new BusinessException("Apenas tarefas em revisão podem ser aprovadas", HttpStatus.CONFLICT);
+
+        task.setStatus(TaskStatus.DONE);
+        task.setActive(false);
+        return toResponse(taskRepository.save(task));
+    }
+
     @Transactional
     @PreAuthorize("hasAnyRole('CAPTAIN', 'MANAGER', 'LEADER', 'MEMBER')")
     public TaskMemberResponse assignMember(TaskMemberRequest request, Authentication auth) {
