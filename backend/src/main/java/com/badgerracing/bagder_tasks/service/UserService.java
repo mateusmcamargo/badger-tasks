@@ -11,9 +11,14 @@ import com.badgerracing.bagder_tasks.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.badgerracing.bagder_tasks.dto.response.AssignableUserResponse;
+import com.badgerracing.bagder_tasks.repository.TaskMemberRepository;
+import com.badgerracing.bagder_tasks.repository.TaskRepository;
+import org.springframework.security.core.Authentication;
 
 import java.util.List;
 import java.util.UUID;
@@ -22,10 +27,12 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class UserService {
 
-    private final UserRepository  userRepository;
-    private final RoleRepository  roleRepository;
-    private final AreaRepository  areaRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final UserRepository        userRepository;
+    private final RoleRepository        roleRepository;
+    private final AreaRepository        areaRepository;
+    private final PasswordEncoder       passwordEncoder;
+    private final TaskMemberRepository  taskMemberRepository;
+    private final TaskRepository        taskRepository;
 
     @Transactional(readOnly = true)
     @PreAuthorize("hasAnyRole('CAPTAIN', 'MANAGER', 'LEADER')")
@@ -125,6 +132,35 @@ public class UserService {
             throw new BusinessException("Usuário não encontrado", HttpStatus.NOT_FOUND);
         userRepository.deleteById(id);
     }
+
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAnyRole('CAPTAIN', 'MANAGER', 'LEADER')")
+    public List<AssignableUserResponse> getAssignableMembers(UUID taskId, String name, Authentication authentication) {
+
+        var task = taskRepository.findById(taskId)
+            .orElseThrow(() -> new BusinessException("Tarefa não encontrada", HttpStatus.NOT_FOUND));
+
+        UUID requestingUserId = userRepository.findByEmail(authentication.getName())
+            .orElseThrow(() -> new BusinessException("Usuário não encontrado", HttpStatus.NOT_FOUND))
+            .getId();
+
+        // captain gets the task's area; manager/leader must belong to the same area
+        var currentUser = userRepository.findByEmail(authentication.getName()).get();
+        boolean isCaptain = currentUser.getRole().getName() == RoleName.CAPTAIN;
+        if (!isCaptain && !currentUser.getArea().getId().equals(task.getArea().getId()))
+            throw new BusinessException("Sem permissão para esta área", HttpStatus.FORBIDDEN);
+
+        return userRepository
+            .findAssignableMembersForTask(task.getArea().getId(), taskId, name, requestingUserId)
+            .stream()
+            .map(u -> new AssignableUserResponse(
+                u.getId(),
+                u.getName(),
+                taskMemberRepository.countByUserId(u.getId())
+            ))
+            .toList();
+    }
+
 
     private UserResponse toResponse(User user) {
         return new UserResponse(

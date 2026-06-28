@@ -1,11 +1,13 @@
 package com.badgerracing.bagder_tasks.controller;
 
 import com.badgerracing.bagder_tasks.dto.request.UserRequest;
+import com.badgerracing.bagder_tasks.dto.response.AssignableUserResponse;
 import com.badgerracing.bagder_tasks.dto.response.UserResponse;
 import com.badgerracing.bagder_tasks.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,6 +30,17 @@ public class UserController {
     public ResponseEntity<UserResponse> getById(@PathVariable UUID id) {
         return ResponseEntity.ok(userService.getById(id));
     }
+
+
+    @GetMapping("/assignable")
+    public ResponseEntity<List<AssignableUserResponse>> getAssignableMembers(
+        @RequestParam UUID    taskId,
+        @RequestParam(required = false, defaultValue = "") String name,
+        Authentication authentication
+    ) {
+        return ResponseEntity.ok(userService.getAssignableMembers(taskId, name, authentication));
+    }
+
 
     @PostMapping
     public ResponseEntity<UserResponse> create(@Valid @RequestBody UserRequest request) {
