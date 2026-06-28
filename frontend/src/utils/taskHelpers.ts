@@ -12,7 +12,13 @@ import {
     TrendingUpDown,
     ChartArea,
     Headset,
-    Wrench
+    Wrench,
+    BookmarkCheck,
+    BookmarkOff,
+    Check,
+    Info,
+    TriangleAlert,
+    CircleAlert
 } from 'lucide-react';
 
 import { Task } from '@/types/Task';
@@ -24,9 +30,23 @@ export type BadgeData = {
     icon?: LucideIcon;
 }
 
-export type UserBadgeData = {
-    className: string;
-    icon: LucideIcon;
+type MessageName =
+    'INFO'      |
+    'WARNING'   |
+    'DANGER'    |
+    'SUCCESS';
+
+export const ACTIVE_BADGES: Record<`${Task['active']}`, BadgeData> = {
+    true: {
+        label: 'Ativa',
+        className: 'active',
+        icon: BookmarkCheck,
+    },
+    false: {
+        label: 'Inativa',
+        className: 'inactive',
+        icon: BookmarkOff,
+    },
 };
 
 export const STATUS_BADGES: Record<Task['status'], BadgeData> = {
@@ -103,7 +123,26 @@ export const ROLE_BADGES: Record<RoleName, BadgeData> = {
     },
 };
 
-export const USER_BADGES: Record<RoleName, UserBadgeData> = {
+export const MESSAGE_BADGES: Record<MessageName, BadgeData> = {
+    WARNING: {
+        className: 'warning',
+        icon: TriangleAlert,
+    },
+    DANGER: {
+        className: 'danger',
+        icon: CircleAlert,
+    },
+    INFO: {
+        className: 'info',
+        icon: Info,
+    },
+    SUCCESS: {
+        className: 'success',
+        icon: Check,
+    },
+};
+
+export const USER_BADGES: Record<RoleName, BadgeData> = {
     CAPTAIN: {
         className: 'roleCaptain',
         icon: Crown,

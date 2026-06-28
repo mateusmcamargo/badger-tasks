@@ -12,6 +12,8 @@ import { Header } from '@/components/header/Header';
 import { getSession, hasAdminAccess, isMember, logout, UserSession } from '@/utils/auth';
 import { Loading } from '@/components/loading/Loading';
 import { TaskForm } from './TaskForm';
+import { TaskView } from './TaskView';
+import { TaskEdit } from './TaskEdit';
 
 export default function TasksPage() {
     const [tasks,        setTasks]        = useState<Task[]>([]);
@@ -20,6 +22,7 @@ export default function TasksPage() {
     const [error,        setError]        = useState<string | null>(null);
     const [isAdmin,      setIsAdmin]      = useState<boolean>(false);
     const [newTaskForm,  setNewTaskForm]  = useState<boolean>(false);
+    const [viewingTask,  setViewingTask]  = useState<Task | null>(null);
     const [currentUser,  setCurrentUser]  = useState<UserSession | null>(null);
 
 
@@ -64,6 +67,11 @@ export default function TasksPage() {
             console.error('Erro ao assumir tarefa.');
         }
     };
+
+    function handleOpenTask(task: Task) {
+        setViewingTask(task);
+    }
+
 
     function handleNewTask() {
         setNewTaskForm(true);
@@ -136,6 +144,22 @@ export default function TasksPage() {
                 </div>
             ) : (
                 <>
+                {viewingTask && (
+                    hasAdminAccess()
+                        ? <TaskEdit
+                            task={viewingTask}
+                            currentUser={currentUser}
+                            onClose={() => setViewingTask(null)}
+                            onSuccess={loadTasks}
+                          />
+                        : <TaskView
+                            task={viewingTask}
+                            currentUser={currentUser}
+                            onClose={() => setViewingTask(null)}
+                            onSuccess={loadTasks}
+                          />
+                )}
+
                 {newTaskForm &&
                 <TaskForm
                     currentUser={currentUser}
@@ -174,6 +198,7 @@ export default function TasksPage() {
                                                         task={task}
                                                         handleAssignTask={handleAssignTask}
                                                         handleTakeOnTask={handleTakeOnTask}
+                                                        onOpenTask={handleOpenTask}
                                                         currentUser={currentUser}
                                                         viewMode={'column'}
                                                     />
@@ -185,6 +210,7 @@ export default function TasksPage() {
                                                         task={task}
                                                         handleAssignTask={handleAssignTask}
                                                         handleTakeOnTask={handleTakeOnTask}
+                                                        onOpenTask={handleOpenTask}
                                                         currentUser={currentUser}
                                                         viewMode={'column'}
                                                     />
@@ -207,6 +233,7 @@ export default function TasksPage() {
                                 task={task}
                                 handleAssignTask={handleAssignTask}
                                 handleTakeOnTask={handleTakeOnTask}
+                                onOpenTask={handleOpenTask}
                                 currentUser={currentUser}
                                 viewMode={'column'}
                             />

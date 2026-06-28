@@ -1,0 +1,73 @@
+div.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 2rem;
+}
+
+div.panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 52rem;
+  max-height: 90vh;
+  overflow-y: auto;
+  background: white;
+  border-radius: 1rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.16);
+}
+
+div.panelHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  padding: 1rem 2rem;
+  background-color: var(--color-pallete-blue);
+}
+div.panelHeader h2 {
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--color-pallete-blue-light);
+}
+div.panelHeader svg.icon {
+  width: 2.4rem;
+  height: 2.4rem;
+  color: var(--color-pallete-blue-light);
+}
+
+p.headerError {
+  font-size: 1.3rem;
+  color: var(--color-task-not-started);
+  background-color: #fff1f2;
+  padding: 0.8rem 2rem;
+  border-bottom: 1px solid #fecdd3;
+  text-align: center;
+}
+
+div.panelBody {
+  flex: 1;
+}
+
+div.panelActions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+  padding: 2rem;
+  border-top: 2px solid var(--color-input-border);
+  background-color: white;
+}
+div.panelActions > * {
+  flex: 1;
+}/*# sourceMappingURL=floatingPanel.module.css.map */

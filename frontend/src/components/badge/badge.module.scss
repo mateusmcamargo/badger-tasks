@@ -25,6 +25,36 @@ span.badge {
     }
 }
 
+.active {
+    color: var(--color-pallete-blue);
+    background-color: var(--color-pallete-blue-light);
+    border: 2px solid var(--color-pallete-blue);
+}
+
+.danger {
+    color: var(--color-task-not-started);
+    background: color-mix(in srgb, var(--color-task-not-started) 12%, white);
+    border-color: var(--color-task-not-started);
+}
+
+.warning {
+    color: var(--color-task-in-progress);
+    background: color-mix(in srgb, var(--color-task-in-progress) 12%, white);
+    border-color: var(--color-task-in-progress);
+}
+
+.info {
+    color: var(--color-pallete-blue);
+    background-color: var(--color-pallete-blue-light);
+    border: 2px solid var(--color-pallete-blue);
+}
+
+.success {
+    color: var(--color-task-done);
+    background: color-mix(in srgb, var(--color-task-done) 12%, white);
+    border-color: var(--color-task-done);
+}
+
 .notStarted {
     color: var(--color-task-not-started);
     background: color-mix(in srgb, var(--color-task-not-started) 12%, white);

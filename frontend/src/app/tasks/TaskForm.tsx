@@ -121,7 +121,7 @@ export function TaskForm({ currentUser, onClose, onSuccess }: TaskFormProps) {
                 managerId:    manager.id,
                 status:       status as TaskRequest['status'],
                 active,
-                dateLimit:    dateLimit    || undefined,
+                dateLimit:    dateLimit ? `${dateLimit}T00:00:00` : undefined,
                 steps:        steps.length   > 0 ? steps     : undefined,
                 memberIds:    memberIds.length > 0 ? memberIds : undefined,
             };

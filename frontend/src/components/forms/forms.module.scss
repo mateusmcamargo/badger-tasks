@@ -116,15 +116,29 @@ button.button {
     cursor: pointer;
     transition: .2s ease;
 
+    svg {
+        width: 1.8rem;
+        height: 1.8rem;
+    }
+
+    &.save {
+        background-color: var(--color-pallete-orange);
+    }
+
     &.close {
         width: 3.6rem;
         background: none;
-        color: var(--color-task-not-started);
+        color: var(--color-pallete-blue-light);
         cursor: pointer;
         transition: .2s ease;
 
+        svg {
+            width: 2.4rem;
+            height: 2.4rem;
+        }
+
         &:hover {
-            background-color: var(--color-pallete-blue-light);
+            background-color: var(--color-task-not-started);
         }
     }
 

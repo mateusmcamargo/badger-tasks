@@ -7,14 +7,22 @@ import { AREA_BADGES, STATUS_BADGES } from '@/utils/taskHelpers';
 import { isCaptain, isMember, UserSession } from '@/utils/auth';
 
 type TaskCardProps = {
-    task: Task;
-    currentUser: UserSession | null;
-    handleTakeOnTask: (id: string) => void;
-    handleAssignTask: ( id: string) => void;
-    viewMode?: 'column' | 'grid';
+    task:               Task;
+    currentUser:        UserSession | null;
+    handleTakeOnTask:   (id: string) => void;
+    handleAssignTask:   ( id: string) => void;
+    onOpenTask:         (task: Task) => void;
+    viewMode?:          'column' | 'grid';
 }
 
-export function TaskCard({task, currentUser, handleTakeOnTask, handleAssignTask, viewMode}: TaskCardProps) {
+export function TaskCard({
+    task,
+    currentUser,
+    handleTakeOnTask,
+    handleAssignTask,
+    onOpenTask,
+    viewMode
+}: TaskCardProps) {
 
     const userIsAssigned     = task.assignedTo.some(user => user.id === currentUser?.id);
     const userIsLinked       = currentUser?.id === task.leader?.id   ||
@@ -26,7 +34,7 @@ export function TaskCard({task, currentUser, handleTakeOnTask, handleAssignTask,
     const userCanAssignOther = !isMember() && (isCaptain() || userHasSameArea);
 
     return (
-        <div className={styles.task}>
+        <div className={styles.task} onClick={() => onOpenTask(task)}>
             <div className={styles.taskHeader}>
                 <div>
                     {viewMode === 'grid' && (
@@ -125,7 +133,7 @@ export function TaskCard({task, currentUser, handleTakeOnTask, handleAssignTask,
                             </button>
                         ) : userCanAssignOther ? (
                             <button
-                                onClick={() => handleAssignTask(task.id)}
+                                onClick={(e) => { e.stopPropagation(); handleAssignTask(task.id); }}
                                 className={styles.taskAssignButton}
                             >
                                 <UserPlus/>
@@ -133,7 +141,7 @@ export function TaskCard({task, currentUser, handleTakeOnTask, handleAssignTask,
                             </button>
                         ) : userCanSelfAssign ? (
                             <button
-                                onClick={() => handleTakeOnTask(task.id)}
+                                onClick={(e) => { e.stopPropagation(); handleTakeOnTask(task.id); }}
                                 className={styles.taskAssignButton}
                             >
                                 <Handshake/>

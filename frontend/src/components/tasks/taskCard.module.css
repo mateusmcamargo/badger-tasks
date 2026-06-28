@@ -8,6 +8,7 @@ div.task {
   padding: 2rem;
   transition: 0.2s ease;
   width: 100%;
+  cursor: pointer;
 }
 div.task:hover {
   border-color: var(--color-input-border-hover);

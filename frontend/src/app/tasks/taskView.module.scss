@@ -1,0 +1,265 @@
+// TaskView-specific styles.
+// Overlay, panel, header, headerError, panelBody, and panelActions
+// are provided by floatingPanel.module.scss.
+
+// ── Member view ─────────────────────────────────────────────
+
+div.memberView {
+    display:        flex;
+    flex-direction: column;
+    gap:            1.6rem;
+    padding:        2rem;
+
+    h1 {
+        flex:          1;
+        font-size:     2rem;
+        font-weight:   600;
+        color:         var(--color-pallete-blue-dark);
+        white-space:   nowrap;
+        overflow:      hidden;
+        text-overflow: ellipsis;
+    }
+
+    div.description {
+        display:          flex;
+        flex-direction:   column;
+        gap:              .4rem;
+        padding:          1rem;
+        border-radius:    1rem;
+        background-color: #e4e8ef;
+
+        h3 {
+            font-size:   1.6rem;
+            font-weight: 600;
+            color:       var(--color-pallete-blue-dark);
+        }
+
+        p {
+            font-size: 1.4rem;
+            color:     var(--color-pallete-blue-dark);
+        }
+    }
+
+    div.badgeColumn {
+        display:        flex;
+        flex-direction: column;
+        gap:            1.2rem;
+
+        div.badgeItem {
+            display: flex;
+
+            div.badgeTitle {
+                display:         flex;
+                align-items:     center;
+                justify-content: flex-start;
+                gap:             .8rem;
+                width:           25%;
+
+                span {
+                    font-size:   1.4rem;
+                    font-weight: 500;
+                    color:       var(--color-pallete-blue-dark);
+                }
+
+                svg {
+                    width:  1.6rem;
+                    height: 1.6rem;
+                    color:  var(--color-pallete-blue-dark);
+                }
+            }
+
+            span.date {
+                display:         flex;
+                align-items:     center;
+                justify-content: flex-start;
+                gap:             1rem;
+                font-size:       1.4rem;
+                font-weight:     500;
+                letter-spacing:  .2px;
+            }
+        }
+    }
+
+    div.stepsSection {
+        display:        flex;
+        flex-direction: column;
+        gap:            1rem;
+
+        div.stepsSectionHeader {
+            display:         flex;
+            align-items:     center;
+            justify-content: space-between;
+
+            h3 {
+                font-size:   1.4rem;
+                font-weight: 600;
+                color:       var(--color-pallete-blue-dark);
+            }
+
+            span.stepsProgress {
+                font-size:   1.3rem;
+                font-weight: 600;
+                color:       var(--color-label);
+            }
+        }
+
+        p.noSteps {
+            font-size: 1.4rem;
+            color:     var(--color-label);
+        }
+
+        ul.stepsList {
+            display:        flex;
+            flex-direction: column;
+            gap:            .8rem;
+            list-style:     none;
+
+            li.stepItem {
+                display:       flex;
+                align-items:   flex-start;
+                gap:           1rem;
+                padding:       1.2rem;
+                border:        2px solid var(--color-input-border);
+                border-radius: .8rem;
+                transition:    background-color 0.15s ease, border-color 0.15s ease;
+
+                &.stepDone {
+                    background-color: var(--color-task-done-light, #f0fdf4);
+                    border-color:     var(--color-task-done, #16a34a);
+
+                    span.stepName {
+                        text-decoration: line-through;
+                        color:           var(--color-label);
+                    }
+                }
+
+                button.stepToggle {
+                    display:     flex;
+                    align-items: center;
+                    background:  none;
+                    border:      none;
+                    cursor:      pointer;
+                    color:       var(--color-pallete-blue-dark);
+                    padding:     0;
+                    flex-shrink: 0;
+                    transition:  color 0.2s ease;
+
+                    &:hover:not(:disabled) { color: var(--color-input-border-hover); }
+                    &:disabled             { cursor: not-allowed; color: var(--color-input-border); }
+                }
+
+                div.stepContent {
+                    display:        flex;
+                    flex-direction: column;
+                    gap:            .3rem;
+
+                    span.stepName {
+                        font-size:   1.4rem;
+                        font-weight: 500;
+                        color:       var(--color-pallete-blue-dark);
+                    }
+
+                    span.stepDesc {
+                        font-size: 1.3rem;
+                        color:     var(--color-label);
+                    }
+                }
+            }
+        }
+    }
+
+    p.notAssignedNote {
+        display:          inline;
+        font-size:        1.4rem;
+        color:            var(--color-pallete-orange-dark);
+        background:       color-mix(in srgb, var(--color-task-in-progress) 12%, white);
+        border:           2px solid var(--color-task-in-progress);
+        border-radius:    1rem;
+        padding:          1rem;
+
+        svg {
+            width:    1.8rem;
+            height:   1.8rem;
+            margin-right: .6rem;
+            position: relative;
+            top:      4px;
+        }
+    }
+}
+
+// ── Admin form body (for future AdminTaskView path) ──────────
+// Mirrors taskForm.module.scss. Consider extracting to a shared
+// _form-body.scss partial once the admin view is built.
+
+form.formBody {
+    display:        flex;
+    flex-direction: column;
+    gap:            1.6rem;
+    padding:        2rem 2rem 0 2rem;
+}
+
+div.row {
+    display:               grid;
+    grid-template-columns: 1fr 1fr;
+    gap:                   1.2rem;
+}
+
+div.activeToggle {
+    display:     flex;
+    align-items: center;
+    gap:         1rem;
+
+    label {
+        font-size:   1.4rem;
+        font-weight: 500;
+        color:       var(--color-label);
+        cursor:      pointer;
+    }
+
+    input[type='checkbox'] {
+        width:  1.8rem;
+        height: 1.8rem;
+        cursor: pointer;
+    }
+}
+
+h3.sectionTitle {
+    font-size:   1.4rem;
+    font-weight: 600;
+    color:       var(--color-pallete-blue-dark);
+}
+
+ul.tagList {
+    display:    flex;
+    flex-wrap:  wrap;
+    gap:        .6rem;
+    list-style: none;
+}
+
+div.stepRow {
+    display:     flex;
+    align-items: center;
+    gap:         .8rem;
+}
+
+span.stepPriority {
+    font-size:   1.3rem;
+    font-weight: 600;
+    color:       var(--color-label);
+    width:       2rem;
+    text-align:  center;
+    flex-shrink: 0;
+}
+
+div.stepFields {
+    display:        flex;
+    flex-direction: column;
+    gap:            .4rem;
+    flex:           1;
+}
+
+p.error {
+    font-size:  1.3rem;
+    color:      var(--color-task-not-started);
+    text-align: center;
+}
