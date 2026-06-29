@@ -40,7 +40,7 @@ export default function Field({
         <div className={`${styles.field} ${error ? styles.fieldError : ''}`}>
             <label htmlFor={id}>
                 {label}
-                {required && <span className={styles.required}>*</span>}
+                {required && label != '' && <span className={styles.required}>*</span>}
             </label>
 
             <div className={styles.inputWrapper}>

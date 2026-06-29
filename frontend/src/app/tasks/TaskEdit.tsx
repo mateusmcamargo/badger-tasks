@@ -2,20 +2,21 @@
 
 import { useState, useEffect } from 'react';
 import {
-    X, Plus, Trash2, NotebookPen, Bookmark,
+    X, NotebookPen, Bookmark,
     BriefcaseBusiness, UserCog, UserStar, Hourglass,
     CopyCheck, UserSearch, PenLine,
-    CheckSquare, Square, ShieldCheck,
+    ShieldCheck, Save,
 } from 'lucide-react';
 
-import styles from './taskForm.module.scss';
+import styles from './taskEdit.module.scss';
 import { FloatingPanel } from '@/components/floatingPanel/FloatingPanel';
 import Field from '@/components/forms/Field';
 import SelectField from '@/components/forms/SelectField';
 import TextAreaField from '@/components/forms/TextAreaField';
 import { Button } from '@/components/forms/Button';
+import { StepList, StepRow } from '@/components/stepList/StepList';
 import { Task } from '@/types/Task';
-import { TaskRequest, StepRequest, updateTask, approveTask } from '@/services/taskService';
+import { TaskRequest, updateTask, approveTask } from '@/services/taskService';
 import { assignMember, removeMember as removeMemberService } from '@/services/taskService';
 import { createStep, updateStep as updateStepService, deleteStep } from '@/services/stepService';
 import { getAreas } from '@/services/areaService';
@@ -34,10 +35,6 @@ type TaskEditProps = {
     onClose:     () => void;
     onSuccess:   () => void;
 };
-
-type StepEditRow =
-    | { mode: 'existing'; id: string; name: string; description: string; done: boolean; priority: number; deleted: boolean; }
-    | { mode: 'new';                  name: string; description: string; done: false;   priority: number; };
 
 const STATUS_OPTIONS = [
     { value: 'NOT_STARTED', label: 'Não Iniciada' },
@@ -67,17 +64,16 @@ export function TaskEdit({ task, currentUser, onClose, onSuccess }: TaskEditProp
     const [manager,    setManager]    = useState<User | null>(null);
     const [members,    setMembers]    = useState<User[]>([]);
 
-    // track IDs currently assigned, seeded from task
     const [assignedIds,      setAssignedIds]      = useState<string[]>(
         (task.assignedTo ?? []).map(u => u.id)
     );
     const [selectedMemberId, setSelectedMemberId] = useState('');
 
-    const [steps, setSteps] = useState<StepEditRow[]>(
+    const [steps, setSteps] = useState<StepRow[]>(
         [...(task.steps ?? [])]
             .sort((a, b) => a.priority - b.priority)
             .map(s => ({
-                mode:        'existing',
+                mode:        'existing' as const,
                 id:          s.id,
                 name:        s.name,
                 description: s.description ?? '',
@@ -104,41 +100,14 @@ export function TaskEdit({ task, currentUser, onClose, onSuccess }: TaskEditProp
         }).catch(() => {});
     }, [areaId]);
 
-    // when captain changes area, reset member assignments
     function handleAreaChange(newAreaId: string) {
         setAreaId(newAreaId);
         setAssignedIds([]);
         setSelectedMemberId('');
     }
 
-    // step handlers
-    function addStep() {
-        const visibleCount = steps.filter(s => !(s.mode === 'existing' && s.deleted)).length;
-        setSteps(prev => [...prev, {
-            mode:        'new',
-            name:        '',
-            description: '',
-            done:        false,
-            priority:    visibleCount + 1,
-        }]);
-    }
-
-    function removeStep(index: number) {
-        setSteps(prev => prev.map((s, i) => {
-            if (i !== index) return s;
-            if (s.mode === 'existing') return { ...s, deleted: true };
-            return s; // will be filtered below for 'new' rows
-        }).filter((s, i) => !(i === index && s.mode === 'new')));
-    }
-
-    function updateStepField(index: number, field: 'name' | 'description', value: string) {
-        setSteps(prev => prev.map((s, i) => i === index ? { ...s, [field]: value } : s));
-    }
-
-    // member handlers
     function addMember(id: string) {
         if (!id || assignedIds.includes(id)) return;
-        // prevent self-assignment for all admin roles
         if (id === currentUser?.id) return;
         setAssignedIds(prev => [...prev, id]);
         setSelectedMemberId('');
@@ -186,7 +155,6 @@ export function TaskEdit({ task, currentUser, onClose, onSuccess }: TaskEditProp
                         await updateStepService(s.id, { name: s.name, description: s.description, priority: s.priority });
                     }
                 } else {
-                    // new step
                     await createStep(task.id, { name: s.name, description: s.description, priority: s.priority });
                 }
             }));
@@ -228,25 +196,21 @@ export function TaskEdit({ task, currentUser, onClose, onSuccess }: TaskEditProp
 
     const assignedMembers  = members.filter(u => assignedIds.includes(u.id));
     const availableMembers = members.filter(u => !assignedIds.includes(u.id) && u.id !== currentUser?.id);
-
-    const memberOptions = availableMembers.map(u => ({ value: u.id, label: u.name }));
-
-    const visibleSteps = steps
-        .map((s, index) => ({ s, index }))
-        .filter(({ s }) => !(s.mode === 'existing' && s.deleted));
+    const memberOptions    = availableMembers.map(u => ({ value: u.id, label: u.name }));
 
     const formFooter = (
-        <div className={styles.formActions}>
+        <div className={styles.panelActions}>
             <Button
-            label='Cancelar'
-            variant='secondary'
-            onClick={onClose}
-        />
+                label='Cancelar'
+                icon={X}
+                variant='secondary'
+                onClick={onClose}
+            />
             {isInRevision && (
                 <Button
-                    label='Aprovar Tarefa'
+                    label='Aprovar'
                     icon={ShieldCheck}
-                    variant='save'
+                    variant='approve'
                     loading={loading}
                     loadingLabel='Aprovando...'
                     onClick={handleApprove}
@@ -254,6 +218,7 @@ export function TaskEdit({ task, currentUser, onClose, onSuccess }: TaskEditProp
             )}
             <Button
                 label='Salvar'
+                icon={Save}
                 loadingLabel='Salvando...'
                 type='submit'
                 loading={loading}
@@ -383,9 +348,9 @@ export function TaskEdit({ task, currentUser, onClose, onSuccess }: TaskEditProp
                     onChange={addMember}
                     options={memberOptions}
                     placeholder={
-                        !areaId                       ? 'Selecione a área primeiro'          :
-                        members.length === 0          ? 'Nenhum membro disponível'            :
-                        availableMembers.length === 0 ? 'Todos os membros foram adicionados'  :
+                        !areaId                       ? 'Selecione a área primeiro'             :
+                        members.length === 0          ? 'Nenhum membro disponível'              :
+                        availableMembers.length === 0 ? 'Todos os membros foram adicionados'    :
                         'Adicionar membro'
                     }
                     disabled={!areaId || availableMembers.length === 0}
@@ -408,48 +373,10 @@ export function TaskEdit({ task, currentUser, onClose, onSuccess }: TaskEditProp
                     </ul>
                 )}
 
-                <h3 className={styles.sectionTitle}>Passos</h3>
-
-                {visibleSteps.map(({ s, index }) => (
-                    <div key={s.mode === 'existing' ? s.id : `new-${index}`} className={styles.stepRow}>
-                        <span className={styles.stepPriority}>
-                            {s.mode === 'existing' && s.done
-                                ? <CheckSquare size={16} style={{ color: 'var(--color-task-done, #16a34a)' }}/>
-                                : <Square size={16} style={{ color: 'var(--color-label)' }}/>
-                            }
-                        </span>
-                        <div className={styles.stepFields}>
-                            <Field
-                                id={`step-name-${index}`}
-                                label=''
-                                value={s.name}
-                                onChange={v => updateStepField(index, 'name', v)}
-                                placeholder='Nome do passo'
-                                required
-                            />
-                            <Field
-                                id={`step-desc-${index}`}
-                                label=''
-                                value={s.description}
-                                onChange={v => updateStepField(index, 'description', v)}
-                                placeholder='Descrição (opcional)'
-                            />
-                        </div>
-                        <Button
-                            type='button'
-                            variant='remove'
-                            icon={Trash2}
-                            onClick={() => removeStep(index)}
-                        />
-                    </div>
-                ))}
-
-                <Button
-                    label='Adicionar Passo'
-                    type='button'
-                    variant='outline'
-                    icon={Plus}
-                    onClick={addStep}
+                <StepList
+                    steps={steps}
+                    onChange={setSteps}
+                    variant='edit'
                 />
 
             </form>

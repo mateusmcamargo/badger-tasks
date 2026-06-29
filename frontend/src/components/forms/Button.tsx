@@ -5,7 +5,8 @@ type ButtonProps = {
     label?:        string;
     onClick?:      () => void;
     type?:         'button' | 'submit' | 'reset';
-    variant?:      'primary' | 'secondary' | 'outline' | 'add' | 'remove' | 'close' | 'save' | 'cancel';
+    variant?:      'primary' | 'secondary' | 'outline' | 'approve' |
+                   'add' | 'remove' | 'close' | 'save' | 'cancel';
     loading?:      boolean;
     loadingLabel?: string;
     disabled?:     boolean;

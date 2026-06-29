@@ -123,6 +123,24 @@ button.button {
 
     &.save {
         background-color: var(--color-pallete-orange);
+        
+        &:hover {
+            background-color: var(--color-pallete-orange-light);
+        }
+        
+        &:active {
+            background-color: var(--color-pallete-orange-dark);
+        }
+    }
+
+    &.approve {
+        color: var(--color-blue-dark);
+        background: color-mix(in srgb, var(--color-task-done) 80%, white);
+        
+        &:hover {
+            color: var(--color-pallete-blue-dark);
+            background-color: var(--color-task-done);
+        }
     }
 
     &.close {
@@ -138,6 +156,17 @@ button.button {
         }
 
         &:hover {
+            background-color: var(--color-task-not-started);
+        }
+    }
+
+    &.remove {
+        padding: 0 1rem;
+        height: 3.6rem;
+        color: var(--color-pallete-blue-dark);
+
+        &:hover {
+            color: var(--color-pallete-blue-light);
             background-color: var(--color-task-not-started);
         }
     }
