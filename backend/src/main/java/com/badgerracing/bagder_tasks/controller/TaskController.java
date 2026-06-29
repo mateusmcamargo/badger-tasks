@@ -10,6 +10,7 @@ import com.badgerracing.bagder_tasks.service.TaskService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,21 +24,25 @@ public class TaskController {
     private final TaskService taskService;
 
     @GetMapping
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<TaskFilterResponse> getTasks(TaskFilterRequest filter, Authentication authentication) {
         return ResponseEntity.ok(taskService.getTasksWithFilters(filter, authentication));
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<TaskResponse> getTask(@PathVariable UUID id, Authentication authentication) {
         return ResponseEntity.ok(taskService.getById(id, authentication));
     }
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('CAPTAIN', 'MANAGER', 'LEADER')")
     public ResponseEntity<TaskResponse> createTask(@Valid @RequestBody TaskRequest request, Authentication authentication) {
         return ResponseEntity.ok(taskService.create(request, authentication));
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('CAPTAIN', 'MANAGER', 'LEADER')")
     public ResponseEntity<TaskResponse> updateTask(
         @PathVariable UUID id,
         @Valid @RequestBody TaskRequest request,
@@ -47,27 +52,32 @@ public class TaskController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('CAPTAIN', 'MANAGER')")
     public ResponseEntity<Void> deleteTask(@PathVariable UUID id, Authentication authentication) {
         taskService.delete(id, authentication);
         return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("/{id}/start")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<TaskResponse> startTask(@PathVariable UUID id, Authentication authentication) {
         return ResponseEntity.ok(taskService.start(id, authentication));
     }
 
     @PatchMapping("/{id}/submit")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<TaskResponse> submitTask(@PathVariable UUID id, Authentication authentication) {
         return ResponseEntity.ok(taskService.submit(id, authentication));
     }
 
     @PatchMapping("/{id}/approve")
+    @PreAuthorize("hasAnyRole('CAPTAIN', 'MANAGER')")
     public ResponseEntity<TaskResponse> approveTask(@PathVariable UUID id, Authentication authentication) {
         return ResponseEntity.ok(taskService.approve(id, authentication));
     }
 
     @PostMapping("/members")
+    @PreAuthorize("hasAnyRole('CAPTAIN', 'MANAGER', 'LEADER')")
     public ResponseEntity<TaskMemberResponse> assignMember(
         @Valid @RequestBody
         TaskMemberRequest request,
@@ -77,6 +87,7 @@ public class TaskController {
     }
 
     @DeleteMapping("/{taskId}/members/{userId}")
+    @PreAuthorize("hasAnyRole('CAPTAIN', 'MANAGER', 'LEADER')")
     public ResponseEntity<Void> removeMember(
         @PathVariable UUID taskId,
         @PathVariable UUID userId,
