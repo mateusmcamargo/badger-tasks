@@ -4,6 +4,7 @@ import com.badgerracing.bagder_tasks.dto.response.StepResponse;
 import com.badgerracing.bagder_tasks.service.StepService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +18,7 @@ public class StepController {
     private final StepService stepService;
 
     @PatchMapping("/{id}/done")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<StepResponse> toggleDone(
         @PathVariable UUID id,
         @RequestParam boolean done,
