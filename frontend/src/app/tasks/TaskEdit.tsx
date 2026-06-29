@@ -117,8 +117,7 @@ export function TaskEdit({ task, currentUser, onClose, onSuccess }: TaskEditProp
         setAssignedIds(prev => prev.filter(m => m !== id));
     }
 
-    async function handleSubmit(e: React.FormEvent) {
-        e.preventDefault();
+    async function handleSave() {
         setError(null);
 
         const visibleSteps = steps.filter(s => !(s.mode === 'existing' && s.deleted));
@@ -219,9 +218,10 @@ export function TaskEdit({ task, currentUser, onClose, onSuccess }: TaskEditProp
             <Button
                 label='Salvar'
                 icon={Save}
+                variant='save'
                 loadingLabel='Salvando...'
-                type='submit'
                 loading={loading}
+                onClick={handleSave}
             />
         </div>
     );
@@ -236,7 +236,7 @@ export function TaskEdit({ task, currentUser, onClose, onSuccess }: TaskEditProp
             onClose={onClose}
             footer={formFooter}
         >
-            <form id='taskEditForm' onSubmit={handleSubmit} className={styles.formBody}>
+            <form id='taskEditForm' className={styles.formBody}>
 
                 <Field
                     icon={NotebookPen}

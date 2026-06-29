@@ -5,6 +5,7 @@ import {
     X, NotebookPen, Bookmark,
     BriefcaseBusiness, UserCog, UserStar, Hourglass,
     CopyCheck, UserSearch, SquarePen,
+    Save,
 } from 'lucide-react';
 
 import styles from './taskForm.module.scss';
@@ -95,8 +96,7 @@ export function TaskForm({ currentUser, onClose, onSuccess }: TaskFormProps) {
     const areaOptions      = areas.map(a => ({ value: a.id, label: AREA_BADGES[a.name]?.label ?? a.name }));
     const categoryOptions  = categories.map(c => ({ value: c.id, label: c.name }));
 
-    async function handleSubmit(e: React.FormEvent) {
-        e.preventDefault();
+    async function handleSave() {
         setError(null);
 
         if (!leader)  { setError('Nenhum líder encontrado para esta área');  return; }
@@ -136,7 +136,7 @@ export function TaskForm({ currentUser, onClose, onSuccess }: TaskFormProps) {
     const formFooter = (
         <div className={styles.formActions}>
             <Button label='Cancelar' icon={X} variant='secondary' onClick={onClose} />
-            <Button label='Criar Tarefa' loadingLabel='Criando...' type='submit' loading={loading} />
+            <Button label='Criar Tarefa' icon={Save} variant='save' loadingLabel='Criando...' loading={loading} onClick={handleSave} />
         </div>
     );
 
@@ -150,7 +150,7 @@ export function TaskForm({ currentUser, onClose, onSuccess }: TaskFormProps) {
             onClose={onClose}
             footer={formFooter}
         >
-            <form onSubmit={handleSubmit} className={styles.formBody}>
+            <form className={styles.formBody}>
 
                 <Field
                     icon={NotebookPen}
