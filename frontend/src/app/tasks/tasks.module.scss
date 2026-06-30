@@ -141,14 +141,24 @@ div.columns {
             gap: 1rem;
 
             padding: 1rem 0;
-            font-size: 1.6rem;
-            font-weight: 700;
-            text-transform: uppercase;
+            
             border-bottom: 2px solid var(--color-input-border);
 
-            svg {
-                width: 1.8rem;
-                height: 1.8rem;
+            div.status {
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+                
+                svg {
+                    width: 1.8rem;
+                    height: 1.8rem;
+                }
+            }
+
+            span {
+                font-size: 1.6rem;
+                font-weight: 700;
+                text-transform: uppercase;
             }
 
             &.notStarted { color: var(--color-task-not-started); svg { color: var(--color-task-not-started); } }
@@ -173,8 +183,9 @@ div.columns {
             text-align: center;
 
             p {
-                font-size: 1.3rem;
-                color: var(--color-label, #64748b);
+                font-size: 1.6rem;
+                font-weight: 600;
+                color: var(--color-pallete-blue);
             }
         }
     }

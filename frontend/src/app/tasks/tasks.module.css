@@ -126,14 +126,21 @@ div.columns div.column div.columnHeader {
   align-items: center;
   gap: 1rem;
   padding: 1rem 0;
+  border-bottom: 2px solid var(--color-input-border);
+}
+div.columns div.column div.columnHeader div.status {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+div.columns div.column div.columnHeader div.status svg {
+  width: 1.8rem;
+  height: 1.8rem;
+}
+div.columns div.column div.columnHeader span {
   font-size: 1.6rem;
   font-weight: 700;
   text-transform: uppercase;
-  border-bottom: 2px solid var(--color-input-border);
-}
-div.columns div.column div.columnHeader svg {
-  width: 1.8rem;
-  height: 1.8rem;
 }
 div.columns div.column div.columnHeader.notStarted {
   color: var(--color-task-not-started);
@@ -174,6 +181,7 @@ div.columns div.column div.columnEmpty {
   text-align: center;
 }
 div.columns div.column div.columnEmpty p {
-  font-size: 1.3rem;
-  color: var(--color-label, #64748b);
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: var(--color-pallete-blue);
 }/*# sourceMappingURL=tasks.module.css.map */

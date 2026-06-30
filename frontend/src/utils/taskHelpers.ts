@@ -160,3 +160,7 @@ export const USER_BADGES: Record<RoleName, BadgeData> = {
         icon: User,
     },
 };
+
+export function getStatusLabel(status: Task['status']): string | undefined {
+    return STATUS_BADGES[status].label;
+}

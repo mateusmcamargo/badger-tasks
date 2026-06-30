@@ -7,7 +7,7 @@ import styles from './tasks.module.scss';
 import { Task, TaskFilter } from '@/types/Task';
 import { assignMember, getTasks } from '@/services/taskService';
 import { TaskCard } from '@/components/tasks/TaskCard';
-import { STATUS_BADGES } from '@/utils/taskHelpers';
+import { getStatusLabel, STATUS_BADGES } from '@/utils/taskHelpers';
 import { Header } from '@/components/header/Header';
 import { getSession, hasAdminAccess, isMember, logout, UserSession } from '@/utils/auth';
 import { Loading } from '@/components/loading/Loading';
@@ -181,57 +181,60 @@ export default function TasksPage() {
                 <main className={`${styles.main} ${statusFilter === 'ALL' ? styles.column : styles.grid}`}>
                     {statusFilter === 'ALL' ? (
                         <div className={styles.columns}>
-                            {(['NOT_STARTED', 'IN_PROGRESS', 'IN_REVISION', 'DONE'] as Task['status'][]).map(status => (
-                                <div key={status} className={styles.column}>
-                                    <div
-                                        className={`
-                                            ${styles.columnHeader}
-                                            ${styles[STATUS_BADGES[status].className]}
-                                        `}
-                                    >
+                        {(['NOT_STARTED', 'IN_PROGRESS', 'IN_REVISION', 'DONE'] as Task['status'][]).map(status => (
+                            <div key={status} className={styles.column}>
+                                <div
+                                    className={`
+                                        ${styles.columnHeader}
+                                        ${styles[STATUS_BADGES[status].className]}
+                                    `}
+                                >
+                                    <div className={styles.status}>
                                         {columnIcon[status]}
-                                        {STATUS_BADGES[status].label}
+                                        <span>{STATUS_BADGES[status].label}:</span>
                                     </div>
-                                    <div className={styles.columnTasks}>
-                                        {tasks.filter(t => t.status === status).length === 0 ? (
-                                            <div className={styles.columnEmpty}>
-                                                <p>Nenhuma tarefa</p>
-                                            </div>
-                                        ) : (
-                                            <>
-                                            {isMember() ? (
-                                                tasks.filter(
-                                                    task => task.status === status &&
-                                                         task.area.name === currentUser?.area
-                                                ).map(task => (
-                                                    <TaskCard
-                                                        key={task.id}
-                                                        task={task}
-                                                        handleAssignTask={handleAssignTask}
-                                                        handleTakeOnTask={handleTakeOnTask}
-                                                        onOpenTask={handleOpenTask}
-                                                        currentUser={currentUser}
-                                                        viewMode={'column'}
-                                                    />
-                                                ))
-                                            ) : (
-                                                tasks.filter(task => task.status === status).map(task => (
-                                                    <TaskCard
-                                                        key={task.id}
-                                                        task={task}
-                                                        handleAssignTask={handleAssignTask}
-                                                        handleTakeOnTask={handleTakeOnTask}
-                                                        onOpenTask={handleOpenTask}
-                                                        currentUser={currentUser}
-                                                        viewMode={'column'}
-                                                    />
-                                                ))
-                                            )}
-                                            </>
-                                        )}
-                                    </div>
+                                    <span>{counts[status]}</span>
                                 </div>
-                            ))}
+                                <div className={styles.columnTasks}>
+                                    {tasks.filter(t => t.status === status).length === 0 ? (
+                                        <div className={styles.columnEmpty}>
+                                            <p>Nenhuma tarefa</p>
+                                        </div>
+                                    ) : (
+                                        <>
+                                        {isMember() ? (
+                                            tasks.filter(
+                                                task => task.status === status &&
+                                                        task.area.name === currentUser?.area
+                                            ).map(task => (
+                                                <TaskCard
+                                                    key={task.id}
+                                                    task={task}
+                                                    handleAssignTask={handleAssignTask}
+                                                    handleTakeOnTask={handleTakeOnTask}
+                                                    onOpenTask={handleOpenTask}
+                                                    currentUser={currentUser}
+                                                    viewMode={'column'}
+                                                />
+                                            ))
+                                        ) : (
+                                            tasks.filter(task => task.status === status).map(task => (
+                                                <TaskCard
+                                                    key={task.id}
+                                                    task={task}
+                                                    handleAssignTask={handleAssignTask}
+                                                    handleTakeOnTask={handleTakeOnTask}
+                                                    onOpenTask={handleOpenTask}
+                                                    currentUser={currentUser}
+                                                    viewMode={'column'}
+                                                />
+                                            ))
+                                        )}
+                                        </>
+                                    )}
+                                </div>
+                            </div>
+                        ))}
                         </div>
                     ) : filteredTasks.length === 0 ? (
                         <div className={styles.empty}>
