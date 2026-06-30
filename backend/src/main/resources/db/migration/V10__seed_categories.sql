@@ -1,0 +1,16 @@
+INSERT INTO categories (id, name, description, created_at, updated_at) VALUES
+    ('10000000-0000-0000-0000-000000000001', 'Manufatura',      'Construção e fabricação de peças',                              NOW(), NOW()),
+    ('10000000-0000-0000-0000-000000000002', 'Simulação',       'CFD e análise computacional',                                   NOW(), NOW()),
+    ('10000000-0000-0000-0000-000000000003', 'Manutenção',      'Revisão e troca de componentes',                                NOW(), NOW()),
+    ('10000000-0000-0000-0000-000000000004', 'Soldagem',        'Processos de soldagem e metalurgia',                            NOW(), NOW()),
+    ('10000000-0000-0000-0000-000000000005', 'Setup',           'Ajustes e calibrações do veículo',                              NOW(), NOW()),
+    ('10000000-0000-0000-0000-000000000006', 'Eletrônica',      'Sistemas elétricos e eletrônicos',                              NOW(), NOW()),
+    ('10000000-0000-0000-0000-000000000007', 'Programação',     'Desenvolvimento de software embarcado e dashboards',            NOW(), NOW()),
+    ('10000000-0000-0000-0000-000000000008', 'Documentação',    'Relatórios e registros técnicos',                               NOW(), NOW()),
+    ('10000000-0000-0000-0000-000000000009', 'Reunião',         'Reuniões internas e alinhamentos de equipe',                    NOW(), NOW()),
+    ('10000000-0000-0000-0000-000000000010', 'Análise de Dados','Processamento e interpretação de dados de telemetria e testes', NOW(), NOW()),
+    ('10000000-0000-0000-0000-000000000011', 'Design',          'Projeto e modelagem CAD de componentes',                        NOW(), NOW()),
+    ('10000000-0000-0000-0000-000000000012', 'Testes',          'Testes em pista e validação de sistemas',                       NOW(), NOW()),
+    ('10000000-0000-0000-0000-000000000013', 'Evento',          'Preparação e participação em etapas e competições',             NOW(), NOW()),
+    ('10000000-0000-0000-0000-000000000014', 'Propaganda',      'Comunicação, identidade visual e redes sociais',                NOW(), NOW()),
+    ('10000000-0000-0000-0000-000000000015', 'Patrocínio',      'Prospecção e relacionamento com patrocinadores',                NOW(), NOW());
