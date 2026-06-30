@@ -111,6 +111,8 @@ f880008f8c05  postgres:16-alpine  "docker-en…"  14 sec...  Up 14...  0.0.0.0:5
 ./mvnw spring-boot:run
 ```
 
+> A partir daqui, o banco deve ser populado com dados pré estabelecidos
+
 ---
 
 ### Frontend
@@ -128,6 +130,45 @@ cd frontend
 ```bash
 npm install
 ```
+
+3. Abra o sistema em:
+
+```bash
+http://localhost:3000/login
+```
+
+4. Faça login com qualquer um dos usuários:
+
+> **CAPITÃO**
+> 
+> ana@badger.com
+> 
+> senha123
+
+> **GESTOR AERODINÂMICA**
+> 
+> bruno@badger.com
+> 
+> senha123
+
+> **MEMBRO AERODINÂMICA**
+> 
+> lucas@badger.com
+> 
+> senha123
+
+> **LÍDER MARKETING**
+> 
+> joao@badger.com
+> 
+> senha123
+
+> **MEMBRO MARKETING**
+> 
+> helena@badger.com
+> 
+> senha123
+
 
 > As dependências usadas no último build seguem as versões:
 
