@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { UserPlus, Search, UserCheck } from 'lucide-react';
+import { UserPlus, Search, UserCheck, Bookmark, MessageCircleDashed } from 'lucide-react';
 
 import styles from './taskAssign.module.scss';
 import { FloatingPanel } from '@/components/floatingPanel/FloatingPanel';
@@ -9,6 +9,11 @@ import { assignMember } from '@/services/taskService';
 import { getAssignableMembers, AssignableUser } from '@/services/userService';
 import { Task } from '@/types/Task';
 import { UserSession } from '@/utils/auth';
+import { Badge } from '@/components/badge/Badge';
+import { AREA_BADGES } from '@/utils/taskHelpers';
+import Field from '@/components/forms/Field';
+import { getInitials } from '@/utils/userHelpers';
+import { UserAssignItem } from '@/components/userItem/UserAssignItem';
 
 type TaskAssignProps = {
     task:        Task;
@@ -16,10 +21,6 @@ type TaskAssignProps = {
     onClose:     () => void;
     onSuccess:   () => void;
 };
-
-function getInitials(name: string): string {
-    return name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
-}
 
 export function TaskAssign({ task, currentUser, onClose, onSuccess }: TaskAssignProps) {
 
@@ -79,10 +80,19 @@ export function TaskAssign({ task, currentUser, onClose, onSuccess }: TaskAssign
     const footer = (
         <div className={styles.footer}>
             <p className={styles.footerHint}>
-                {users.length === 0 && !loading
-                    ? 'Nenhum membro disponível para atribuir.'
-                    : `${users.length} membro${users.length !== 1 ? 's' : ''} disponível${users.length !== 1 ? 'is' : ''}`
-                }
+                {!loading && (
+                    <>
+                    {users.length === 0
+                        ? 'Nenhum membro disponível para atribuir.'
+                        : users.length === 1 ?
+                        'membro disponível'
+                        : 
+                        <>
+                        {`${users.length} membros disponíveis`}
+                        </>
+                    }
+                    </>
+                )}
             </p>
         </div>
     );
@@ -98,56 +108,46 @@ export function TaskAssign({ task, currentUser, onClose, onSuccess }: TaskAssign
             footer={footer}
         >
             <div className={styles.body}>
-                <p className={styles.taskName}>{task.name}</p>
+                <div className={styles.taskInfo}>
+                    <p className={styles.taskName}>{task.name}</p>
 
-                <div className={styles.searchWrapper}>
-                    <Search className={styles.searchIcon} />
-                    <input
-                        type='text'
-                        placeholder='Buscar por nome...'
-                        value={search}
-                        onChange={e => handleSearchChange(e.target.value)}
-                        className={styles.searchInput}
-                        autoFocus
-                    />
+                    <div className={styles.taskBadges}>
+                        <Badge data={AREA_BADGES[task.area.name]}/>
+                        <Badge icon={Bookmark} label={task.category.name} variant='category'/>
+                    </div>
                 </div>
+
+                <Field
+                    icon={Search}
+                    id='inputUserSeach'
+                    label=''
+                    placeholder='Busque por nome...'
+                    value={search}
+                    onChange={handleSearchChange}
+                    className={styles.searchInput}
+                    autoFocus
+                />
 
                 <div className={styles.userList}>
                     {loading ? (
                         <p className={styles.hint}>Buscando...</p>
                     ) : users.length === 0 ? (
-                        <p className={styles.hint}>Nenhum membro encontrado.</p>
+                        <p className={styles.hint}>
+                            <MessageCircleDashed/>
+                            Nenhum membro encontrado.
+                        </p>
                     ) : (
                         users.map(user => {
                             const isAssigning  = assigning === user.id;
-                            const wasAssigned  = justAssigned.has(user.id);
+                            const isAssigned  = justAssigned.has(user.id);
                             return (
-                                <div key={user.id} className={styles.userRow}>
-                                    <div className={styles.avatar}>
-                                        <span>{getInitials(user.name)}</span>
-                                    </div>
-
-                                    <div className={styles.userInfo}>
-                                        <span className={styles.userName}>{user.name}</span>
-                                        <span className={styles.taskCount}>
-                                            {user.assignedTaskCount} {user.assignedTaskCount === 1 ? 'tarefa' : 'tarefas'}
-                                        </span>
-                                    </div>
-
-                                    <button
-                                        className={`${styles.assignBtn} ${wasAssigned ? styles.assigned : ''}`}
-                                        onClick={() => handleAssign(user.id)}
-                                        disabled={isAssigning || wasAssigned}
-                                    >
-                                        {wasAssigned ? (
-                                            <><UserCheck /><span>Atribuído</span></>
-                                        ) : isAssigning ? (
-                                            <span>Salvando...</span>
-                                        ) : (
-                                            <><UserPlus /><span>Atribuir</span></>
-                                        )}
-                                    </button>
-                                </div>
+                                <UserAssignItem
+                                    key={user.id}
+                                    user={user}
+                                    onClick={() => handleAssign(user.id)}
+                                    isAssigned={isAssigned}
+                                    isAssigning={isAssigning}
+                                />
                             );
                         })
                     )}

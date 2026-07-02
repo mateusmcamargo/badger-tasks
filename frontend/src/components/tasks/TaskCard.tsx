@@ -1,4 +1,4 @@
-import { BookmarkCheck, BookmarkOff, ClockCheck, Grip, Handshake, ListChecks, ListTodo, ListX, PartyPopper, UserCheck, UserPlus } from 'lucide-react';
+import { Bookmark, BookmarkCheck, BookmarkOff, ClockCheck, Grip, Handshake, ListChecks, ListTodo, ListX, PartyPopper, UserCheck, UserPlus } from 'lucide-react';
 import styles from './taskCard.module.scss';
 
 import { Task } from '@/types/Task';
@@ -69,6 +69,7 @@ export function TaskCard({
                 <div className={styles.taskBadges}>
                     <Badge data={AREA_BADGES[task.area.name]}/>
                     <Badge
+                        icon={Bookmark}
                         label={task.category.name}
                         variant='category'
                     />

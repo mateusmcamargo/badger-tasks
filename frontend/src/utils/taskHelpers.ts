@@ -23,6 +23,7 @@ import {
 
 import { Task } from '@/types/Task';
 import { AreaName, RoleName } from '@/types/Enums';
+import { Category } from '@/types/Category';
 
 export type BadgeData = {
     label?: string;
@@ -163,4 +164,8 @@ export const USER_BADGES: Record<RoleName, BadgeData> = {
 
 export function getStatusLabel(status: Task['status']): string | undefined {
     return STATUS_BADGES[status].label;
+}
+
+export function getAreaLabel(area: Task['area']): string | undefined {
+    return AREA_BADGES[area.name].label;
 }

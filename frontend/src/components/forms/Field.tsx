@@ -1,67 +1,63 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, InputHTMLAttributes } from 'react';
 import { Eye, EyeOff, LucideIcon } from 'lucide-react';
 import styles from './forms.module.scss';
 
-type FieldProps = {
-    id:            string;
-    label:         string;
-    value:         string;
-    onChange:      (value: string) => void;
-    type?:         'text' | 'email' | 'password' | 'date' | 'number';
-    placeholder?:  string;
-    required?:     boolean;
-    autoComplete?: string;
-    disabled?:     boolean;
-    error?:        string;
-    icon?:         LucideIcon;
+type FieldProps = Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange'> & {
+    label?: string;
+    error?: string;
+    icon?: LucideIcon;
+    onChange?: (value: string) => void;
 };
 
 export default function Field({
-    id,
     label,
-    value,
-    onChange,
-    type         = 'text',
-    placeholder,
-    required     = false,
-    autoComplete,
-    disabled     = false,
     error,
     icon: Icon,
+    type = 'text',
+    onChange,
+    required,
+    ...inputProps
 }: FieldProps) {
     const [showPassword, setShowPassword] = useState(false);
 
-    const isPassword    = type === 'password';
-    const resolvedType  = isPassword ? (showPassword ? 'text' : 'password') : type;
+    const isPassword = type === 'password';
+    const resolvedType = isPassword
+        ? (showPassword ? 'text' : 'password')
+        : type;
 
     return (
-        <div className={`${styles.field} ${error ? styles.fieldError : ''}`}>
-            <label htmlFor={id}>
-                {label}
-                {required && label != '' && <span className={styles.required}>*</span>}
-            </label>
+        <div
+            className={`${styles.field} ${
+                error ? styles.fieldError : ''
+            }`}
+        >
+            {label && (
+                <label htmlFor={inputProps.id}>
+                    {label}
+                    {required && (
+                        <span className={styles.required}>*</span>
+                    )}
+                </label>
+            )}
 
             <div className={styles.inputWrapper}>
                 {Icon && (
                     <span className={styles.iconLeft}>
-                        <Icon size={16} strokeWidth={2}/>
+                        <Icon size={16} strokeWidth={2} />
                     </span>
                 )}
 
                 <input
-                    id={id}
+                    {...inputProps}
                     type={resolvedType}
-                    placeholder={placeholder}
-                    value={value}
-                    onChange={e => onChange(e.target.value)}
                     required={required}
-                    autoComplete={autoComplete}
-                    disabled={disabled}
+                    onChange={(e) => onChange?.(e.target.value)}
                     className={`
-                        ${Icon        ? styles.withIconLeft  : ''}
-                        ${isPassword  ? styles.withIconRight : ''}
+                        ${inputProps.className ?? ''}
+                        ${Icon ? styles.withIconLeft : ''}
+                        ${isPassword ? styles.withIconRight : ''}
                     `}
                 />
 
@@ -69,15 +65,25 @@ export default function Field({
                     <button
                         type="button"
                         className={styles.iconRight}
-                        onClick={() => setShowPassword(prev => !prev)}
+                        onClick={() =>
+                            setShowPassword((prev) => !prev)
+                        }
                         tabIndex={-1}
                     >
-                        {showPassword ? <EyeOff size={16} strokeWidth={2}/> : <Eye size={16} strokeWidth={2}/>}
+                        {showPassword ? (
+                            <EyeOff size={16} strokeWidth={2} />
+                        ) : (
+                            <Eye size={16} strokeWidth={2} />
+                        )}
                     </button>
                 )}
             </div>
 
-            {error && <span className={styles.errorMessage}>{error}</span>}
+            {error && (
+                <span className={styles.errorMessage}>
+                    {error}
+                </span>
+            )}
         </div>
     );
 }
