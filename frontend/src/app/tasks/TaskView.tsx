@@ -125,6 +125,12 @@ export function TaskView({ task, currentUser, onClose, onSuccess }: TaskViewProp
     const isNotStarted = task.status === 'NOT_STARTED';
     const isInProgress = task.status === 'IN_PROGRESS';
 
+    const doneCount    = steps.filter(s => s.done).length;
+    const statusBadge  = STATUS_BADGES[task.status];
+    const activeBadge  = ACTIVE_BADGES[`${task.active}`];
+    const leaderBadge  = USER_BADGES[task.leader.role.name];
+    const managerBadge = USER_BADGES[task.manager.role.name];
+
     const hasStepChanges = steps.some(s => {
         const orig = task.steps?.find(o => o.id === s.id);
         return orig && orig.done !== s.done;
@@ -195,12 +201,6 @@ export function TaskView({ task, currentUser, onClose, onSuccess }: TaskViewProp
             </div>
         );
     }
-
-    const doneCount    = steps.filter(s => s.done).length;
-    const statusBadge  = STATUS_BADGES[task.status];
-    const activeBadge  = ACTIVE_BADGES[`${task.active}`];
-    const leaderBadge  = USER_BADGES[task.leader.role.name];
-    const managerBadge = USER_BADGES[task.manager.role.name];
 
     return (
         <FloatingPanel

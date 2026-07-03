@@ -34,6 +34,12 @@ ul.tagList {
   gap: 0.6rem;
   list-style: none;
 }
+ul.tagList li.user {
+  flex: 0 0 auto;
+}
+ul.tagList li.user.grow {
+  flex: 1 1 auto;
+}
 
 div.panelActions {
   display: flex;

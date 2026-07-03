@@ -1,0 +1,65 @@
+div.userItem {
+    display:     flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+
+    padding:       .8rem 1rem;
+    border:        2px solid var(--color-input-border);
+    border-radius: 1rem;
+    transition:    .2s ease;
+    width:         100%;
+    box-sizing:    border-box;
+
+    &:hover {
+        border-color: var(--color-input-border-hover);
+    }
+
+    div.userInfo {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+
+        div.avatar {
+            flex-shrink:    0;
+            display:        flex;
+            align-items:    center;
+            justify-content: center;
+
+            width:            2.8rem;
+            height:           2.8rem;
+            border-radius:    50%;
+            background-color: var(--color-pallete-blue-light);
+            border:           3px solid var(--color-pallete-blue-dark);
+            color:            var(--color-pallete-blue-dark);
+
+            span {
+                font-size:   1rem;
+                font-weight: 600;
+            }
+        }
+
+        span.userName {
+            font-size:   1.2rem;
+            font-weight: 600;
+            color:       var(--color-pallete-blue-dark);
+            overflow:    hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+    }
+
+    svg {
+        width: 1.6rem;
+        height: 1.6rem;
+        stroke-width: 3;
+
+        color: var(--color-pallete-blue-dark);
+        cursor: pointer;
+        transition: .2s ease;
+
+        &:hover {
+            color: var(--color-task-not-started);
+        }
+    }
+}

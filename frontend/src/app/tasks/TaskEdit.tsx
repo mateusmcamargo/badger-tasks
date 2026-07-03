@@ -28,6 +28,8 @@ import { User } from '@/types/User';
 import { UserSession } from '@/utils/auth';
 import { AREA_BADGES, USER_BADGES } from '@/utils/taskHelpers';
 import { Badge } from '@/components/badge/Badge';
+import { UserListItem } from '@/components/userItem/UserListItem';
+import { useFillFullRows } from '@/hooks/useFillFullRows';
 
 type TaskEditProps = {
     task:        Task;
@@ -63,11 +65,13 @@ export function TaskEdit({ task, currentUser, onClose, onSuccess }: TaskEditProp
     const [leader,     setLeader]     = useState<User | null>(null);
     const [manager,    setManager]    = useState<User | null>(null);
     const [members,    setMembers]    = useState<User[]>([]);
+    const [selectedMemberId, setSelectedMemberId] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [error,   setError]   = useState<string | null>(null);
 
     const [assignedIds,      setAssignedIds]      = useState<string[]>(
         (task.assignedTo ?? []).map(u => u.id)
     );
-    const [selectedMemberId, setSelectedMemberId] = useState('');
 
     const [steps, setSteps] = useState<StepRow[]>(
         [...(task.steps ?? [])]
@@ -82,9 +86,6 @@ export function TaskEdit({ task, currentUser, onClose, onSuccess }: TaskEditProp
                 deleted:     false,
             }))
     );
-
-    const [loading, setLoading] = useState(false);
-    const [error,   setError]   = useState<string | null>(null);
 
     useEffect(() => {
         getCategories().then(setCategories).catch(() => {});
@@ -196,7 +197,8 @@ export function TaskEdit({ task, currentUser, onClose, onSuccess }: TaskEditProp
     const assignedMembers  = members.filter(u => assignedIds.includes(u.id));
     const availableMembers = members.filter(u => !assignedIds.includes(u.id) && u.id !== currentUser?.id);
     const memberOptions    = availableMembers.map(u => ({ value: u.id, label: u.name }));
-
+    const tagListRef       = useFillFullRows<HTMLUListElement>(styles.grow, [assignedMembers.length]);
+    
     const formFooter = (
         <div className={styles.panelActions}>
             <Button
@@ -357,16 +359,12 @@ export function TaskEdit({ task, currentUser, onClose, onSuccess }: TaskEditProp
                 />
 
                 {assignedMembers.length > 0 && (
-                    <ul className={styles.tagList}>
+                    <ul ref={tagListRef} className={styles.tagList}>
                         {assignedMembers.map(user => (
-                            <li key={user.id}>
-                                <Badge
-                                    data={USER_BADGES[user.role.name]}
-                                    label={user.name}
-                                    action={{
-                                        icon:    X,
-                                        onClick: () => removeMember(user.id),
-                                    }}
+                            <li key={user.id} className={styles.user}>
+                                <UserListItem
+                                    user={user}
+                                    onClick={() => removeMember(user.id)}
                                 />
                             </li>
                         ))}
