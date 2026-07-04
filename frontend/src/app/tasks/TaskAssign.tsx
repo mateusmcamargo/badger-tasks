@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { UserPlus, Search, UserCheck, Bookmark, MessageCircleDashed } from 'lucide-react';
+import { UserPlus, Search, UserCheck, Bookmark, MessageCircleDashed, SearchAlert } from 'lucide-react';
 
 import styles from './taskAssign.module.scss';
 import { FloatingPanel } from '@/components/floatingPanel/FloatingPanel';
@@ -85,7 +85,7 @@ export function TaskAssign({ task, currentUser, onClose, onSuccess }: TaskAssign
                     {users.length === 0
                         ? 'Nenhum membro disponível para atribuir.'
                         : users.length === 1 ?
-                        'membro disponível'
+                        '1 membro disponível'
                         : 
                         <>
                         {`${users.length} membros disponíveis`}
@@ -133,7 +133,7 @@ export function TaskAssign({ task, currentUser, onClose, onSuccess }: TaskAssign
                         <p className={styles.hint}>Buscando...</p>
                     ) : users.length === 0 ? (
                         <p className={styles.hint}>
-                            <MessageCircleDashed/>
+                            <SearchAlert/>
                             Nenhum membro encontrado.
                         </p>
                     ) : (
