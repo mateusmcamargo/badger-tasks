@@ -31,6 +31,11 @@
 	</properties>
 	<dependencies>
         <dependency>
+            <groupId>me.paulschwarz</groupId>
+            <artifactId>springboot4-dotenv</artifactId>
+            <version>5.1.0</version>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-flyway</artifactId>
         </dependency>
@@ -124,11 +129,6 @@
 
 	<build>
 		<plugins>
-            <plugin>
-                <groupId>me.paulschwarz</groupId>
-                <artifactId>spring-dotenv</artifactId>
-                <version>4.0.0</version>
-            </plugin>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
